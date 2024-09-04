@@ -35,10 +35,12 @@ public class JottTokenizer {
 
   private String filename;
   private int lineNum;
+  private int columnNum;
 
   public JottTokenizer(String filename) {
     this.filename = filename;
     lineNum = 1;
+    columnNum = 1;
 
     updateState(TokenizerState.START);
     tokenProgress = "";
@@ -51,6 +53,9 @@ public class JottTokenizer {
   public TokenizerError handleCharacter(char c) {
     if (c == '\n') {
       lineNum++;
+      columnNum = 1;
+    } else {
+      columnNum++;
     }
 
     // Discard whitespace between tokens
@@ -80,12 +85,9 @@ public class JottTokenizer {
     } else if (handler != null && handler.getCreatedTokenType() == null) {
       // There's been an error.
       // A character could not be handled as part of a partial token
-
+      TokenizerError error = new TokenizerError(filename, lineNum, columnNum, state, tokenProgress, c);
       updateState(TokenizerState.FAULTED);
-
-      // TODO: Gather error details
-
-      return new TokenizerError();
+      return error;
     } else {
       // This character does not belong to the in-progress token,
       // However, the token was in a valid state to end.
@@ -104,11 +106,9 @@ public class JottTokenizer {
    */
   public TokenizerError finalizeTokens() {
     if (handler.getCreatedTokenType() == null) {
+      TokenizerError error = new TokenizerError(filename, lineNum, columnNum, state, tokenProgress, '\0');
       updateState(TokenizerState.FAULTED);
-
-      // TODO: Log error
-
-      return new TokenizerError();
+      return error;
     }
 
     if (!handler.tokenEnd()) {
@@ -162,26 +162,31 @@ public class JottTokenizer {
     JottTokenizer tokenizer = new JottTokenizer(filename);
 
     File file = new File("test/" + filename);
+    TokenizerError error = null;
     try (InputStream in = new FileInputStream(file);
         Reader reader = new InputStreamReader(in, Charset.defaultCharset());
         Reader buffer = new BufferedReader(reader)) {
       int r;
       while ((r = reader.read()) != -1) {
         char c = (char) r;
-        TokenizerError error = tokenizer.handleCharacter(c);
+        error = tokenizer.handleCharacter(c);
         if (error != null) {
-          // TODO: Handle error
-          return null;
+          break;
         }
       }
     } catch (IOException exec) {
-      // TODO: Log missing file error
+      System.err.printf("The file \"%s\" could not be found.", filename);
       return null;
     }
 
-    TokenizerError error = tokenizer.finalizeTokens();
+    if (error == null){
+      error = tokenizer.finalizeTokens();
+    }
+
     if (error != null) {
-      // TODO: Handle error
+
+      System.err.println(error.toString());
+
       return null;
     }
 
