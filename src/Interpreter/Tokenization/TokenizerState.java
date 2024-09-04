@@ -27,10 +27,23 @@ public enum TokenizerState {
     ID, // We enter this state after seeing our first letter. From here we can either
         // build an id/keyword, or return to start.
 
-    COLON, // We enter this state after seeing a
-    BANG,
-    STRING,
-    COMMENT,
-    DONE,
-    FAULTED;
+    COLON, // We enter this state after seeing a ':'. From here we can either make a
+           // function call or begin a new token.
+
+    BANG, // We enter this state after seeing a '!'. From here we must see a '=' or there
+          // will be a syntax error.
+
+    STRING, // We enter this state after seeing a '"'. All subsequent letters, digits, and
+            // spaces are a part of that string until the close '"'. Any other characters,
+            // including a newline, result in a syntax error.
+
+    COMMENT, // We enter this state after seeing a '#'. We will remain in this state until
+             // the next newline. When we leave this state we will not create a token of its
+             // content.
+
+    DONE, // We enter this state after finalizeTokenization is called and the final token
+          // is added to the list. No new tokens can be added from this state.
+
+    FAULTED; // Enter this state if we encounter a syntax error. No new tokens can be added
+             // from this state.
 }
