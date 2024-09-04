@@ -1,4 +1,5 @@
 package src.Interpreter;
+
 /**
  * Class representing a token string for the Jott translator
  *
@@ -13,10 +14,11 @@ public class Token {
 
     /**
      * Creates an instance of a token
-     * @param token the token string
+     * 
+     * @param token    the token string
      * @param filename the name of the file the token came from
-     * @param lineNum the number of the line in the file that the token appears on
-     * @param type the type of this token
+     * @param lineNum  the number of the line in the file that the token appears on
+     * @param type     the type of this token
      */
     public Token(String token, String filename, int lineNum, TokenType type) {
         this.token = token;
@@ -27,6 +29,7 @@ public class Token {
 
     /**
      * Getter for the token string
+     * 
      * @return the token string
      */
     public String getToken() {
@@ -35,12 +38,16 @@ public class Token {
 
     /**
      * Getter for the token file name
+     * 
      * @return the token file name
      */
-    public String getFilename() { return filename; }
+    public String getFilename() {
+        return filename;
+    }
 
     /**
      * Getter for the token line number
+     * 
      * @return the line number of the token
      */
     public int getLineNum() {
@@ -49,6 +56,7 @@ public class Token {
 
     /**
      * Getter for the token type
+     * 
      * @return the line number of the token
      */
     public TokenType getTokenType() {

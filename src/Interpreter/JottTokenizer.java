@@ -24,8 +24,7 @@ import src.Interpreter.Tokenization.TokenizerError;
 import src.Interpreter.Tokenization.TokenizerState;
 import src.Interpreter.Tokenization.TokenizerStateHandler;
 
-public class JottTokenizer
-{
+public class JottTokenizer {
   private static final Map<TokenizerState, Map<Character, TokenizerStateHandler>> handlerMaps = mapsInitializer();
 
   private ArrayList<Token> tokens;
@@ -33,12 +32,11 @@ public class JottTokenizer
   private TokenizerState state;
   private TokenizerStateHandler handler;
   private Map<Character, TokenizerStateHandler> handlerMap;
-  
+
   private String filename;
   private int lineNum;
 
-  public JottTokenizer(String filename)
-  {
+  public JottTokenizer(String filename) {
     this.filename = filename;
     lineNum = 1;
 
@@ -47,61 +45,50 @@ public class JottTokenizer
     tokens = new ArrayList<>();
   }
 
-	/**
-     * Update the tokenizer state a single character at a time
-     */
-  public TokenizerError handleCharacter(char c)
-  {
-    if (c == '\n')
-    {
+  /**
+   * Update the tokenizer state a single character at a time
+   */
+  public TokenizerError handleCharacter(char c) {
+    if (c == '\n') {
       lineNum++;
     }
-    
+
     // Discard whitespace between tokens
-    if (state == TokenizerState.START && Character.isWhitespace(c))
-    {
+    if (state == TokenizerState.START && Character.isWhitespace(c)) {
       return null;
     }
 
-    if(handlerMap.containsKey(c))
-    {
+    if (handlerMap.containsKey(c)) {
       // This character is part of this token.
       // Add the character to the token.
       tokenProgress += c;
 
       // Grab the new handler
       handler = handlerMap.get(c);
-      if (handler.tokenEnd())
-      {
+      if (handler.tokenEnd()) {
         // This handler completes the token.
         processToken();
       }
 
       // Update the state
       updateState(handler.getNewState());
-    }
-    else if (state == TokenizerState.COMMENT)
-    {
+    } else if (state == TokenizerState.COMMENT) {
       // We'll lightly track comments as tokens for debugging purposes
-      // This fake token will get thrown away when it ends 
+      // This fake token will get thrown away when it ends
       tokenProgress += c;
       return null;
-    }
-    else if (handler != null && handler.getCreatedTokenType() == null)
-    {
+    } else if (handler != null && handler.getCreatedTokenType() == null) {
       // There's been an error.
       // A character could not be handled as part of a partial token
 
       updateState(TokenizerState.FAULTED);
 
       // TODO: Gather error details
-      
+
       return new TokenizerError();
-    }
-    else
-    {
+    } else {
       // This character does not belong to the in-progress token,
-      // However, the token was in a valid state to end. 
+      // However, the token was in a valid state to end.
       processToken();
 
       // Return to the starting position and handle this character from there
@@ -112,21 +99,19 @@ public class JottTokenizer
     return null;
   }
 
-	/**
-     * Completes the in-progress token and marks the file as tokenized
-     */
-  public TokenizerError finalizeTokens()
-  {
-    if (handler.getCreatedTokenType() == null)
-    {
+  /**
+   * Completes the in-progress token and marks the file as tokenized
+   */
+  public TokenizerError finalizeTokens() {
+    if (handler.getCreatedTokenType() == null) {
       updateState(TokenizerState.FAULTED);
 
       // TODO: Log error
 
       return new TokenizerError();
     }
-    
-    if (!handler.tokenEnd()){
+
+    if (!handler.tokenEnd()) {
       processToken();
     }
 
@@ -134,15 +119,13 @@ public class JottTokenizer
     return null;
   }
 
-	/**
-     * Updates the tokenizer's state machine, including the handlerMap
-     */
-  private void updateState(TokenizerState state)
-  {
+  /**
+   * Updates the tokenizer's state machine, including the handlerMap
+   */
+  private void updateState(TokenizerState state) {
     this.state = state;
 
-    if (state == TokenizerState.FAULTED)
-    {
+    if (state == TokenizerState.FAULTED) {
       handlerMap = null;
       return;
     }
@@ -150,13 +133,11 @@ public class JottTokenizer
     handlerMap = handlerMaps.get(state);
   }
 
-	/**
-     * Completes the current token (if applicaple) and resets the token progress
-     */
-  private void processToken()
-  {
-    if (handler == null || handler.getCreatedTokenType() == null)
-    {
+  /**
+   * Completes the current token (if applicaple) and resets the token progress
+   */
+  private void processToken() {
+    if (handler == null || handler.getCreatedTokenType() == null) {
       tokenProgress = "";
       return;
     }
@@ -165,175 +146,176 @@ public class JottTokenizer
     tokenProgress = "";
   }
 
-  public ArrayList<Token> getTokens()
-  {
+  public ArrayList<Token> getTokens() {
     return tokens;
   }
 
-	/**
-     * Takes in a filename and tokenizes that file into Tokens
-     * based on the rules of the Jott Language
-     * @param filename the name of the file to tokenize; can be relative or absolute path
-     * @return an ArrayList of Jott Tokens
-     */
-    public static ArrayList<Token> tokenize(String filename)
-    {
-      JottTokenizer tokenizer = new JottTokenizer(filename); 
+  /**
+   * Takes in a filename and tokenizes that file into Tokens
+   * based on the rules of the Jott Language
+   * 
+   * @param filename the name of the file to tokenize; can be relative or absolute
+   *                 path
+   * @return an ArrayList of Jott Tokens
+   */
+  public static ArrayList<Token> tokenize(String filename) {
+    JottTokenizer tokenizer = new JottTokenizer(filename);
 
-      File file = new File("test/" + filename);
-      try (InputStream in = new FileInputStream(file);
-            Reader reader = new InputStreamReader(in, Charset.defaultCharset());
-            Reader buffer = new BufferedReader(reader))
-            {
-              int r;
-              while ((r = reader.read()) != -1)
-              {
-                  char c = (char)r;
-                  TokenizerError error = tokenizer.handleCharacter(c);
-                  if (error != null)
-                  {
-                    // TODO: Handle error
-                    return null;
-                  }
-              }
-            }
-            catch (IOException exec)
-            {
-              // TODO: Log missing file error
-              return null;
-            }
-      
-      TokenizerError error = tokenizer.finalizeTokens();
-      if (error != null) {
-        // TODO: Handle error
-        return null;  
+    File file = new File("test/" + filename);
+    try (InputStream in = new FileInputStream(file);
+        Reader reader = new InputStreamReader(in, Charset.defaultCharset());
+        Reader buffer = new BufferedReader(reader)) {
+      int r;
+      while ((r = reader.read()) != -1) {
+        char c = (char) r;
+        TokenizerError error = tokenizer.handleCharacter(c);
+        if (error != null) {
+          // TODO: Handle error
+          return null;
+        }
       }
-
-		  return tokenizer.getTokens();
+    } catch (IOException exec) {
+      // TODO: Log missing file error
+      return null;
     }
 
-    private static void putDigits(HashMap<Character, TokenizerStateHandler> map, TokenizerStateHandler handler){
-      for (char c = '0'; c <= '9'; c++)
-      {
-        map.put(c, handler);
-      }
+    TokenizerError error = tokenizer.finalizeTokens();
+    if (error != null) {
+      // TODO: Handle error
+      return null;
     }
 
-	/**
-     * Add a handler to the map for all letter characters
-     */
-    private static void putLetters(HashMap<Character, TokenizerStateHandler> map, TokenizerStateHandler handler){
-      for (char c = 'A'; c <= 'Z'; c++)
-      {
-        map.put(c, handler);
-        map.put((char)(c + 'a'-'A'), handler);
-      }
+    return tokenizer.getTokens();
+  }
+
+  private static void putDigits(HashMap<Character, TokenizerStateHandler> map, TokenizerStateHandler handler) {
+    for (char c = '0'; c <= '9'; c++) {
+      map.put(c, handler);
     }
+  }
 
-	/**
-     * Add a handler to the map for all digit characters
-     */
-    private static Map<Character, TokenizerStateHandler> buildStartMap()
-    {
-      HashMap<Character, TokenizerStateHandler> startMap = new HashMap<>();
-      
-      // These are all one character tokens
-      startMap.put(',', new TokenizerStateHandler(TokenizerState.START, TokenType.COMMA));
-      startMap.put(']', new TokenizerStateHandler(TokenizerState.START, TokenType.R_BRACKET));
-      startMap.put('[', new TokenizerStateHandler(TokenizerState.START, TokenType.L_BRACKET));
-      startMap.put('}', new TokenizerStateHandler(TokenizerState.START, TokenType.R_BRACE));
-      startMap.put('{', new TokenizerStateHandler(TokenizerState.START, TokenType.L_BRACE));
-      startMap.put(';', new TokenizerStateHandler(TokenizerState.START, TokenType.SEMICOLON));
-
-      // These could be one character tokens, or they could be the start of a two character token
-      startMap.put('=', new TokenizerStateHandler(TokenizerState.ASSIGN, TokenType.ASSIGN));
-      startMap.put(':', new TokenizerStateHandler(TokenizerState.COLON, TokenType.COLON));
-
-      // This is the 
-      startMap.put('.', new TokenizerStateHandler(TokenizerState.DECIMAL, null));
-      startMap.put('!', new TokenizerStateHandler(TokenizerState.BANG, null));
-      startMap.put('"', new TokenizerStateHandler(TokenizerState.STRING, null));
-      startMap.put('#', new TokenizerStateHandler(TokenizerState.COMMENT, null));
-
-      // Relation operator character handler from the start state
-      TokenizerStateHandler relOpHandlerStart = new TokenizerStateHandler(TokenizerState.REL_OP, TokenType.REL_OP);
-      startMap.put('<', relOpHandlerStart);
-      startMap.put('>', relOpHandlerStart);
-      
-      // Math operator character handler from the start state
-      TokenizerStateHandler mathOpHandlerStart = new TokenizerStateHandler(TokenizerState.START, TokenType.MATH_OP);
-      startMap.put('+', mathOpHandlerStart);
-      startMap.put('-', mathOpHandlerStart);
-      startMap.put('*', mathOpHandlerStart);
-      startMap.put('/', mathOpHandlerStart);
-
-      // Digit character handler from the start state
-      TokenizerStateHandler digitHandlerStart = new TokenizerStateHandler(TokenizerState.INTERGER, TokenType.NUMBER);
-      putDigits(startMap, digitHandlerStart);
-
-      // Letter character handler from the start state
-      TokenizerStateHandler letterHandlerStart = new TokenizerStateHandler(TokenizerState.ID, TokenType.ID_KEYWORD);
-      putLetters(startMap, letterHandlerStart);
-      return startMap;
+  /**
+   * Add a handler to the map for all letter characters
+   */
+  private static void putLetters(HashMap<Character, TokenizerStateHandler> map, TokenizerStateHandler handler) {
+    for (char c = 'A'; c <= 'Z'; c++) {
+      map.put(c, handler);
+      map.put((char) (c + 'a' - 'A'), handler);
     }
+  }
 
-	/**
-     * Builds all handler maps and a map to them from the tokenizer state
-     * @return A map of handler maps.
-     */
-    private static Map<TokenizerState, Map<Character, TokenizerStateHandler>> mapsInitializer()
-    {
-      // The handler map for the start state is especially large, so it's built in its own function
-      Map<Character, TokenizerStateHandler> startMap = buildStartMap();
+  /**
+   * Add a handler to the map for all digit characters
+   */
+  private static Map<Character, TokenizerStateHandler> buildStartMap() {
+    HashMap<Character, TokenizerStateHandler> startMap = new HashMap<>();
 
-      // Though they are each different states, ASSIGN, REL_OP and BANG contain the same handler for '='
-      // This is the only handler for those 3 states
-      TokenizerStateHandler relOpCompletionHandler = new TokenizerStateHandler(TokenizerState.START, TokenType.REL_OP);
-      Map<Character, TokenizerStateHandler> assignMap = new HashMap<>();
-      Map<Character, TokenizerStateHandler> relOpMap = new HashMap<>();
-      Map<Character, TokenizerStateHandler> bangMap  = new HashMap<>();
-      assignMap.put('=', relOpCompletionHandler);
-      relOpMap.put('=', relOpCompletionHandler);
-      bangMap.put('=', relOpCompletionHandler);
+    // These are all one character tokens
+    startMap.put(',', new TokenizerStateHandler(TokenizerState.START, TokenType.COMMA));
+    startMap.put(']', new TokenizerStateHandler(TokenizerState.START, TokenType.R_BRACKET));
+    startMap.put('[', new TokenizerStateHandler(TokenizerState.START, TokenType.L_BRACKET));
+    startMap.put('}', new TokenizerStateHandler(TokenizerState.START, TokenType.R_BRACE));
+    startMap.put('{', new TokenizerStateHandler(TokenizerState.START, TokenType.L_BRACE));
+    startMap.put(';', new TokenizerStateHandler(TokenizerState.START, TokenType.SEMICOLON));
 
-      // In the decimal state only digits can be handled to make a float
-      HashMap<Character, TokenizerStateHandler> decimalMap = new HashMap<>();
-      putDigits(decimalMap, new TokenizerStateHandler(TokenizerState.FLOAT, TokenType.NUMBER));
+    // These could be one character tokens, or they could be the start of a two
+    // character token
+    startMap.put('=', new TokenizerStateHandler(TokenizerState.ASSIGN, TokenType.ASSIGN));
+    startMap.put(':', new TokenizerStateHandler(TokenizerState.COLON, TokenType.COLON));
 
-      // In the integer state we will handle '.' to transition to floats, and digits to remain and integer 
-      HashMap<Character, TokenizerStateHandler> integerMap = new HashMap<>();
-      integerMap.put('.', new TokenizerStateHandler(TokenizerState.FLOAT, TokenType.NUMBER));
-      putDigits(integerMap, new TokenizerStateHandler(TokenizerState.INTERGER, TokenType.NUMBER));
+    // This is the
+    startMap.put('.', new TokenizerStateHandler(TokenizerState.DECIMAL, null));
+    startMap.put('!', new TokenizerStateHandler(TokenizerState.BANG, null));
+    startMap.put('"', new TokenizerStateHandler(TokenizerState.STRING, null));
+    startMap.put('#', new TokenizerStateHandler(TokenizerState.COMMENT, null));
 
-      // In the float state only digits can be handled to continue the float
-      HashMap<Character, TokenizerStateHandler> floatMap = new HashMap<>();
-      putDigits(floatMap, new TokenizerStateHandler(TokenizerState.FLOAT, TokenType.NUMBER));
+    // Relation operator character handler from the start state
+    TokenizerStateHandler relOpHandlerStart = new TokenizerStateHandler(TokenizerState.REL_OP, TokenType.REL_OP);
+    startMap.put('<', relOpHandlerStart);
+    startMap.put('>', relOpHandlerStart);
 
-      // Once we're in the id state, either digits or letters can be appended to continue the id
-      HashMap<Character, TokenizerStateHandler> idMap = new HashMap<>();
-      TokenizerStateHandler idContHandlerId = new TokenizerStateHandler(TokenizerState.ID, TokenType.ID_KEYWORD);
-      putDigits(idMap, idContHandlerId);
-      putLetters(idMap, idContHandlerId);
+    // Math operator character handler from the start state
+    TokenizerStateHandler mathOpHandlerStart = new TokenizerStateHandler(TokenizerState.START, TokenType.MATH_OP);
+    startMap.put('+', mathOpHandlerStart);
+    startMap.put('-', mathOpHandlerStart);
+    startMap.put('*', mathOpHandlerStart);
+    startMap.put('/', mathOpHandlerStart);
 
-      // After a colon, we can handle another colon to become a function header
-      Map<Character, TokenizerStateHandler> colonMap = new HashMap<>();
-      colonMap.put(':', new TokenizerStateHandler(TokenizerState.START, TokenType.FC_HEADER));
+    // Digit character handler from the start state
+    TokenizerStateHandler digitHandlerStart = new TokenizerStateHandler(TokenizerState.INTERGER, TokenType.NUMBER);
+    putDigits(startMap, digitHandlerStart);
 
-      // In a string digits, letters, and spaces can be appended to the string. A '"' ends the string.  
-      HashMap<Character, TokenizerStateHandler> stringMap = new HashMap<>();
-      TokenizerStateHandler stringContHandlerString = new TokenizerStateHandler(TokenizerState.STRING, null);
-      putDigits(stringMap, stringContHandlerString);
-      putLetters(stringMap, stringContHandlerString);
-      stringMap.put(' ', stringContHandlerString);
-      stringMap.put('"', new TokenizerStateHandler(TokenizerState.START, TokenType.STRING));
+    // Letter character handler from the start state
+    TokenizerStateHandler letterHandlerStart = new TokenizerStateHandler(TokenizerState.ID, TokenType.ID_KEYWORD);
+    putLetters(startMap, letterHandlerStart);
+    return startMap;
+  }
 
-      // Comments end once a newline is detected. In the meantime, they eat all other characters.
-      Map<Character, TokenizerStateHandler> commentMap  = new HashMap<>();
-      commentMap.put('\n', new TokenizerStateHandler(TokenizerState.START, null));
+  /**
+   * Builds all handler maps and a map to them from the tokenizer state
+   * 
+   * @return A map of handler maps.
+   */
+  private static Map<TokenizerState, Map<Character, TokenizerStateHandler>> mapsInitializer() {
+    // The handler map for the start state is especially large, so it's built in its
+    // own function
+    Map<Character, TokenizerStateHandler> startMap = buildStartMap();
 
-      // Java really isn't my language, but I believe this is the best way to construct an immutable map.
-      // In a better language this would be constructed in compile time and simply loaded to memory.
-      return Map.ofEntries(
+    // Though they are each different states, ASSIGN, REL_OP and BANG contain the
+    // same handler for '='
+    // This is the only handler for those 3 states
+    TokenizerStateHandler relOpCompletionHandler = new TokenizerStateHandler(TokenizerState.START, TokenType.REL_OP);
+    Map<Character, TokenizerStateHandler> assignMap = new HashMap<>();
+    Map<Character, TokenizerStateHandler> relOpMap = new HashMap<>();
+    Map<Character, TokenizerStateHandler> bangMap = new HashMap<>();
+    assignMap.put('=', relOpCompletionHandler);
+    relOpMap.put('=', relOpCompletionHandler);
+    bangMap.put('=', relOpCompletionHandler);
+
+    // In the decimal state only digits can be handled to make a float
+    HashMap<Character, TokenizerStateHandler> decimalMap = new HashMap<>();
+    putDigits(decimalMap, new TokenizerStateHandler(TokenizerState.FLOAT, TokenType.NUMBER));
+
+    // In the integer state we will handle '.' to transition to floats, and digits
+    // to remain and integer
+    HashMap<Character, TokenizerStateHandler> integerMap = new HashMap<>();
+    integerMap.put('.', new TokenizerStateHandler(TokenizerState.FLOAT, TokenType.NUMBER));
+    putDigits(integerMap, new TokenizerStateHandler(TokenizerState.INTERGER, TokenType.NUMBER));
+
+    // In the float state only digits can be handled to continue the float
+    HashMap<Character, TokenizerStateHandler> floatMap = new HashMap<>();
+    putDigits(floatMap, new TokenizerStateHandler(TokenizerState.FLOAT, TokenType.NUMBER));
+
+    // Once we're in the id state, either digits or letters can be appended to
+    // continue the id
+    HashMap<Character, TokenizerStateHandler> idMap = new HashMap<>();
+    TokenizerStateHandler idContHandlerId = new TokenizerStateHandler(TokenizerState.ID, TokenType.ID_KEYWORD);
+    putDigits(idMap, idContHandlerId);
+    putLetters(idMap, idContHandlerId);
+
+    // After a colon, we can handle another colon to become a function header
+    Map<Character, TokenizerStateHandler> colonMap = new HashMap<>();
+    colonMap.put(':', new TokenizerStateHandler(TokenizerState.START, TokenType.FC_HEADER));
+
+    // In a string digits, letters, and spaces can be appended to the string. A '"'
+    // ends the string.
+    HashMap<Character, TokenizerStateHandler> stringMap = new HashMap<>();
+    TokenizerStateHandler stringContHandlerString = new TokenizerStateHandler(TokenizerState.STRING, null);
+    putDigits(stringMap, stringContHandlerString);
+    putLetters(stringMap, stringContHandlerString);
+    stringMap.put(' ', stringContHandlerString);
+    stringMap.put('"', new TokenizerStateHandler(TokenizerState.START, TokenType.STRING));
+
+    // Comments end once a newline is detected. In the meantime, they eat all other
+    // characters.
+    Map<Character, TokenizerStateHandler> commentMap = new HashMap<>();
+    commentMap.put('\n', new TokenizerStateHandler(TokenizerState.START, null));
+
+    // Java really isn't my language, but I believe this is the best way to
+    // construct an immutable map.
+    // In a better language this would be constructed in compile time and simply
+    // loaded to memory.
+    return Map.ofEntries(
         Map.entry(TokenizerState.START, Collections.unmodifiableMap(startMap)),
         Map.entry(TokenizerState.ASSIGN, Collections.unmodifiableMap(assignMap)),
         Map.entry(TokenizerState.REL_OP, Collections.unmodifiableMap(relOpMap)),
@@ -345,5 +327,5 @@ public class JottTokenizer
         Map.entry(TokenizerState.COLON, Collections.unmodifiableMap(colonMap)),
         Map.entry(TokenizerState.STRING, Collections.unmodifiableMap(stringMap)),
         Map.entry(TokenizerState.COMMENT, Collections.unmodifiableMap(commentMap)));
-    }
+  }
 }
