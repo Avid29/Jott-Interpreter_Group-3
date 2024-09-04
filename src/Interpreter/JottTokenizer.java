@@ -51,6 +51,8 @@ public class JottTokenizer {
    * Update the tokenizer state a single character at a time
    */
   public TokenizerError handleCharacter(char c) {
+
+    // Track the line and column number
     if (c == '\n') {
       lineNum++;
       columnNum = 1;
@@ -64,14 +66,16 @@ public class JottTokenizer {
     }
 
     if (handlerMap.containsKey(c)) {
-      // This character is part of this token.
+      // The current character is part of the in-progress token,
+      // or is a complete token on its own.
+
       // Add the character to the token.
       tokenProgress += c;
 
       // Grab the new handler
       handler = handlerMap.get(c);
       if (handler.tokenEnd()) {
-        // This handler completes the token.
+        // This character completes the token.
         processToken();
       }
 
@@ -83,17 +87,19 @@ public class JottTokenizer {
       tokenProgress += c;
       return null;
     } else if (handler != null && handler.getCreatedTokenType() == null) {
-      // There's been an error.
-      // A character could not be handled as part of a partial token
+      // Oh no! There's been a syntax error
+      // The in-progress token was not completed by the current character, and was not
+      // in a valid state to end.
       TokenizerError error = new TokenizerError(filename, lineNum, columnNum, state, tokenProgress, c);
       updateState(TokenizerState.FAULTED);
       return error;
     } else {
       // This character does not belong to the in-progress token,
-      // However, the token was in a valid state to end.
+      // However, the token was in a valid state to end
       processToken();
 
-      // Return to the starting position and handle this character from there
+      // Return to the START state and handle this character as the beginning of a new
+      // token
       updateState(TokenizerState.START);
       handleCharacter(c);
     }
@@ -159,37 +165,54 @@ public class JottTokenizer {
    * @return an ArrayList of Jott Tokens
    */
   public static ArrayList<Token> tokenize(String filename) {
+
+    // Initialize an instance of the tokenizer to track our state machine.
     JottTokenizer tokenizer = new JottTokenizer(filename);
 
-    File file = new File("test/" + filename);
+    // We're only collecting a single error at a time.
+    // When this is null, we haven't found any errors yet.
     TokenizerError error = null;
+
+    // Open the file for reading
+    File file = new File("test/" + filename);
     try (InputStream in = new FileInputStream(file);
         Reader reader = new InputStreamReader(in, Charset.defaultCharset());
         Reader buffer = new BufferedReader(reader)) {
+
+      // Read the file one character at a time into the tokenizer. 
       int r;
       while ((r = reader.read()) != -1) {
         char c = (char) r;
         error = tokenizer.handleCharacter(c);
+        
+        // If we hit an error, log it and stop iterating the file.
         if (error != null) {
           break;
         }
       }
+      
     } catch (IOException exec) {
-      System.err.printf("The file \"%s\" could not be found.", filename);
+      // The file could not be found or opened.
+      System.err.printf("There was an issue reading file \"%s\".", filename);
       return null;
     }
 
-    if (error == null){
+    // Finalize the tokenization if not errors were found so far.
+    if (error == null) {
       error = tokenizer.finalizeTokens();
     }
 
     if (error != null) {
-
+      // There was a syntax error while tokenizing.
+      // Output the error message and details.
       System.err.println(error.toString());
 
+      // Return null since the tokens were not reliably identified.
       return null;
     }
 
+    // The file was successfully tokenized.
+    // Return the results.
     return tokenizer.getTokens();
   }
 
