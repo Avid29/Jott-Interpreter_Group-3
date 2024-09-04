@@ -251,7 +251,7 @@ public class JottTokenizer {
     startMap.put('=', new TokenizerStateHandler(TokenizerState.ASSIGN, TokenType.ASSIGN));
     startMap.put(':', new TokenizerStateHandler(TokenizerState.COLON, TokenType.COLON));
 
-    // This is the
+    // These characters are the start of incomplete tokens (or a comment)
     startMap.put('.', new TokenizerStateHandler(TokenizerState.DECIMAL, null));
     startMap.put('!', new TokenizerStateHandler(TokenizerState.BANG, null));
     startMap.put('"', new TokenizerStateHandler(TokenizerState.STRING, null));
