@@ -1,4 +1,4 @@
-package provided;
+package src.Interpreter;
 
 /**
  * This represents the types of tokens that can be in Jott.
