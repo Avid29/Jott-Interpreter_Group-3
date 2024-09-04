@@ -101,7 +101,7 @@ public class JottTokenizer {
       // Return to the START state and handle this character as the beginning of a new
       // token
       updateState(TokenizerState.START);
-      handleCharacter(c);
+      return handleCharacter(c);
     }
 
     return null;
