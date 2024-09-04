@@ -5,13 +5,11 @@ import src.Interpreter.TokenType;
 public class TokenizerStateHandler {
     private TokenizerState newState;
     private TokenType createdTokenType;
-    private boolean tokenEnd;
 
-    public TokenizerStateHandler(TokenizerState newState, TokenType createdTokenType, boolean tokenEnd)
+    public TokenizerStateHandler(TokenizerState newState, TokenType createdTokenType)
     {
         this.newState = newState;
         this.createdTokenType = createdTokenType;
-        this.tokenEnd = tokenEnd;
     }
 
     public TokenizerState getNewState()
@@ -26,6 +24,7 @@ public class TokenizerStateHandler {
 
     public boolean tokenEnd()
     {
-        return tokenEnd;
+        // If the resulting state is start, we know that this handler clears the token
+        return newState == TokenizerState.START;
     }
 }
