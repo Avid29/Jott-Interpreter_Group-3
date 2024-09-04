@@ -94,7 +94,7 @@ public class JottTokenizer {
       updateState(TokenizerState.FAULTED);
       return error;
     } else {
-      // This character does not belong to the in-progress token,
+      // This character does not belong to the in-progress token
       // However, the token was in a valid state to end
       processToken();
 
@@ -111,6 +111,10 @@ public class JottTokenizer {
    * Completes the in-progress token and marks the file as tokenized
    */
   public TokenizerError finalizeTokens() {
+    if (state == TokenizerState.COMMENT) {
+      return null;
+    }
+
     if (handler.getCreatedTokenType() == null) {
       TokenizerError error = new TokenizerError(filename, lineNum, columnNum, state, tokenProgress, '\0');
       updateState(TokenizerState.FAULTED);
@@ -179,18 +183,18 @@ public class JottTokenizer {
         Reader reader = new InputStreamReader(in, Charset.defaultCharset());
         Reader buffer = new BufferedReader(reader)) {
 
-      // Read the file one character at a time into the tokenizer. 
+      // Read the file one character at a time into the tokenizer.
       int r;
       while ((r = reader.read()) != -1) {
         char c = (char) r;
         error = tokenizer.handleCharacter(c);
-        
+
         // If we hit an error, log it and stop iterating the file.
         if (error != null) {
           break;
         }
       }
-      
+
     } catch (IOException exec) {
       // The file could not be found or opened.
       System.err.printf("There was an issue reading file \"%s\".", filename);
