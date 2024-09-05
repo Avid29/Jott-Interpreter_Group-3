@@ -1,3 +1,5 @@
+package testers;
+
 /*
  * Tester for phase 1 of the Jott Translator
  *
@@ -11,9 +13,9 @@
 
 import java.util.ArrayList;
 
-import src.Interpreter.JottTokenizer;
-import src.Interpreter.Token;
-import src.Interpreter.TokenType;
+import provided.JottTokenizer;
+import provided.Token;
+import provided.TokenType;
 
 public class JottTokenizerTester {
 

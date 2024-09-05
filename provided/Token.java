@@ -1,4 +1,4 @@
-package src.Interpreter;
+package provided;
 
 /**
  * Class representing a token string for the Jott translator

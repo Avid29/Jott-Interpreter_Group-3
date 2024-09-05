@@ -1,4 +1,4 @@
-package src.Interpreter.Tokenization;
+package Interpreter.Tokenization;
 
 public class TokenizerError {
     private String filename;
