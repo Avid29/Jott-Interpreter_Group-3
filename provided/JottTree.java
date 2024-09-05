@@ -1,4 +1,4 @@
-package src.Interpreter;
+package provided;
 
 /**
  * Interface for all Jott parse tree nodes

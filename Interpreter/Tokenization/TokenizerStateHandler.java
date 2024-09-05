@@ -1,6 +1,6 @@
-package src.Interpreter.Tokenization;
+package Interpreter.Tokenization;
 
-import src.Interpreter.TokenType;
+import provided.TokenType;
 
 public class TokenizerStateHandler {
     private TokenizerState newState;

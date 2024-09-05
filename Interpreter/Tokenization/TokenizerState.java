@@ -1,4 +1,4 @@
-package src.Interpreter.Tokenization;
+package Interpreter.Tokenization;
 
 /**
  * This represents the states of tokenizer.

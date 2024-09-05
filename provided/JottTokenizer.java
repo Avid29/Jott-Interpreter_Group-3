@@ -1,4 +1,4 @@
-package src.Interpreter;
+package provided;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -20,9 +20,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import src.Interpreter.Tokenization.TokenizerError;
-import src.Interpreter.Tokenization.TokenizerState;
-import src.Interpreter.Tokenization.TokenizerStateHandler;
+import Interpreter.Tokenization.TokenizerError;
+import Interpreter.Tokenization.TokenizerState;
+import Interpreter.Tokenization.TokenizerStateHandler;
 
 public class JottTokenizer {
     private static final Map<TokenizerState, Map<Character, TokenizerStateHandler>> handlerMaps = mapsInitializer();
