@@ -193,7 +193,7 @@ public class JottTokenizer {
         TokenizerError error = null;
 
         // Open the file for reading
-        File file = new File("test/" + filename);
+        File file = new File(filename);
         try (InputStream in = new FileInputStream(file);
                 Reader reader = new InputStreamReader(in, Charset.defaultCharset());
                 Reader buffer = new BufferedReader(reader)) {
