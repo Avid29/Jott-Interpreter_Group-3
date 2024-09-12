@@ -20,11 +20,20 @@ public class TokenStack {
     }
 
     public Token peekToken() {
-        if (tokens.size() <= offset) {
+        if (offset >= tokens.size()) {
             return null;
         }
 
         return tokens.get(offset);
+    }
+
+    public Token peekToken(int pOffset)
+    {
+        if (offset + pOffset >= tokens.size() || pOffset < -offset) {
+            return null;
+        }
+
+        return tokens.get(offset + pOffset);
     }
 
     public Token popToken() {
@@ -48,11 +57,12 @@ public class TokenStack {
             offset = stackOffset;
         }
 
-        stackOffset += tokenUseStack.pop();
+        stackOffset -= tokenUseStack.pop();
     }
 
     public int tokenSequenceMatch(TokenType[] typeCheck, ArrayList<Token> popped) {
-        if (popped.isEmpty()) {
+        pushStack();
+        if (!popped.isEmpty()) {
             // This is an error code specifying the popped Deque was not empty
             // In a good language popped would just be an out parameter, but alas, this is
             // Java
@@ -60,19 +70,23 @@ public class TokenStack {
         }
 
         for (int i = 0; i < typeCheck.length; i++) {
-
             // Pop the next token, and track that it was popped
             Token curr = popToken();
-            popped.addLast(curr);
+
+            if (popped != null) {
+                popped.addLast(curr);
+            }
 
             if (curr == null || curr.getTokenType() != typeCheck[i]) {
                 // Token missing or tokenType mismatch,
-                // Return the position of the error
+                // Return the position of the error.
+                popStack(true);
                 return i;
             }
         }
 
         // This is a sucess code
+        popStack(false);
         return -1;
     }
 }

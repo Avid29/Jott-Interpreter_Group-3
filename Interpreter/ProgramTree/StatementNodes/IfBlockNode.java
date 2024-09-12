@@ -1,13 +1,10 @@
-package Interpreter.ProgramTree;
+package Interpreter.ProgramTree.StatementNodes;
 
+import Interpreter.Parsing.TokenStack;
 import provided.JottTree;
-import provided.Token;
+import provided.TokenType;
 
-public class ParameterNode implements JottTree {
-
-    public ParameterNode(Token paramName, Token paramType){
-
-    }
+public class IfBlockNode implements JottTree {
 
     @Override
     public String convertToJott() {

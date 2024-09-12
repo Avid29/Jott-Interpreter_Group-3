@@ -1,18 +1,13 @@
-package Interpreter.ProgramTree;
+package Interpreter.ProgramTree.StatementNodes;
 
-import provided.JottParser;
 import provided.JottTree;
+import provided.Token;
 
-import java.util.ArrayList;
+public class FuncCallParamNode implements JottTree {
+    private Token id;
 
-import Interpreter.Parsing.TokenStack;
-import Interpreter.ProgramTree.FunctionNodes.FunctionNode;
-
-public class ProgramNode implements JottTree {
-    private ArrayList<FunctionNode> funcNodes;
-
-    public ProgramNode(ArrayList<FunctionNode> funcNodes){
-        this.funcNodes = funcNodes;
+    public FuncCallParamNode(Token id) {
+        this.id = id;
     }
 
     @Override
@@ -32,4 +27,5 @@ public class ProgramNode implements JottTree {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'execute'");
     }
+    
 }

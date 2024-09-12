@@ -1,20 +1,10 @@
-package Interpreter.ProgramTree;
-
-import provided.JottParser;
-import provided.JottTree;
-
-import java.util.ArrayList;
+package Interpreter.ProgramTree.FunctionNodes;
 
 import Interpreter.Parsing.TokenStack;
-import Interpreter.ProgramTree.FunctionNodes.FunctionNode;
+import Interpreter.ProgramTree.StatementNodes.VariableDefinitionNode;
+import provided.JottTree;
 
-public class ProgramNode implements JottTree {
-    private ArrayList<FunctionNode> funcNodes;
-
-    public ProgramNode(ArrayList<FunctionNode> funcNodes){
-        this.funcNodes = funcNodes;
-    }
-
+public class FunctionBodyNode implements JottTree {
     @Override
     public String convertToJott() {
         // TODO Auto-generated method stub

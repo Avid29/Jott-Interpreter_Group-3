@@ -1,20 +1,9 @@
-package Interpreter.ProgramTree;
-
-import provided.JottParser;
-import provided.JottTree;
-
-import java.util.ArrayList;
+package Interpreter.ProgramTree.StatementNodes;
 
 import Interpreter.Parsing.TokenStack;
-import Interpreter.ProgramTree.FunctionNodes.FunctionNode;
+import provided.JottTree;
 
-public class ProgramNode implements JottTree {
-    private ArrayList<FunctionNode> funcNodes;
-
-    public ProgramNode(ArrayList<FunctionNode> funcNodes){
-        this.funcNodes = funcNodes;
-    }
-
+public class WhileBlockNode implements JottTree {
     @Override
     public String convertToJott() {
         // TODO Auto-generated method stub
@@ -31,5 +20,12 @@ public class ProgramNode implements JottTree {
     public void execute() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'execute'");
+    }
+    
+    public static WhileBlockNode parse(TokenStack tokens) {
+        tokens.pushStack();
+
+        tokens.popStack(false);
+        return null;
     }
 }

@@ -1,9 +1,16 @@
-package Interpreter.ProgramTree;
+package Interpreter.ProgramTree.FunctionNodes;
 
-import Interpreter.Parsing.TokenStack;
+import java.util.ArrayList;
+
 import provided.JottTree;
 
-public class FunctionBodyNode implements JottTree {
+public class ParametersDefNode implements JottTree {
+    private ArrayList<ParameterDefNode> paramNodes;
+
+    public ParametersDefNode(ArrayList<ParameterDefNode> paramNodes) {
+        this.paramNodes = paramNodes;
+    }
+
     @Override
     public String convertToJott() {
         // TODO Auto-generated method stub
@@ -20,20 +27,5 @@ public class FunctionBodyNode implements JottTree {
     public void execute() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'execute'");
-    }
-    
-    public static FunctionBodyNode parse(TokenStack tokens) {
-        tokens.pushStack();
-
-        // Parse the variable definitions at the top of the function body.
-        VariableDefinitionNode varDefNode = null;
-        do {
-            varDefNode = VariableDefinitionNode.parse(tokens);
-        } while(varDefNode != null);
-
-        // Parse the remainder of the function body.
-
-        tokens.popStack(false);
-        return null;
     }
 }

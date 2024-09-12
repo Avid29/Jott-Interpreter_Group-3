@@ -1,18 +1,12 @@
-package Interpreter.ProgramTree;
+package Interpreter.ProgramTree.ExpressionNodes;
 
-import provided.JottParser;
 import provided.JottTree;
 
-import java.util.ArrayList;
+public class UnaryMathOpNode implements JottTree {
+    private NumberNode child;
 
-import Interpreter.Parsing.TokenStack;
-import Interpreter.ProgramTree.FunctionNodes.FunctionNode;
-
-public class ProgramNode implements JottTree {
-    private ArrayList<FunctionNode> funcNodes;
-
-    public ProgramNode(ArrayList<FunctionNode> funcNodes){
-        this.funcNodes = funcNodes;
+    public UnaryMathOpNode(NumberNode child){
+        this.child = child;
     }
 
     @Override
@@ -32,4 +26,5 @@ public class ProgramNode implements JottTree {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'execute'");
     }
+    
 }

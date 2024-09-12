@@ -1,18 +1,15 @@
-package Interpreter.ProgramTree;
+package Interpreter.ProgramTree.FunctionNodes;
 
-import provided.JottParser;
 import provided.JottTree;
+import provided.Token;
 
-import java.util.ArrayList;
+public class ParameterDefNode implements JottTree {
+    private Token name;
+    private Token type;
 
-import Interpreter.Parsing.TokenStack;
-import Interpreter.ProgramTree.FunctionNodes.FunctionNode;
-
-public class ProgramNode implements JottTree {
-    private ArrayList<FunctionNode> funcNodes;
-
-    public ProgramNode(ArrayList<FunctionNode> funcNodes){
-        this.funcNodes = funcNodes;
+    public ParameterDefNode(Token name, Token type){
+        this.name = name;
+        this.type = type;
     }
 
     @Override
