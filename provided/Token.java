@@ -10,7 +10,7 @@ public class Token {
     private final String token;
     private final String filename;
     private final int lineNum;
-    private final TokenType type;
+    private TokenType type;
 
     /**
      * Creates an instance of a token
@@ -61,5 +61,25 @@ public class Token {
      */
     public TokenType getTokenType() {
         return type;
+    }
+
+    /**
+     * Updates a token's type to differentiate IDs and Keywords.
+     * 
+     * @return Whether or not the token was updated.
+     */
+    public boolean updateTokenType(TokenType newType) {
+        if (type != TokenType.ID_KEYWORD){
+            // We can only update a token to differentiate IDs from Keywords.
+            return false;
+        }
+
+        if (newType != TokenType.ID && newType != TokenType.KEYWORD) {
+            // The token's new type must be an Id or a Keyword.
+            return false;
+        }
+
+        type = newType;
+        return true;
     }
 }

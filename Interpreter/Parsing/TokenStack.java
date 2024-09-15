@@ -20,7 +20,7 @@ public class TokenStack {
     }
 
     public Token peekToken() {
-        if (offset >= tokens.size()) {
+        if (isEmpty()) {
             return null;
         }
 
@@ -60,12 +60,16 @@ public class TokenStack {
         stackOffset -= tokenUseStack.pop();
     }
 
+    public boolean isEmpty() {
+        return offset >= tokens.size();
+    }
+
     public int tokenSequenceMatch(TokenType[] typeCheck, ArrayList<Token> popped) {
         pushStack();
-        if (!popped.isEmpty()) {
-            // This is an error code specifying the popped Deque was not empty
+        if (popped != null && !popped.isEmpty()) {
+            // This is an error code specifying the popped array was not empty
             // In a good language popped would just be an out parameter, but alas, this is
-            // Java
+            // Java.
             return -2;
         }
 

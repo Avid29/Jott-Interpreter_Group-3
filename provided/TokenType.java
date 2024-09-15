@@ -17,5 +17,10 @@ public enum TokenType {
     ID_KEYWORD,
     COLON,
     STRING,
-    FC_HEADER;
+    FC_HEADER,
+
+    // The parser uses 2 passes, where in the first IDs and Keywords are
+    // differentiated. 
+    ID,
+    KEYWORD,
 }

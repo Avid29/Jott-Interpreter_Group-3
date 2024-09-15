@@ -8,25 +8,60 @@ package provided;
  */
 
 import java.util.ArrayList;
+import java.util.Map;
 
+import Interpreter.Parsing.JottTreeBuilder;
+import Interpreter.Parsing.ParserStateHandlerBase;
 import Interpreter.Parsing.TokenStack;
-import Interpreter.ProgramTree.ProgramNode;
-import Interpreter.ProgramTree.ExpressionNodes.StringNode;
-import Interpreter.ProgramTree.FunctionNodes.BodyNode;
-import Interpreter.ProgramTree.FunctionNodes.FunctionBodyNode;
-import Interpreter.ProgramTree.FunctionNodes.FunctionNode;
-import Interpreter.ProgramTree.FunctionNodes.ParameterDefNode;
-import Interpreter.ProgramTree.FunctionNodes.ParametersDefNode;
-import Interpreter.ProgramTree.StatementNodes.AssignmentNode;
-import Interpreter.ProgramTree.StatementNodes.ExpressionNode;
-import Interpreter.ProgramTree.StatementNodes.FunctionCallNode;
-import Interpreter.ProgramTree.StatementNodes.VariableDefinitionNode;
+import Interpreter.Parsing.Handlers.LogErrorHandler;
+import Interpreter.Parsing.Handlers.NodeCreation.NodeCreationHandler;
+import Interpreter.Parsing.Handlers.NodeCreation.TypeNodeCreationHandler;
+import Interpreter.ProgramTree.Nodes.ProgramNode;
+import Interpreter.ProgramTree.Nodes.FunctionNodes.FunctionNode;
+import Interpreter.ProgramTree.Nodes.StatementNodes.ReturnStatementNode;
+import Interpreter.ProgramTree.Nodes.StatementNodes.Blocks.ElseBlockNode;
+import Interpreter.ProgramTree.Nodes.StatementNodes.Blocks.ElseIfBlockNode;
+import Interpreter.ProgramTree.Nodes.StatementNodes.Blocks.IfBlockNode;
+import Interpreter.ProgramTree.Nodes.StatementNodes.Blocks.WhileBlockNode;
 
 public class JottParser {
+    private static final Map<String, ParserStateHandlerBase> KeywordBehaviorMap = Map.ofEntries(
+        Map.entry("Def", new NodeCreationHandler<>(FunctionNode::new)),
+        Map.entry("Return", new NodeCreationHandler<>(ReturnStatementNode::new)),
+        Map.entry("If", new NodeCreationHandler<>(IfBlockNode::new)),
+        Map.entry("ElseIf", new NodeCreationHandler<>(ElseIfBlockNode::new)),
+        Map.entry("Else", new NodeCreationHandler<>(ElseBlockNode::new)),
+        Map.entry("While", new NodeCreationHandler<>(WhileBlockNode::new)),
+        Map.entry("Integer", new TypeNodeCreationHandler()),
+        Map.entry("Double", new TypeNodeCreationHandler()),
+        Map.entry("String", new TypeNodeCreationHandler()),
+        Map.entry("Boolean", new TypeNodeCreationHandler()),
+        Map.entry("Void", new TypeNodeCreationHandler()));
+
+    private static final Map<TokenType, ParserStateHandlerBase> TokenBehaviorMap = Map.ofEntries(
+        Map.entry(TokenType.COMMA, new LogErrorHandler()),
+        Map.entry(TokenType.R_BRACKET, new LogErrorHandler()),
+        Map.entry(TokenType.L_BRACKET, new LogErrorHandler()),
+        Map.entry(TokenType.R_BRACE, new LogErrorHandler()),
+        Map.entry(TokenType.L_BRACE, new LogErrorHandler()),
+        Map.entry(TokenType.ASSIGN, new LogErrorHandler()),
+        Map.entry(TokenType.REL_OP, new LogErrorHandler()),
+        Map.entry(TokenType.MATH_OP, new LogErrorHandler()),
+        Map.entry(TokenType.SEMICOLON, new LogErrorHandler()),
+        Map.entry(TokenType.NUMBER, new LogErrorHandler()),
+        Map.entry(TokenType.ID_KEYWORD, new LogErrorHandler()),
+        Map.entry(TokenType.COLON, new LogErrorHandler()),
+        Map.entry(TokenType.STRING, new LogErrorHandler()),
+        Map.entry(TokenType.FC_HEADER, new LogErrorHandler()),
+        Map.entry(TokenType.ID, new LogErrorHandler()),
+        Map.entry(TokenType.KEYWORD, new LogErrorHandler()));
+
     private TokenStack tokens;
+    private JottTreeBuilder builder;
 
     public JottParser(TokenStack tokens) {
         this.tokens = tokens;
+        builder = new JottTreeBuilder();
     }
 
     /**
@@ -37,10 +72,43 @@ public class JottParser {
      *         or null upon an error in parsing.
      */
     public static JottTree parse(ArrayList<Token> tokens) {
+        SplitIdsandKeys(tokens);
         JottParser parser = new JottParser(new TokenStack(tokens));
-        return parser.parseProgram();
+        // return parser.parseProgram();
+
+        return parser.parse();
     }
 
+    private static void SplitIdsandKeys(ArrayList<Token> tokens){
+        for (Token token : tokens) {
+            if (token.getTokenType() != TokenType.ID_KEYWORD) {
+                continue;
+            }
+
+            // Ideally, an uppercase check could be added here too, however that would be handling a phase 3 validation problem in phase 2. Alas.
+            TokenType updatedType = KeywordBehaviorMap.containsKey(token.getToken()) ? TokenType.KEYWORD : TokenType.ID;
+            token.updateTokenType(updatedType);
+        }
+    }
+
+    public ProgramNode parse() {
+
+        while (!tokens.isEmpty()) {
+            var token = tokens.popToken();
+
+            if (token.getTokenType() == TokenType.KEYWORD) {
+                var handler = KeywordBehaviorMap.get(token.getToken());
+                handler.apply(builder, token, tokens);
+            } else {
+                var handler = TokenBehaviorMap.get(token.getTokenType());
+                handler.apply(builder, token, tokens);
+            }
+        }
+
+        return builder.getTree();
+    }
+
+    /*
     public ProgramNode parseProgram() {
         tokens.pushStack();
         ArrayList<FunctionNode> funcNodes = new ArrayList<>();
@@ -109,7 +177,7 @@ public class JottParser {
             return null;
         }
 
-        FunctionBodyNode fBody = parseFuncBody();
+        BodyNode fBody = parseBody();
 
         tokens.popStack(false);
         return new FunctionNode(fIdentifier, paramsNode, fBody);
@@ -118,7 +186,7 @@ public class JottParser {
     public ParametersDefNode parseParamsDef() {
         tokens.pushStack();
 
-        ArrayList<ParameterDefNode> paramNodes = new ArrayList<>();
+        ArrayList<VariableDeclarationNode> paramNodes = new ArrayList<>();
 
         Token curr = tokens.popToken();
         while (curr != null && curr.getTokenType() == TokenType.COMMA) {
@@ -140,7 +208,7 @@ public class JottParser {
                 return null;
             }
 
-            paramNodes.add(new ParameterDefNode(pops.getFirst(), pops.getLast()));
+            paramNodes.add(new VariableDeclarationNode(pops.getLast(), pops.getFirst()));
             curr = tokens.popToken();
         }
 
@@ -155,22 +223,7 @@ public class JottParser {
         return new ParametersDefNode(paramNodes);
     }
 
-    public FunctionBodyNode parseFuncBody() {
-        tokens.pushStack();
-
-        // Parse the variable definitions at the top of the function body.
-        VariableDefinitionNode varDefNode = null;
-        do {
-            varDefNode = parseVarDef();
-        } while (varDefNode != null);
-
-        // Parse the remainder of the function body.
-
-        tokens.popStack(false);
-        return null;
-    }
-
-    public VariableDefinitionNode parseVarDef() {
+    public VariableDeclarationNode parseVarDef() {
         tokens.pushStack();
 
         ArrayList<Token> popped = new ArrayList<>();
@@ -185,7 +238,7 @@ public class JottParser {
         }
 
         tokens.popStack(false);
-        return new VariableDefinitionNode(popped.get(0), popped.get(1));
+        return new VariableDeclarationNode(popped.get(0), popped.get(1));
     }
 
     public BodyNode parseBody() {
@@ -211,7 +264,7 @@ public class JottParser {
 
         if (node == null) {
             // Unrecognizable statement
-            return null; 
+            return null;
         }
 
         return node;
@@ -239,20 +292,19 @@ public class JottParser {
         tokens.pushStack();
 
         ArrayList<Token> pops = new ArrayList<>();
-        int errorCode = tokens.tokenSequenceMatch(new TokenType[] {TokenType.FC_HEADER, TokenType.ID_KEYWORD, TokenType.L_BRACKET}, pops);
+        int errorCode = tokens.tokenSequenceMatch(
+                new TokenType[] { TokenType.FC_HEADER, TokenType.ID_KEYWORD, TokenType.L_BRACKET }, pops);
 
-        if (errorCode != -1)
-        {
+        if (errorCode != -1) {
             // Malformed function call
             tokens.popStack(true);
             return null;
         }
 
-
         tokens.popStack(false);
         return null;
     }
-    
+
     public AssignmentNode parseAssign() {
         tokens.pushStack();
 
@@ -283,4 +335,5 @@ public class JottParser {
         tokens.popStack(false);
         return null;
     }
+ */
 }
