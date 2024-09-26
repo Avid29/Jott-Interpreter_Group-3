@@ -16,9 +16,19 @@ import Interpreter.Parsing.TokenStack;
 import Interpreter.Parsing.Handlers.LogErrorHandler;
 import Interpreter.Parsing.Handlers.NodeCreation.NodeCreationHandler;
 import Interpreter.Parsing.Handlers.NodeCreation.TypeNodeCreationHandler;
+import Interpreter.ProgramTree.Nodes.BodyNode;
 import Interpreter.ProgramTree.Nodes.ProgramNode;
+import Interpreter.ProgramTree.Nodes.TypeNode;
+import Interpreter.ProgramTree.Nodes.ExpressionNodes.StringNode;
+import Interpreter.ProgramTree.Nodes.ExpressionNodes.VarRefNode;
+import Interpreter.ProgramTree.Nodes.ExpressionNodes.FuncCall.FuncCallParamsNode;
+import Interpreter.ProgramTree.Nodes.ExpressionNodes.FuncCall.FunctionCallNode;
+import Interpreter.ProgramTree.Nodes.ExpressionNodes.FuncCall.FunctionRefNode;
 import Interpreter.ProgramTree.Nodes.FunctionNodes.FunctionNode;
+import Interpreter.ProgramTree.Nodes.FunctionNodes.ParametersDefNode;
+import Interpreter.ProgramTree.Nodes.StatementNodes.AssignmentNode;
 import Interpreter.ProgramTree.Nodes.StatementNodes.ReturnStatementNode;
+import Interpreter.ProgramTree.Nodes.StatementNodes.VariableDeclarationNode;
 import Interpreter.ProgramTree.Nodes.StatementNodes.Blocks.ElseBlockNode;
 import Interpreter.ProgramTree.Nodes.StatementNodes.Blocks.ElseIfBlockNode;
 import Interpreter.ProgramTree.Nodes.StatementNodes.Blocks.IfBlockNode;
@@ -74,9 +84,9 @@ public class JottParser {
     public static JottTree parse(ArrayList<Token> tokens) {
         SplitIdsandKeys(tokens);
         JottParser parser = new JottParser(new TokenStack(tokens));
-        // return parser.parseProgram();
+        return parser.parseProgram();
 
-        return parser.parse();
+        // return parser.parse();
     }
 
     private static void SplitIdsandKeys(ArrayList<Token> tokens){
@@ -108,7 +118,6 @@ public class JottParser {
         return builder.getTree();
     }
 
-    /*
     public ProgramNode parseProgram() {
         tokens.pushStack();
         ArrayList<FunctionNode> funcNodes = new ArrayList<>();
@@ -135,7 +144,7 @@ public class JottParser {
 
         // TODO: Replace with error objects
         int errorCode = tokens.tokenSequenceMatch(
-                new TokenType[] { TokenType.ID_KEYWORD, TokenType.ID_KEYWORD, TokenType.L_BRACKET }, pops);
+                new TokenType[] { TokenType.KEYWORD, TokenType.ID, TokenType.L_BRACKET }, pops);
         String error = switch (errorCode) {
             case -1 -> null;
             case 0 -> "Expected \"Def\" keyword";
@@ -155,7 +164,7 @@ public class JottParser {
             return null;
         }
 
-        Token fIdentifier = pops.get(1);
+        FunctionRefNode identifier = new FunctionRefNode(pops.get(1));
 
         // Parse parameters
         ParametersDefNode paramsNode = parseParamsDef();
@@ -163,7 +172,7 @@ public class JottParser {
         // TODO: Replace with error objects
         pops = new ArrayList<>();
         errorCode = tokens
-                .tokenSequenceMatch(new TokenType[] { TokenType.COLON, TokenType.ID_KEYWORD, TokenType.L_BRACE }, pops);
+                .tokenSequenceMatch(new TokenType[] { TokenType.COLON, TokenType.ID, TokenType.L_BRACE }, pops);
         error = switch (errorCode) {
             case -1 -> null;
             case 0 -> "Expected ':' keyword";
@@ -180,7 +189,7 @@ public class JottParser {
         BodyNode fBody = parseBody();
 
         tokens.popStack(false);
-        return new FunctionNode(fIdentifier, paramsNode, fBody);
+        return new FunctionNode(identifier, paramsNode, fBody);
     }
 
     public ParametersDefNode parseParamsDef() {
@@ -192,7 +201,7 @@ public class JottParser {
         while (curr != null && curr.getTokenType() == TokenType.COMMA) {
             ArrayList<Token> pops = new ArrayList<>();
             int errorCode = tokens.tokenSequenceMatch(
-                    new TokenType[] { TokenType.ID_KEYWORD, TokenType.SEMICOLON, TokenType.ID_KEYWORD }, pops);
+                    new TokenType[] { TokenType.ID, TokenType.SEMICOLON, TokenType.KEYWORD }, pops);
 
             // TODO: Replace with error objects
             String error = switch (errorCode) {
@@ -208,7 +217,10 @@ public class JottParser {
                 return null;
             }
 
-            paramNodes.add(new VariableDeclarationNode(pops.getLast(), pops.getFirst()));
+            TypeNode type = new TypeNode(pops.getLast());
+            VarRefNode name = new VarRefNode(pops.getFirst());
+
+            paramNodes.add(new VariableDeclarationNode(type, name, true));
             curr = tokens.popToken();
         }
 
@@ -228,7 +240,7 @@ public class JottParser {
 
         ArrayList<Token> popped = new ArrayList<>();
         int errorCode = tokens.tokenSequenceMatch(
-                new TokenType[] { TokenType.ID_KEYWORD, TokenType.ID_KEYWORD, TokenType.SEMICOLON }, popped);
+                new TokenType[] { TokenType.KEYWORD, TokenType.ID, TokenType.SEMICOLON }, popped);
 
         if (errorCode != -1) {
             // No need to write an error message because the line still may be valid. We
@@ -237,8 +249,11 @@ public class JottParser {
             return null;
         }
 
+        TypeNode type = new TypeNode(popped.get(0));
+        VarRefNode name = new VarRefNode(popped.get(1));
+
         tokens.popStack(false);
-        return new VariableDeclarationNode(popped.get(0), popped.get(1));
+        return new VariableDeclarationNode(type, name, false);
     }
 
     public BodyNode parseBody() {
@@ -276,7 +291,7 @@ public class JottParser {
         // We don't need to check these tokens' details. The first is guarenteed to be
         // an If/While keyword, the second is either an '[' or we're missing the
         // conditional expression. As a result we can pass a null popped array list.
-        int errorCode = tokens.tokenSequenceMatch(new TokenType[] { TokenType.ID_KEYWORD, TokenType.L_BRACKET }, null);
+        int errorCode = tokens.tokenSequenceMatch(new TokenType[] { TokenType.KEYWORD, TokenType.L_BRACKET }, null);
 
         if (errorCode != -1) {
             // Missing conditional expression
@@ -293,7 +308,7 @@ public class JottParser {
 
         ArrayList<Token> pops = new ArrayList<>();
         int errorCode = tokens.tokenSequenceMatch(
-                new TokenType[] { TokenType.FC_HEADER, TokenType.ID_KEYWORD, TokenType.L_BRACKET }, pops);
+                new TokenType[] { TokenType.FC_HEADER, TokenType.ID, TokenType.L_BRACKET }, pops);
 
         if (errorCode != -1) {
             // Malformed function call
@@ -301,15 +316,20 @@ public class JottParser {
             return null;
         }
 
+        FunctionRefNode fRefNode = new FunctionRefNode(pops.get(1));
+
+        FuncCallParamsNode fParamsNode = null;
+        // TODO: Build params node
+
         tokens.popStack(false);
-        return null;
+        return new FunctionCallNode(fRefNode, fParamsNode);
     }
 
     public AssignmentNode parseAssign() {
         tokens.pushStack();
 
         ArrayList<Token> popped = new ArrayList<>();
-        int errorCode = tokens.tokenSequenceMatch(new TokenType[] { TokenType.ID_KEYWORD, TokenType.ASSIGN }, popped);
+        int errorCode = tokens.tokenSequenceMatch(new TokenType[] { TokenType.ID, TokenType.ASSIGN }, popped);
 
         if (errorCode != -1) {
             // Let the parent function handle reporting this error.
@@ -335,5 +355,4 @@ public class JottParser {
         tokens.popStack(false);
         return null;
     }
- */
 }

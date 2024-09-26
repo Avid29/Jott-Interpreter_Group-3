@@ -8,5 +8,4 @@ public class AssignmentNode extends NodeBase {
     public AssignmentNode() {
         super(NodeType.ASSIGNMENT);
     }
-
 }

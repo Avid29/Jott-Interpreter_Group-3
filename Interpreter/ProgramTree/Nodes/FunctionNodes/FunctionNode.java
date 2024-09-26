@@ -13,6 +13,13 @@ public class FunctionNode extends NodeBase implements IBranchNode {
     private ParametersDefNode params;
     private BodyNode body;
 
+    public FunctionNode(FunctionRefNode name, ParametersDefNode params, BodyNode body) {
+        this();
+        this.funcName = name;
+        this.params = params;
+        this.body = body;
+    }
+
     public FunctionNode(){
         super(NodeType.FUNC_DEF);
     }

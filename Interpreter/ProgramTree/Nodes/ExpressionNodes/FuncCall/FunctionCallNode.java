@@ -9,6 +9,13 @@ import provided.TokenType;
 
 public class FunctionCallNode extends OperandNodeBase implements IBranchNode {
     private FunctionRefNode funcName;
+    private FuncCallParamsNode callParams;
+
+    public FunctionCallNode(FunctionRefNode name, FuncCallParamsNode params) {
+        this();
+        this.funcName = name;
+        this.callParams = params;
+    }
 
     public FunctionCallNode() {
         super(NodeType.FUNC_CALL);

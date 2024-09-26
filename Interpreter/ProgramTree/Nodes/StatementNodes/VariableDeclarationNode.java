@@ -13,6 +13,12 @@ public class VariableDeclarationNode extends BodyStatementNodeBase implements IB
     private TypeNode type;
     private VarRefNode name;
 
+    public VariableDeclarationNode(TypeNode type, VarRefNode name, boolean param) {
+        this(param);
+        this.type = type;
+        this.name = name;
+    }
+
     public VariableDeclarationNode(boolean param) {
         super(param ? NodeType.FUNC_DEF_PARAM : NodeType.VAR_DECL);
     }
