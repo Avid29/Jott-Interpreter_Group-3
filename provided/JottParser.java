@@ -8,14 +8,11 @@ package provided;
  */
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
-import Interpreter.Parsing.JottTreeBuilder;
-import Interpreter.Parsing.ParserStateHandlerBase;
 import Interpreter.Parsing.TokenStack;
-import Interpreter.Parsing.Handlers.LogErrorHandler;
-import Interpreter.Parsing.Handlers.NodeCreation.NodeCreationHandler;
-import Interpreter.Parsing.Handlers.NodeCreation.TypeNodeCreationHandler;
 import Interpreter.ProgramTree.Nodes.BodyNode;
 import Interpreter.ProgramTree.Nodes.ProgramNode;
 import Interpreter.ProgramTree.Nodes.TypeNode;
@@ -35,43 +32,15 @@ import Interpreter.ProgramTree.Nodes.StatementNodes.Blocks.IfBlockNode;
 import Interpreter.ProgramTree.Nodes.StatementNodes.Blocks.WhileBlockNode;
 
 public class JottParser {
-    private static final Map<String, ParserStateHandlerBase> KeywordBehaviorMap = Map.ofEntries(
-        Map.entry("Def", new NodeCreationHandler<>(FunctionNode::new)),
-        Map.entry("Return", new NodeCreationHandler<>(ReturnStatementNode::new)),
-        Map.entry("If", new NodeCreationHandler<>(IfBlockNode::new)),
-        Map.entry("ElseIf", new NodeCreationHandler<>(ElseIfBlockNode::new)),
-        Map.entry("Else", new NodeCreationHandler<>(ElseBlockNode::new)),
-        Map.entry("While", new NodeCreationHandler<>(WhileBlockNode::new)),
-        Map.entry("Integer", new TypeNodeCreationHandler()),
-        Map.entry("Double", new TypeNodeCreationHandler()),
-        Map.entry("String", new TypeNodeCreationHandler()),
-        Map.entry("Boolean", new TypeNodeCreationHandler()),
-        Map.entry("Void", new TypeNodeCreationHandler()));
-
-    private static final Map<TokenType, ParserStateHandlerBase> TokenBehaviorMap = Map.ofEntries(
-        Map.entry(TokenType.COMMA, new LogErrorHandler()),
-        Map.entry(TokenType.R_BRACKET, new LogErrorHandler()),
-        Map.entry(TokenType.L_BRACKET, new LogErrorHandler()),
-        Map.entry(TokenType.R_BRACE, new LogErrorHandler()),
-        Map.entry(TokenType.L_BRACE, new LogErrorHandler()),
-        Map.entry(TokenType.ASSIGN, new LogErrorHandler()),
-        Map.entry(TokenType.REL_OP, new LogErrorHandler()),
-        Map.entry(TokenType.MATH_OP, new LogErrorHandler()),
-        Map.entry(TokenType.SEMICOLON, new LogErrorHandler()),
-        Map.entry(TokenType.NUMBER, new LogErrorHandler()),
-        Map.entry(TokenType.ID_KEYWORD, new LogErrorHandler()),
-        Map.entry(TokenType.COLON, new LogErrorHandler()),
-        Map.entry(TokenType.STRING, new LogErrorHandler()),
-        Map.entry(TokenType.FC_HEADER, new LogErrorHandler()),
-        Map.entry(TokenType.ID, new LogErrorHandler()),
-        Map.entry(TokenType.KEYWORD, new LogErrorHandler()));
+    private static final Set<String> KeywordSet = Set.of(
+        "Def", "Return",
+        "If", "ElseIf", "Else", "While",
+        "Integer", "Double", "String", "Boolean", "Void");
 
     private TokenStack tokens;
-    private JottTreeBuilder builder;
 
     public JottParser(TokenStack tokens) {
         this.tokens = tokens;
-        builder = new JottTreeBuilder();
     }
 
     /**
@@ -96,26 +65,9 @@ public class JottParser {
             }
 
             // Ideally, an uppercase check could be added here too, however that would be handling a phase 3 validation problem in phase 2. Alas.
-            TokenType updatedType = KeywordBehaviorMap.containsKey(token.getToken()) ? TokenType.KEYWORD : TokenType.ID;
+            TokenType updatedType = KeywordSet.contains(token.getToken()) ? TokenType.KEYWORD : TokenType.ID;
             token.updateTokenType(updatedType);
         }
-    }
-
-    public ProgramNode parse() {
-
-        while (!tokens.isEmpty()) {
-            var token = tokens.popToken();
-
-            if (token.getTokenType() == TokenType.KEYWORD) {
-                var handler = KeywordBehaviorMap.get(token.getToken());
-                handler.apply(builder, token, tokens);
-            } else {
-                var handler = TokenBehaviorMap.get(token.getTokenType());
-                handler.apply(builder, token, tokens);
-            }
-        }
-
-        return builder.getTree();
     }
 
     public ProgramNode parseProgram() {

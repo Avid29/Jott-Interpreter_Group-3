@@ -5,7 +5,6 @@ import Interpreter.ProgramTree.Enums.NodeType;
 import provided.JottTree;
 
 public abstract class NodeBase implements JottTree {
-    private IBranchNode parent;
     private NodeType type;
 
     public NodeBase(NodeType type) {
@@ -32,13 +31,5 @@ public abstract class NodeBase implements JottTree {
     
     public NodeMeta getMeta() {
         return new NodeMeta(type);
-    }
-
-    public IBranchNode getParent() {
-        return parent;
-    }
-
-    public void setParent(IBranchNode parent) {
-        this.parent = parent;
     }
 }
