@@ -6,7 +6,6 @@ package provided;
  * @author Scott C Johnson
  */
 public interface JottTree {
-
     /**
      * Will output a string of this tree in Jott
      * 

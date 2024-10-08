@@ -1,15 +1,18 @@
 package Interpreter.ProgramTree.Nodes.StatementNodes;
 
-import Interpreter.ProgramTree.Enums.NodeType;
+import Interpreter.Parsing.TokenStack;
 import Interpreter.ProgramTree.Nodes.ExpressionNodes.FuncCall.FunctionCallNode;
 import Interpreter.ProgramTree.Nodes.StatementNodes.Abstract.BodyStatementNodeBase;
 
 public class FuncCallStatement extends BodyStatementNodeBase {
-    private FunctionCallNode wrapping;
+    private FunctionCallNode wrapped;
 
-    public FuncCallStatement() {
-        super(NodeType.FUNC_CALL);
+    public FuncCallStatement(FunctionCallNode wrapped) {
+        this.wrapped = wrapped;
+    }
 
-        wrapping = new FunctionCallNode();
+    public static FuncCallStatement parseNode(TokenStack tokens) {
+        FunctionCallNode funcCall = FunctionCallNode.parseNode(tokens);
+        return new FuncCallStatement(funcCall);
     }
 }

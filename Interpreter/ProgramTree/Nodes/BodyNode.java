@@ -2,16 +2,21 @@ package Interpreter.ProgramTree.Nodes;
 
 import java.util.ArrayList;
 
-import Interpreter.ProgramTree.Enums.NodeType;
+import Interpreter.Parsing.TokenStack;
 import Interpreter.ProgramTree.Nodes.Abstract.NodeBase;
 import Interpreter.ProgramTree.Nodes.StatementNodes.Abstract.BodyStatementNodeBase;
 
-public class BodyNode extends NodeBase {
+public class BodyNode extends NodeBase<BodyNode> {
     private ArrayList<BodyStatementNodeBase> statements;
 
     public BodyNode() {
-        super(NodeType.BODY);
-
         statements = new ArrayList<>();
+    }
+
+    public static BodyNode parseNode(TokenStack tokens) {
+        tokens.pushStack();
+
+        tokens.popStack(false);
+        return null;
     }
 }

@@ -1,11 +1,24 @@
 package Interpreter.ProgramTree.Nodes.ExpressionNodes.Abstract;
 
-import Interpreter.ProgramTree.Enums.NodeType;
+import Interpreter.Parsing.TokenStack;
 import Interpreter.ProgramTree.Nodes.Abstract.NodeBase;
+import Interpreter.ProgramTree.Nodes.ExpressionNodes.StringNode;
+import provided.Token;
+import provided.TokenType;
 
-public abstract class ExpressionNodeBase extends NodeBase {
+public abstract class ExpressionNodeBase extends NodeBase<ExpressionNodeBase> {
+    public static ExpressionNodeBase parseNode(TokenStack tokens) {
+        tokens.pushStack();
 
-    public ExpressionNodeBase(NodeType type) {
-        super(type);
-    }
+        Token next = tokens.popToken();
+
+        // Handle string literal
+        if (next.getTokenType() == TokenType.STRING) {
+            tokens.popStack(false);
+            return StringNode.parseNode(tokens);
+        }
+
+        tokens.popStack(false);
+        return null;
+    } 
 }

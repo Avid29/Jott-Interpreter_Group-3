@@ -1,12 +1,16 @@
 package Interpreter.ProgramTree.Nodes.StatementNodes;
 
-import Interpreter.ProgramTree.Enums.NodeType;
+import Interpreter.Parsing.TokenStack;
 import Interpreter.ProgramTree.Nodes.StatementNodes.Abstract.BodyStatementNodeBase;
+import provided.Token;
 
 public class ReturnStatementNode extends BodyStatementNodeBase {
+    public static ReturnStatementNode parseNode(TokenStack tokens) {
+        tokens.pushStack();
 
-    public ReturnStatementNode() {
-        super(NodeType.RETURN_STATEMENT);
+        Token next = tokens.popToken();
+
+        tokens.popStack(false);
+        return null;
     }
-    
 }
