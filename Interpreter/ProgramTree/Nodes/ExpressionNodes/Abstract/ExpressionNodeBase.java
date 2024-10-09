@@ -2,6 +2,9 @@ package Interpreter.ProgramTree.Nodes.ExpressionNodes.Abstract;
 
 import Interpreter.Parsing.TokenStack;
 import Interpreter.ProgramTree.Nodes.Abstract.NodeBase;
+import Interpreter.ProgramTree.Nodes.ExpressionNodes.BinaryMathOpNode;
+import Interpreter.ProgramTree.Nodes.ExpressionNodes.BoolNode;
+import Interpreter.ProgramTree.Nodes.ExpressionNodes.RelOpNode;
 import Interpreter.ProgramTree.Nodes.ExpressionNodes.StringNode;
 import provided.Token;
 import provided.TokenType;
@@ -12,13 +15,26 @@ public abstract class ExpressionNodeBase extends NodeBase<ExpressionNodeBase> {
 
         Token next = tokens.popToken();
 
-        // Handle string literal
-        if (next.getTokenType() == TokenType.STRING) {
-            tokens.popStack(false);
-            return StringNode.parseNode(tokens);
+        ExpressionNodeBase result = switch (next.getTokenType()) {
+            case TokenType.STRING -> StringNode.parseNode(tokens);
+            case TokenType.KEYWORD -> BoolNode.parseNode(tokens);
+            default -> null;
+        };
+
+        if (result == null) {
+            result = BinaryMathOpNode.parseNode(tokens);
+        }
+        if (result == null) {
+            result = RelOpNode.parseNode(tokens);
+        }
+        if (result == null) {
+            result = OperandNodeBase.parseNode(tokens);
+        } else {
+            tokens.popStack(true);
+            return null;
         }
 
         tokens.popStack(false);
-        return null;
+        return result;
     } 
 }

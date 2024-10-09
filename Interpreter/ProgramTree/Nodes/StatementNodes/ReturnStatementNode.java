@@ -10,6 +10,11 @@ public class ReturnStatementNode extends BodyStatementNodeBase {
 
         Token next = tokens.popToken();
 
+        if (!next.getToken().equals("Return")){
+            tokens.popStack(true);
+            return null;
+        }
+
         tokens.popStack(false);
         return null;
     }

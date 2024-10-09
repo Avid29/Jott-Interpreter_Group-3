@@ -56,22 +56,4 @@ public class JottParser {
             token.updateTokenType(updatedType);
         }
     }
-
-    public JottTree parseSubBlock(boolean isWhile) {
-        tokens.pushStack();
-
-        // We don't need to check these tokens' details. The first is guarenteed to be
-        // an If/While keyword, the second is either an '[' or we're missing the
-        // conditional expression. As a result we can pass a null popped array list.
-        int errorCode = tokens.tokenSequenceMatch(new TokenType[] { TokenType.KEYWORD, TokenType.L_BRACKET }, null);
-
-        if (errorCode != -1) {
-            // Missing conditional expression
-            tokens.popStack(true);
-            return null;
-        }
-
-        tokens.popStack(false);
-        return null;
-    }
 }
