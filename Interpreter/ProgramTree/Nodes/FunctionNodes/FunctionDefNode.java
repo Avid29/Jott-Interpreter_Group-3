@@ -9,18 +9,18 @@ import provided.TokenType;
 import Interpreter.Parsing.TokenStack;
 import Interpreter.ProgramTree.Nodes.BodyNode;
 
-public class FunctionNode extends NodeBase {
+public class FunctionDefNode extends NodeBase<FunctionDefNode> {
     private FunctionRefNode funcName;
     private ParametersDefNode params;
     private BodyNode body;
 
-    public FunctionNode(FunctionRefNode name, ParametersDefNode params, BodyNode body) {
+    public FunctionDefNode(FunctionRefNode name, ParametersDefNode params, BodyNode body) {
         this.funcName = name;
         this.params = params;
         this.body = body;
     }
 
-    public static FunctionNode parseNode(TokenStack tokens) {
+    public static FunctionDefNode parseNode(TokenStack tokens) {
         tokens.pushStack();
 
         // Perform mential tokenType checks on function id/definition.
@@ -73,7 +73,7 @@ public class FunctionNode extends NodeBase {
         BodyNode fBody = BodyNode.parseNode(tokens);
 
         tokens.popStack(false);
-        return new FunctionNode(identifier, paramsNode, fBody);
+        return new FunctionDefNode(identifier, paramsNode, fBody);
     }
 
 }

@@ -4,26 +4,26 @@ import java.util.ArrayList;
 
 import Interpreter.Parsing.TokenStack;
 import Interpreter.ProgramTree.Nodes.Abstract.NodeBase;
-import Interpreter.ProgramTree.Nodes.FunctionNodes.FunctionNode;
+import Interpreter.ProgramTree.Nodes.FunctionNodes.FunctionDefNode;
 
 public class ProgramNode extends NodeBase<ProgramNode> {
-    private ArrayList<FunctionNode> funcNodes;
+    private ArrayList<FunctionDefNode> funcNodes;
 
     public ProgramNode(){
         this(new ArrayList<>());
     }
 
-    public ProgramNode(ArrayList<FunctionNode> funcNodes){
+    public ProgramNode(ArrayList<FunctionDefNode> funcNodes){
         this.funcNodes = funcNodes;
     }
 
     public static ProgramNode parseProgram(TokenStack tokens) {
         tokens.pushStack();
-        ArrayList<FunctionNode> funcNodes = new ArrayList<>();
+        ArrayList<FunctionDefNode> funcNodes = new ArrayList<>();
 
-        FunctionNode node = null;
+        FunctionDefNode node = null;
         while (true) {
-            node = FunctionNode.parseNode(tokens);
+            node = FunctionDefNode.parseNode(tokens);
             if (node == null) {
                 break;
             }

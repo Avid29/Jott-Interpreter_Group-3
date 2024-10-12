@@ -21,7 +21,7 @@ import Interpreter.ProgramTree.Nodes.ExpressionNodes.VarRefNode;
 import Interpreter.ProgramTree.Nodes.ExpressionNodes.FuncCall.FuncCallParamsNode;
 import Interpreter.ProgramTree.Nodes.ExpressionNodes.FuncCall.FunctionCallNode;
 import Interpreter.ProgramTree.Nodes.ExpressionNodes.FuncCall.FunctionRefNode;
-import Interpreter.ProgramTree.Nodes.FunctionNodes.FunctionNode;
+import Interpreter.ProgramTree.Nodes.FunctionNodes.FunctionDefNode;
 import Interpreter.ProgramTree.Nodes.FunctionNodes.ParametersDefNode;
 import Interpreter.ProgramTree.Nodes.StatementNodes.AssignmentNode;
 import Interpreter.ProgramTree.Nodes.StatementNodes.ReturnStatementNode;

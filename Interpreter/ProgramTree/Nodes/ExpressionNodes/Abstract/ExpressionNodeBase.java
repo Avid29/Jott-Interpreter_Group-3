@@ -11,10 +11,7 @@ import provided.TokenType;
 
 public abstract class ExpressionNodeBase extends NodeBase<ExpressionNodeBase> {
     public static ExpressionNodeBase parseNode(TokenStack tokens) {
-        tokens.pushStack();
-
-        Token next = tokens.popToken();
-
+        Token next = tokens.peekToken();
         ExpressionNodeBase result = switch (next.getTokenType()) {
             case TokenType.STRING -> StringNode.parseNode(tokens);
             case TokenType.KEYWORD -> BoolNode.parseNode(tokens);
@@ -30,11 +27,9 @@ public abstract class ExpressionNodeBase extends NodeBase<ExpressionNodeBase> {
         if (result == null) {
             result = OperandNodeBase.parseNode(tokens);
         } else {
-            tokens.popStack(true);
             return null;
         }
 
-        tokens.popStack(false);
         return result;
     } 
 }

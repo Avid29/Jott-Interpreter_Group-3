@@ -10,7 +10,7 @@ import Interpreter.ProgramTree.Nodes.StatementNodes.VariableDeclarationNode;
 import provided.Token;
 import provided.TokenType;
 
-public class ParametersDefNode extends NodeBase {
+public class ParametersDefNode extends NodeBase<ParametersDefNode> {
     private ArrayList<VariableDeclarationNode> paramNodes;
 
     public ParametersDefNode(ArrayList<VariableDeclarationNode> paramNodes) {

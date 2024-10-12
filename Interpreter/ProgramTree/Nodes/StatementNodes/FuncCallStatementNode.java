@@ -4,15 +4,15 @@ import Interpreter.Parsing.TokenStack;
 import Interpreter.ProgramTree.Nodes.ExpressionNodes.FuncCall.FunctionCallNode;
 import Interpreter.ProgramTree.Nodes.StatementNodes.Abstract.BodyStatementNodeBase;
 
-public class FuncCallStatement extends BodyStatementNodeBase {
+public class FuncCallStatementNode extends BodyStatementNodeBase {
     private FunctionCallNode wrapped;
 
-    public FuncCallStatement(FunctionCallNode wrapped) {
+    public FuncCallStatementNode(FunctionCallNode wrapped) {
         this.wrapped = wrapped;
     }
 
-    public static FuncCallStatement parseNode(TokenStack tokens) {
+    public static FuncCallStatementNode parseNode(TokenStack tokens) {
         FunctionCallNode funcCall = FunctionCallNode.parseNode(tokens);
-        return new FuncCallStatement(funcCall);
+        return new FuncCallStatementNode(funcCall);
     }
 }
