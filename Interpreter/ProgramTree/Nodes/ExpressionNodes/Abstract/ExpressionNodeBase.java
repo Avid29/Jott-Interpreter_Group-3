@@ -1,5 +1,6 @@
 package Interpreter.ProgramTree.Nodes.ExpressionNodes.Abstract;
 
+import Interpreter.Tuple;
 import Interpreter.Parsing.TokenStack;
 import Interpreter.ProgramTree.Nodes.Abstract.NodeBase;
 import Interpreter.ProgramTree.Nodes.ExpressionNodes.BinaryMathOpNode;
@@ -32,4 +33,30 @@ public abstract class ExpressionNodeBase extends NodeBase<ExpressionNodeBase> {
 
         return result;
     } 
+
+    protected static Tuple<OperandNodeBase, OperandNodeBase> parseOperatorNode(TokenStack stack, TokenType type){
+        stack.pushStack();
+
+        OperandNodeBase left = OperandNodeBase.parseNode(stack);
+        if (left == null){
+            stack.popStack(true);
+            return null;
+        }
+
+        var op = stack.popToken();
+        if (op.getTokenType() != type)
+        {
+            stack.popStack(true);
+            return null;
+        }
+
+        OperandNodeBase right = OperandNodeBase.parseNode(stack);
+        if (right == null){
+            stack.popStack(true);
+            return null;
+        }
+
+        stack.popStack(false);
+        return new Tuple<OperandNodeBase,OperandNodeBase>(left, right);
+    }
 }

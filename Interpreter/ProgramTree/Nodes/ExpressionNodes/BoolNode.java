@@ -21,7 +21,10 @@ public class BoolNode extends ExpressionNodeBase {
             return null;
         }
 
-        // TODO: Ensure keyword is a real boolean
+        if (!next.getToken().equals("True") && !next.getToken().equals("False")) {
+            tokens.popStack(true);
+            return null;
+        }
 
         tokens.popStack(false);
         return new BoolNode(next);
