@@ -8,30 +8,114 @@ import provided.Token;
 import provided.TokenType;
 
 public class IfBlockNode extends BlockDeclareNodeBase {
-    private ArrayList<ElseIfBlockNode> elseIfBlocks;
-    private ElseBlockNode elseBlock;
 
-    public static IfBlockNode parseNode(TokenStack tokens) {
-        tokens.pushStack();
+	/*
+ 	* IF_STMT GRAMMAR:
+ 	*
+ 	* <if_stmt> -> If[<expr>]{<body>}<elseif_lst>*<else>
+	*/
 
-        ArrayList<Token> popped = new ArrayList<>();
-        int errorCode = tokens.tokenSequenceMatch(new TokenType[]{TokenType.KEYWORD, TokenType.L_BRACKET}, popped);
+	private ArrayList<ElseIfBlockNode> elseIfBlocks;
+	private ElseBlockNode elseBlock;
 
-        if (errorCode != -1) {
-            // Missing conditional expression
-            tokens.popStack(true);
-            return null;
-        }
+	public IfBlockNode(ArrayList<ElseIfBlockNode> elseIfBlocks, ElseBlockNode elseBlock) {
 
-        if (!popped.get(0).getToken().equals("If")) {
-            // https://youtu.be/cYMfJUMsLj4
-            tokens.popStack(true);
-            return null;
-        }
+    	this.elseIfBlocks = elseIfBlocks;
+    	this.elseBlock = elseBlock;
 
-        
+	}
 
-        tokens.popStack(false);
-        return null;
-    }
+	public static IfBlockNode parseNode(TokenStack tokens) {
+    	tokens.pushStack();
+
+    	ArrayList<Token> popped = new ArrayList<>();
+    	int errorCode = tokens.tokenSequenceMatch(new TokenType[]{TokenType.KEYWORD, TokenType.L_BRACKET}, popped);
+
+    	if (errorCode != -1) {
+        	// Missing conditional expression
+        	tokens.popStack(true);
+        	return null;
+    	}
+
+    	if (!popped.get(0).getToken().equals("If")) {
+        	// https://youtu.be/cYMfJUMsLj4
+        	tokens.popStack(true);
+        	return null;
+    	}
+
+
+
+    	//No opening Left Bracket ( [ ) -> null
+    	if (tokens.peekToken().getTokenType() != TokenType.L_BRACKET) {
+        	tokens.popStack(true);
+        	return null;
+    	}
+   	 
+    	/*
+        	TODO : Parse the expression
+
+        	...
+    	*/
+   	 
+    	//No closing Right Bracket ( ] ) -> null
+    	if (tokens.popToken().getTokenType() != TokenType.R_BRACKET) {
+        	tokens.popStack(true);
+        	return null;
+    	}
+
+    	//No opening Left Brace ( { ) -> null
+    	if (tokens.popToken().getTokenType() != TokenType.L_BRACE) {
+        	tokens.popStack(true);
+        	return null;
+    	}
+
+    	/*
+        	TODO : Parse the body
+
+        	if (!BlockDeclareNodeBase.parseBody(tokens)) {
+            	...
+        	}
+
+    	*/
+
+    	//No closing Right Brace ( } ) -> null
+    	if (tokens.popToken().getTokenType() != TokenType.R_BRACE) {
+        	tokens.popStack(true);
+        	return null;
+    	}
+
+
+    	tokens.popStack(false);
+    	return new IfBlockNode(parseElseIfBlocks(tokens), parseElseBlock(tokens));
+
+	}
+
+
+	private static ArrayList<ElseIfBlockNode> parseElseIfBlocks(TokenStack tokens) {
+
+    	ArrayList<ElseIfBlockNode> elseIfBlocks = new ArrayList<>();
+   	 
+    	while (tokens.peekToken().getToken().equals("ElseIf")) {
+
+        	elseIfBlocks.add(ElseIfBlockNode.parseNode(tokens));
+
+    	}
+
+    	return elseIfBlocks;
+
+
+	}
+
+
+	private static ElseBlockNode parseElseBlock(TokenStack tokens) {
+
+    	if (tokens.peekToken().getToken().equals("Else"))
+        	return ElseBlockNode.parseNode(tokens);
+
+    	return null;
+
+	}
+
 }
+
+
