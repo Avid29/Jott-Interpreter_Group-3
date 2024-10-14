@@ -3,6 +3,8 @@ package Interpreter.ProgramTree.Nodes.StatementNodes.Blocks;
 import java.util.ArrayList;
 
 import Interpreter.Parsing.TokenStack;
+import Interpreter.ProgramTree.Nodes.BodyNode;
+import Interpreter.ProgramTree.Nodes.ExpressionNodes.Abstract.ExpressionNodeBase;
 import Interpreter.ProgramTree.Nodes.StatementNodes.Abstract.BlockDeclareNodeBase;
 import provided.Token;
 import provided.TokenType;
@@ -51,12 +53,15 @@ public class IfBlockNode extends BlockDeclareNodeBase {
         	return null;
     	}
    	 
-    	/*
-        	TODO : Parse the expression
+    	//Parse the expression
+        ExpressionNodeBase parsedExpression = ExpressionNodeBase.parseNode(tokens);
 
-        	...
-    	*/
-   	 
+        //Parsed expression is null -> null
+        if (parsedExpression == null) {
+        	tokens.popStack(true);
+        	return null;
+        }
+        
     	//No closing Right Bracket ( ] ) -> null
     	if (tokens.popToken().getTokenType() != TokenType.R_BRACKET) {
         	tokens.popStack(true);
@@ -69,14 +74,14 @@ public class IfBlockNode extends BlockDeclareNodeBase {
         	return null;
     	}
 
-    	/*
-        	TODO : Parse the body
+        //Parse the body
+        BodyNode parsedBody = BodyNode.parseNode(tokens);
 
-        	if (!BlockDeclareNodeBase.parseBody(tokens)) {
-            	...
-        	}
-
-    	*/
+        //Parsed body is null -> null
+        if (parsedBody == null) {
+        	tokens.popStack(true);
+        	return null;
+        }
 
     	//No closing Right Brace ( } ) -> null
     	if (tokens.popToken().getTokenType() != TokenType.R_BRACE) {

@@ -1,6 +1,7 @@
 package Interpreter.ProgramTree.Nodes.StatementNodes.Blocks;
 
 import Interpreter.Parsing.TokenStack;
+import Interpreter.ProgramTree.Nodes.BodyNode;
 import Interpreter.ProgramTree.Nodes.StatementNodes.Abstract.BlockDeclareNodeBase;
 import provided.Token;
 import provided.TokenType;
@@ -32,17 +33,15 @@ public class ElseBlockNode extends BlockDeclareNodeBase {
         	tokens.popStack(true);
         	return null;
     	}
+        
+        //Parse the body
+        BodyNode parsedBody = BodyNode.parseNode(tokens);
 
-   	 
-    	/*
-        	TODO : Parse the body
-
-        	if (!BlockDeclareNodeBase.parseBody(tokens)) {
-            	...
-        	}
-
-    	*/
-
+        //Parsed body is null -> null
+        if (parsedBody == null) {
+        	tokens.popStack(true);
+        	return null;
+        }
 
     	//No closing Right Brace ( } ) -> null
     	if (!tokens.popToken().getTokenType().equals(TokenType.R_BRACE)) {
