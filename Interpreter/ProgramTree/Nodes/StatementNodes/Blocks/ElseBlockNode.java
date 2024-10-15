@@ -53,7 +53,4 @@ public class ElseBlockNode extends BlockDeclareNodeBase {
     	return new ElseBlockNode();
     
 	}
-
 }
-
-
