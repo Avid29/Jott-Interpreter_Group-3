@@ -10,7 +10,6 @@ import provided.Token;
 import provided.TokenType;
 
 public class TypeNode extends NodeBase<TypeNode> {
-
     private Token type;
 
     public TypeNode(Token type) {
@@ -64,6 +63,8 @@ public class TypeNode extends NodeBase<TypeNode> {
         return isValidType(type);
     }
 
-    
-
+    @Override
+    public String convertToJott() {
+        return type.getToken();
+    }
 }

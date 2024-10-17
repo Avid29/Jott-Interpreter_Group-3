@@ -29,4 +29,9 @@ public class BoolNode extends ExpressionNodeBase {
         tokens.popStack(false);
         return new BoolNode(next);
     }
+
+    @Override
+    public String convertToJott() {
+        return value.getToken();
+    }
 }

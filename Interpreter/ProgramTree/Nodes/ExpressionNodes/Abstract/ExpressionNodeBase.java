@@ -34,7 +34,7 @@ public abstract class ExpressionNodeBase extends NodeBase<ExpressionNodeBase> {
         return result;
     } 
 
-    protected static Tuple<OperandNodeBase, OperandNodeBase> parseOperatorNode(TokenStack stack, TokenType type){
+    protected static Tuple<Token, OperandNodeBase, OperandNodeBase> parseOperatorNode(TokenStack stack, TokenType type){
         stack.pushStack();
 
         OperandNodeBase left = OperandNodeBase.parseNode(stack);
@@ -57,6 +57,6 @@ public abstract class ExpressionNodeBase extends NodeBase<ExpressionNodeBase> {
         }
 
         stack.popStack(false);
-        return new Tuple<OperandNodeBase,OperandNodeBase>(left, right);
+        return new Tuple<>(op, left, right);
     }
 }

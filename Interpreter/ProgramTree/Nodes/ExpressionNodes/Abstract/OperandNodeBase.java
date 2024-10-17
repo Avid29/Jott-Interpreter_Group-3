@@ -8,7 +8,7 @@ import Interpreter.ProgramTree.Nodes.ExpressionNodes.FuncCall.FunctionCallNode;
 import provided.Token;
 import provided.TokenType;
 
-public class OperandNodeBase extends ExpressionNodeBase {
+public abstract class OperandNodeBase extends ExpressionNodeBase {
     public static OperandNodeBase parseNode(TokenStack tokens) {
         Token next = tokens.peekToken();
         return switch (next.getTokenType()) {

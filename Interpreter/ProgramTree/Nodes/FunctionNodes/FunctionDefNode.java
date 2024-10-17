@@ -43,7 +43,7 @@ public class FunctionDefNode extends NodeBase<FunctionDefNode> {
         }
 
         // TODO: Process identifier from popped tokens
-        if (pops.get(0).getToken() != "Def") {
+        if (!pops.get(0).getToken().equals("Def")) {
             tokens.popStack(true);
             return null;
         }
@@ -56,7 +56,7 @@ public class FunctionDefNode extends NodeBase<FunctionDefNode> {
         // TODO: Replace with error objects
         pops = new ArrayList<>();
         errorCode = tokens
-                .tokenSequenceMatch(new TokenType[] { TokenType.COLON, TokenType.ID, TokenType.L_BRACE }, pops);
+                .tokenSequenceMatch(new TokenType[] { TokenType.COLON, TokenType.KEYWORD, TokenType.L_BRACE }, pops);
         error = switch (errorCode) {
             case -1 -> null;
             case 0 -> "Expected ':' keyword";

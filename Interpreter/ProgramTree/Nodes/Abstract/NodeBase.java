@@ -19,12 +19,6 @@ public abstract class NodeBase<TSelf extends NodeBase<TSelf>> implements JottTre
 // P.S. Professor Johnson, please let me know how what Professor Brown has to say about this.  
 
     @Override
-    public String convertToJott() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'convertToJott'");
-    }
-
-    @Override
     public boolean validateTree() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'validateTree'");

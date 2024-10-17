@@ -24,4 +24,9 @@ public class NumberNode extends OperandNodeBase {
         tokens.popStack(false);
         return new NumberNode(next);
     }
+
+    @Override
+    public String convertToJott() {
+        return number.getToken();
+    }
 }

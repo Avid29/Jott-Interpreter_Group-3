@@ -21,7 +21,7 @@ public class FunctionCallNode extends OperandNodeBase {
 
         ArrayList<Token> pops = new ArrayList<>();
         int errorCode = tokens.tokenSequenceMatch(
-                new TokenType[] { TokenType.FC_HEADER, TokenType.ID, TokenType.L_BRACKET }, pops);
+                new TokenType[] { TokenType.FC_HEADER, TokenType.ID}, pops);
 
         if (errorCode != -1) {
             // Malformed function call
@@ -31,8 +31,10 @@ public class FunctionCallNode extends OperandNodeBase {
 
         FunctionRefNode fRefNode = new FunctionRefNode(pops.get(1));
 
-        FuncCallParamsNode fParamsNode = null;
-        // TODO: Build params node
+        FuncCallParamsNode fParamsNode = FuncCallParamsNode.parseNode(tokens);
+        if (fParamsNode == null) {
+            return null;
+        }
 
         tokens.popStack(false);
         return new FunctionCallNode(fRefNode, fParamsNode);
