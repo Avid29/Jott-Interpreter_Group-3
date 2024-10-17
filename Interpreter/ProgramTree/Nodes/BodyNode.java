@@ -4,34 +4,47 @@ import java.util.ArrayList;
 
 import Interpreter.Parsing.TokenStack;
 import Interpreter.ProgramTree.Nodes.Abstract.NodeBase;
+import Interpreter.ProgramTree.Nodes.StatementNodes.VariableDeclarationNode;
 import Interpreter.ProgramTree.Nodes.StatementNodes.Abstract.BodyStatementNodeBase;
 import provided.TokenType;
-
-
 
 public class BodyNode extends NodeBase<BodyNode> {
     private ArrayList<BodyStatementNodeBase> statements;
 
-    public BodyNode() {
-        statements = new ArrayList<>();
+    public BodyNode(ArrayList<BodyStatementNodeBase> statements) {
+        this.statements = statements;
     }
 
-    public static BodyNode parseNode(TokenStack tokens) {
+    public static BodyNode parseNode(TokenStack tokens, boolean function) {
         tokens.pushStack();
 
-        BodyNode body = new BodyNode();
-        BodyStatementNodeBase statement;
+        ArrayList<BodyStatementNodeBase> statements = new ArrayList<>();
+
+        if (function) {
+            while (true) {
+                VariableDeclarationNode decl = VariableDeclarationNode.parseNode(tokens);
+                if (decl == null) {
+                    break;
+                }
+
+                statements.add(decl);
+            }   
+        } 
 
         while (tokens.peekToken().getTokenType() != TokenType.R_BRACE) {
-            statement = BodyStatementNodeBase.parseNode(tokens);
+            BodyStatementNodeBase statement = BodyStatementNodeBase.parseNode(tokens);
             if (statement == null) {
                 tokens.popStack(true);
                 return null;
             }
-            body.statements.add(statement);
+
+            statements.add(statement);
         }
 
+        // Pop the closing brace
+        tokens.popToken();
+
         tokens.popStack(false);
-        return body;
+        return new BodyNode(statements);
     }
 }

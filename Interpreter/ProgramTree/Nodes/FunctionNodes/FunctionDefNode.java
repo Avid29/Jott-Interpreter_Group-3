@@ -70,7 +70,7 @@ public class FunctionDefNode extends NodeBase<FunctionDefNode> {
             return null;
         }
 
-        BodyNode fBody = BodyNode.parseNode(tokens);
+        BodyNode fBody = BodyNode.parseNode(tokens, true);
 
         tokens.popStack(false);
         return new FunctionDefNode(identifier, paramsNode, fBody);

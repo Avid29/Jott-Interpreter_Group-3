@@ -35,7 +35,7 @@ public class ElseBlockNode extends BlockDeclareNodeBase {
     	}
         
         //Parse the body
-        BodyNode parsedBody = BodyNode.parseNode(tokens);
+        BodyNode parsedBody = BodyNode.parseNode(tokens, false);
 
         //Parsed body is null -> null
         if (parsedBody == null) {
