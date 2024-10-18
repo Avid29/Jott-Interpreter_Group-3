@@ -104,7 +104,7 @@ public class IfBlockNode extends BlockDeclareNodeBase {
 
 	@Override
 	public String convertToJott() {
-		String output = "If [" + expression.convertToJott() + "]" + body.convertToJott();
+		String output = "If[" + expression.convertToJott() + "]" + body.convertToJott();
 		for (ElseIfBlockNode elseIfBlockNode : elseIfBlocks) {
 			output += elseIfBlockNode.convertToJott();
 		}
