@@ -65,12 +65,11 @@ public class FunctionDefNode extends NodeBase<FunctionDefNode> {
         // TODO: Replace with error objects
         pops = new ArrayList<>();
         errorCode = tokens
-                .tokenSequenceMatch(new TokenType[] { TokenType.COLON, TokenType.KEYWORD, TokenType.L_BRACE }, pops);
+                .tokenSequenceMatch(new TokenType[] { TokenType.COLON, TokenType.KEYWORD}, pops);
         error = switch (errorCode) {
             case -1 -> null;
             case 0 -> "Expected ':' keyword";
             case 1 -> "Expected function return type";
-            case 2 -> "'{'";
             default -> "Unknown error";
         };
 
@@ -87,7 +86,6 @@ public class FunctionDefNode extends NodeBase<FunctionDefNode> {
             return null;
         }
 
-        tokens.popStack(false);
         return new FunctionDefNode(identifier, paramsNode, returnTypeNode, fBody);
     }
 
@@ -95,7 +93,7 @@ public class FunctionDefNode extends NodeBase<FunctionDefNode> {
     public String convertToJott() {
         // TODO: Return type and body.
         return "Def " + funcName.convertToJott() + "[" + params.convertToJott() + "]:" +
-            returnType.convertToJott() + "{" + body.convertToJott() + "}";
+            returnType.convertToJott() + body.convertToJott();
     }
 
 }

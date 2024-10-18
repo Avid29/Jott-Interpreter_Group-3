@@ -21,9 +21,10 @@ public class IfBlockNode extends BlockDeclareNodeBase {
 	private ArrayList<ElseIfBlockNode> elseIfBlocks;
 	private ElseBlockNode elseBlock;
 
-	public IfBlockNode(ExpressionNodeBase expression, ArrayList<ElseIfBlockNode> elseIfBlocks, ElseBlockNode elseBlock) {
+	public IfBlockNode(ExpressionNodeBase expression, BodyNode body, ArrayList<ElseIfBlockNode> elseIfBlocks, ElseBlockNode elseBlock) {
 
 		this.expression = expression;
+		this.body = body;
     	this.elseIfBlocks = elseIfBlocks;
     	this.elseBlock = elseBlock;
 
@@ -46,12 +47,6 @@ public class IfBlockNode extends BlockDeclareNodeBase {
         	tokens.popStack(true);
         	return null;
     	}
-
-    	//No opening Left Bracket ( [ ) -> null
-    	if (tokens.peekToken().getTokenType() != TokenType.L_BRACKET) {
-        	tokens.popStack(true);
-        	return null;
-    	}
    	 
     	//Parse the expression
         ExpressionNodeBase parsedExpression = ExpressionNodeBase.parseNode(tokens);
@@ -68,12 +63,6 @@ public class IfBlockNode extends BlockDeclareNodeBase {
         	return null;
     	}
 
-    	//No opening Left Brace ( { ) -> null
-    	if (tokens.popToken().getTokenType() != TokenType.L_BRACE) {
-        	tokens.popStack(true);
-        	return null;
-    	}
-
         //Parse the body
         BodyNode parsedBody = BodyNode.parseNode(tokens, false);
 
@@ -83,15 +72,8 @@ public class IfBlockNode extends BlockDeclareNodeBase {
         	return null;
         }
 
-    	//No closing Right Brace ( } ) -> null
-    	if (tokens.popToken().getTokenType() != TokenType.R_BRACE) {
-        	tokens.popStack(true);
-        	return null;
-    	}
-
-
     	tokens.popStack(false);
-    	return new IfBlockNode(parsedExpression, parseElseIfBlocks(tokens), parseElseBlock(tokens));
+    	return new IfBlockNode(parsedExpression, parsedBody, parseElseIfBlocks(tokens), parseElseBlock(tokens));
 
 	}
 
@@ -122,7 +104,7 @@ public class IfBlockNode extends BlockDeclareNodeBase {
 
 	@Override
 	public String convertToJott() {
-		String output = "If [" + expression.convertToJott() + "] {" + body.convertToJott() + "}";
+		String output = "If [" + expression.convertToJott() + "]" + body.convertToJott();
 		for (ElseIfBlockNode elseIfBlockNode : elseIfBlocks) {
 			output += elseIfBlockNode.convertToJott();
 		}

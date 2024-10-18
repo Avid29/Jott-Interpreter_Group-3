@@ -18,6 +18,12 @@ public class BodyNode extends NodeBase<BodyNode> {
     public static BodyNode parseNode(TokenStack tokens, boolean function) {
         tokens.pushStack();
 
+    	//No opening Left Brace ( { ) -> null
+    	if (tokens.popToken().getTokenType() != TokenType.L_BRACE) {
+        	tokens.popStack(true);
+        	return null;
+    	}
+
         ArrayList<BodyStatementNodeBase> statements = new ArrayList<>();
 
         if (function) {
@@ -42,7 +48,10 @@ public class BodyNode extends NodeBase<BodyNode> {
         }
 
         // Pop the closing brace
-        tokens.popToken();
+        if(tokens.popToken().getTokenType() != TokenType.R_BRACE) {
+            tokens.popStack(true);
+            return null;
+        }
 
         tokens.popStack(false);
         return new BodyNode(statements);
@@ -50,10 +59,10 @@ public class BodyNode extends NodeBase<BodyNode> {
 
     @Override
     public String convertToJott() {
-        String output = "";
+        String output = "{";
         for (BodyStatementNodeBase bodyStatementNodeBase : statements) {
             output += bodyStatementNodeBase.convertToJott() + " ";
         }
-        return output;
+        return output + "}";
     }
 }

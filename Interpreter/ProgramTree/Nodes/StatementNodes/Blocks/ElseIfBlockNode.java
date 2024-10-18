@@ -55,12 +55,6 @@ public class ElseIfBlockNode extends BlockDeclareNodeBase {
         	return null;
     	}
 
-    	//No opening Left Brace ( { ) -> null
-    	if (tokens.popToken().getTokenType() != TokenType.L_BRACE) {
-        	tokens.popStack(true);
-        	return null;
-    	}
-
         //Parse the body
         BodyNode body = BodyNode.parseNode(tokens, false);
 
@@ -70,19 +64,13 @@ public class ElseIfBlockNode extends BlockDeclareNodeBase {
         	return null;
         }
 
-    	//No closing Right Brace ( } ) -> null
-    	if (tokens.popToken().getTokenType() != TokenType.R_BRACE) {
-        	tokens.popStack(true);
-        	return null;
-    	}
-
     	return new ElseIfBlockNode(parsedExpression, body);
 	}
 
 
 	@Override
 	public String convertToJott() {
-		return "ElseIf [" + expression.convertToJott() + "] {" + body.convertToJott() + "}";
+		return "ElseIf [" + expression.convertToJott() + "]" + body.convertToJott();
 	}
 
 }

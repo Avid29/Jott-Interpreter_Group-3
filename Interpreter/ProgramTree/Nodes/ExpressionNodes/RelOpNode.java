@@ -12,6 +12,7 @@ public class RelOpNode extends ExpressionNodeBase {
     private OperandNodeBase rightChild;
 
     public RelOpNode(Token op, OperandNodeBase leftChild, OperandNodeBase rightChild) {
+        this.op = op;
         this.leftChild = leftChild;
         this.rightChild = rightChild;
     }

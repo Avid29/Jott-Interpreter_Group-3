@@ -28,12 +28,6 @@ public class ElseBlockNode extends BlockDeclareNodeBase {
         	tokens.popStack(true);
         	return null;
     	}
-
-    	//No opening Left Brace ( { ) -> null
-    	if (!tokens.popToken().getTokenType().equals(TokenType.L_BRACE)) {
-        	tokens.popStack(true);
-        	return null;
-    	}
         
         //Parse the body
         BodyNode parsedBody = BodyNode.parseNode(tokens, false);
@@ -44,19 +38,13 @@ public class ElseBlockNode extends BlockDeclareNodeBase {
         	return null;
         }
 
-    	//No closing Right Brace ( } ) -> null
-    	if (!tokens.popToken().getTokenType().equals(TokenType.R_BRACE)) {
-        	tokens.popStack(true);
-        	return null;
-    	}
-
     	tokens.popStack(false);
     	return new ElseBlockNode(parsedBody);
 	}
 
 	@Override
 	public String convertToJott() {
-		return "Else { " + body.convertToJott() + " }";
+		return "Else" + body.convertToJott();
 	}
 
 }
