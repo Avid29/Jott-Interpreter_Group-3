@@ -49,6 +49,8 @@ public class ParametersDefNode extends NodeBase<ParametersDefNode> {
             TypeNode type = new TypeNode(pops.getLast());
             VarRefNode name = new VarRefNode(pops.getFirst());
 
+            
+
             paramNodes.add(new VariableDeclarationNode(type, name, true));
             curr = tokens.popToken();
         } while (curr != null && curr.getTokenType() == TokenType.COMMA);

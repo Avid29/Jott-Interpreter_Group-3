@@ -33,13 +33,36 @@ public class WhileBlockNode extends BlockDeclareNodeBase {
             tokens.popStack(true);
             return null;
         }
+   	 
+    	//Parse the expression
+        ExpressionNodeBase parsedExpression = ExpressionNodeBase.parseNode(tokens);
 
-        tokens.popStack(false);
-        return null;
+        //Parsed expression is null -> null
+        if (parsedExpression == null) {
+        	tokens.popStack(true);
+        	return null;
+        }
+        
+    	//No closing Right Bracket ( ] ) -> null
+    	if (tokens.popToken().getTokenType() != TokenType.R_BRACKET) {
+        	tokens.popStack(true);
+        	return null;
+    	}
+
+        //Parse the body
+        BodyNode parsedBody = BodyNode.parseNode(tokens, false);
+
+        //Parsed body is null -> null
+        if (parsedBody == null) {
+        	tokens.popStack(true);
+        	return null;
+        }
+
+        return new WhileBlockNode(parsedExpression, parsedBody);
     }
 
     @Override
     public String convertToJott() {
-		return "While [" + expression.convertToJott() + "] {" + body.convertToJott() + "}";
+		return "While [" + expression.convertToJott() + "]" + body.convertToJott();
     }
 }
