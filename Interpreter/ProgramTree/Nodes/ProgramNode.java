@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import Interpreter.Parsing.TokenStack;
 import Interpreter.ProgramTree.Nodes.Abstract.NodeBase;
 import Interpreter.ProgramTree.Nodes.FunctionNodes.FunctionDefNode;
+import provided.Token;
 
 public class ProgramNode extends NodeBase<ProgramNode> {
     private ArrayList<FunctionDefNode> funcNodes;
@@ -22,13 +23,16 @@ public class ProgramNode extends NodeBase<ProgramNode> {
         ArrayList<FunctionDefNode> funcNodes = new ArrayList<>();
 
         FunctionDefNode node = null;
-        while (true) {
+        Token peek = tokens.peekToken();
+        while (peek != null && peek.getToken().equals("Def")) {
             node = FunctionDefNode.parseNode(tokens);
             if (node == null) {
-                break;
+                tokens.popStack(true);
+                return null;
             }
 
             funcNodes.add(node);
+            peek = tokens.peekToken();
         }
 
         tokens.popStack(false);

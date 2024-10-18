@@ -62,10 +62,10 @@ public class ElseIfBlockNode extends BlockDeclareNodeBase {
     	}
 
         //Parse the body
-        BodyNode גוף = BodyNode.parseNode(tokens, false);
+        BodyNode body = BodyNode.parseNode(tokens, false);
 
         //Parsed body is null -> null
-        if (גוף == null) {
+        if (body == null) {
         	tokens.popStack(true);
         	return null;
         }
@@ -76,7 +76,7 @@ public class ElseIfBlockNode extends BlockDeclareNodeBase {
         	return null;
     	}
 
-    	return new ElseIfBlockNode(parsedExpression, גוף);
+    	return new ElseIfBlockNode(parsedExpression, body);
 	}
 
 
