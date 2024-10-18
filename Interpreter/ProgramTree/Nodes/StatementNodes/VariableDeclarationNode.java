@@ -41,7 +41,7 @@ public class VariableDeclarationNode extends BodyStatementNodeBase {
 
     @Override
     public String convertToJott() {
-        return type.convertToJott() + name.convertToJott() + ";";
+        return type.convertToJott() + " " + name.convertToJott() + ";";
     }
 
     public String convertToJott(boolean functionDef) {

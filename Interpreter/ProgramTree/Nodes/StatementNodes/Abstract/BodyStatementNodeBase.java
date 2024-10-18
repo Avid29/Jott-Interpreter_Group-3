@@ -20,7 +20,7 @@ public abstract class BodyStatementNodeBase extends NodeBase<BodyStatementNodeBa
             case "If" -> IfBlockNode.parseNode(tokens);
             case "While" -> WhileBlockNode.parseNode(tokens);
             case "::" -> FuncCallStatementNode.parseNode(tokens);
-            case "Returns" -> ReturnStatementNode.parseNode(tokens);
+            case "Return" -> ReturnStatementNode.parseNode(tokens);
             default -> AssignmentNode.parseNode(tokens);
         };
 
