@@ -32,4 +32,9 @@ public class FuncCallStatementNode extends BodyStatementNodeBase {
         tokens.popStack(false);
         return new FuncCallStatementNode(funcCall);
     }
+
+    @Override
+    public String convertToJott() {
+        return wrapped.convertToJott() + ";";
+    }
 }

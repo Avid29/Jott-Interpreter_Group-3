@@ -121,6 +121,11 @@ public class JottTokenizer {
         if (state != TokenizerState.COMMENT) {
             // No need to finalize the token situation if currently in a comment
 
+            if (handler == null){
+                updateState(TokenizerState.DONE);
+                return null;
+            }
+
             if (handler.getCreatedTokenType() == null) {
                 // Not in a valid state for finalization
                 // Report an error and return

@@ -47,7 +47,8 @@ public class TypeNode extends NodeBase<TypeNode> {
             "Double",
             "Integer",
             "String",
-            "Boolean"
+            "Boolean",
+            "Void"
         ));
 
         return validTypes.contains(type.getToken());

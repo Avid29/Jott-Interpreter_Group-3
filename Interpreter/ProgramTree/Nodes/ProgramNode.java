@@ -34,4 +34,14 @@ public class ProgramNode extends NodeBase<ProgramNode> {
         tokens.popStack(false);
         return new ProgramNode(funcNodes);
     }
+
+    @Override
+    public String convertToJott() {
+        String output = "";
+        for (FunctionDefNode node : funcNodes) {
+            output += node.convertToJott() + "\n"; 
+        }
+        
+        return output;
+    }
 }

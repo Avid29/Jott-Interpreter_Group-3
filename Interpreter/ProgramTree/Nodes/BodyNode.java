@@ -47,4 +47,13 @@ public class BodyNode extends NodeBase<BodyNode> {
         tokens.popStack(false);
         return new BodyNode(statements);
     }
+
+    @Override
+    public String convertToJott() {
+        String output = "";
+        for (BodyStatementNodeBase bodyStatementNodeBase : statements) {
+            output += bodyStatementNodeBase.convertToJott() + " ";
+        }
+        return output;
+    }
 }

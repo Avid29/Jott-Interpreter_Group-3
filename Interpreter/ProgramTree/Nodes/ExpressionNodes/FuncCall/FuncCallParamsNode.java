@@ -46,10 +46,4 @@ public class FuncCallParamsNode extends NodeBase<FuncCallParamsNode> {
         tokens.popStack(false);
         return new FuncCallParamsNode(params);
     }
-
-    @Override
-    public String convertToJott() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'convertToJott'");
-    }
 }

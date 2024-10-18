@@ -49,4 +49,9 @@ public class AssignmentNode extends BodyStatementNodeBase {
         tokens.popStack(false);
         return new AssignmentNode(id, expression);
     }
+
+    @Override
+    public String convertToJott() {
+        return target.getToken() + " = " + expression.convertToJott() + ";";
+    }
 }

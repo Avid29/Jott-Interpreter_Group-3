@@ -4,19 +4,23 @@ import java.util.ArrayList;
 
 import Interpreter.ProgramTree.Nodes.Abstract.NodeBase;
 import Interpreter.ProgramTree.Nodes.ExpressionNodes.FuncCall.FunctionRefNode;
+import Interpreter.ProgramTree.Nodes.StatementNodes.ReturnStatementNode;
 import provided.Token;
 import provided.TokenType;
 import Interpreter.Parsing.TokenStack;
 import Interpreter.ProgramTree.Nodes.BodyNode;
+import Interpreter.ProgramTree.Nodes.TypeNode;
 
 public class FunctionDefNode extends NodeBase<FunctionDefNode> {
     private FunctionRefNode funcName;
     private ParametersDefNode params;
+    private TypeNode returnType;
     private BodyNode body;
 
-    public FunctionDefNode(FunctionRefNode name, ParametersDefNode params, BodyNode body) {
+    public FunctionDefNode(FunctionRefNode name, ParametersDefNode params, TypeNode returnType, BodyNode body) {
         this.funcName = name;
         this.params = params;
+        this.returnType = returnType;
         this.body = body;
     }
 
@@ -70,16 +74,23 @@ public class FunctionDefNode extends NodeBase<FunctionDefNode> {
             return null;
         }
 
+        TypeNode returnTypeNode = new TypeNode(pops.get(1));
+
         BodyNode fBody = BodyNode.parseNode(tokens, true);
+        if (fBody == null){
+            tokens.popStack(true);
+            return null;
+        }
 
         tokens.popStack(false);
-        return new FunctionDefNode(identifier, paramsNode, fBody);
+        return new FunctionDefNode(identifier, paramsNode, returnTypeNode, fBody);
     }
 
     @Override
     public String convertToJott() {
         // TODO: Return type and body.
-        return "Def " + funcName.convertToJott() + params.convertToJott();
+        return "Def " + funcName.convertToJott() + "[" + params.convertToJott() + "]:" +
+            returnType.convertToJott() + "{" + body.convertToJott() + "}";
     }
 
 }

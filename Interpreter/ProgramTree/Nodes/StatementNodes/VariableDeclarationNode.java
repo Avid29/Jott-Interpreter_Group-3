@@ -38,4 +38,16 @@ public class VariableDeclarationNode extends BodyStatementNodeBase {
         tokens.popStack(false);
         return new VariableDeclarationNode(type, name, false);
     }
+
+    @Override
+    public String convertToJott() {
+        return type.convertToJott() + name.convertToJott() + ";";
+    }
+
+    public String convertToJott(boolean functionDef) {
+        if (!functionDef)
+            return this.convertToJott();
+
+        return name.convertToJott() + ":" + type.convertToJott();
+    }
 }

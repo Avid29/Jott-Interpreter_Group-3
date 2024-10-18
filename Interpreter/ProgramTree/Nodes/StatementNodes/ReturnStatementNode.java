@@ -42,4 +42,9 @@ public class ReturnStatementNode extends BodyStatementNodeBase {
         tokens.popStack(false);
         return null;
     }
+
+    @Override
+    public String convertToJott() {
+        return "Return " + expression + ";";
+    }
 }

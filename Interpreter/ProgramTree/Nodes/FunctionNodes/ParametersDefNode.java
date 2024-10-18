@@ -56,4 +56,17 @@ public class ParametersDefNode extends NodeBase<ParametersDefNode> {
         tokens.popStack(false);
         return new ParametersDefNode(paramNodes);
     }
+
+    @Override
+    public String convertToJott() {
+        String output = "";
+        for (int i = 0; i < paramNodes.size(); i++) {
+            if (i != 0){
+                output += ",";
+            }
+
+            output += paramNodes.get(i).convertToJott(true); 
+        }
+        return output;
+    }
 }
