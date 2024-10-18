@@ -3,10 +3,11 @@ package Interpreter.ProgramTree.Nodes.StatementNodes.Blocks;
 import Interpreter.Parsing.TokenStack;
 import Interpreter.ProgramTree.Nodes.BodyNode;
 import Interpreter.ProgramTree.Nodes.StatementNodes.Abstract.BlockDeclareNodeBase;
-import provided.Token;
 import provided.TokenType;
 
 public class ElseBlockNode extends BlockDeclareNodeBase {
+
+	private BodyNode body;
 
 	/*
  	* ELSE GRAMMAR:
@@ -14,8 +15,8 @@ public class ElseBlockNode extends BlockDeclareNodeBase {
  	* <else> -> Else{<body>} | ϵ
 	*/
 
-	public ElseBlockNode() {
-    	/*... */
+	public ElseBlockNode(BodyNode body) {
+    	this.body = body;
 	}
 
 	public static ElseBlockNode parseNode(TokenStack tokens) {
@@ -50,8 +51,12 @@ public class ElseBlockNode extends BlockDeclareNodeBase {
     	}
 
     	tokens.popStack(false);
-    	return new ElseBlockNode();
-    
+    	return new ElseBlockNode(parsedBody);
+	}
+
+	@Override
+	public String convertToJott() {
+		return "Else { " + body.convertToJott() + " }";
 	}
 
 }

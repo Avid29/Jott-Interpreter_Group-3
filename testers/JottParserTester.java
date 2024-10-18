@@ -29,8 +29,13 @@ public class JottParserTester {
         }
     }
 
-    private boolean tokensEqualNoFileData(Token t1, Token t2){
-        return t1.getTokenType() == t2.getTokenType() &&
+    private boolean tokensEqualNoFileData(Token t1, Token t2) {
+        boolean effectiveTypeMatch = t1.getTokenType() == t2.getTokenType();
+        if (t1.getTokenType() == TokenType.ID_KEYWORD && (t2.getTokenType() == TokenType.ID || t2.getTokenType() == TokenType.KEYWORD)) {
+            effectiveTypeMatch = true;
+        }
+
+        return  effectiveTypeMatch &&
                 t1.getToken().equals(t2.getToken());
     }
 

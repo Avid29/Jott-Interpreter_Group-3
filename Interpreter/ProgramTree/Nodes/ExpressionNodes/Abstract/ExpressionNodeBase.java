@@ -27,8 +27,6 @@ public abstract class ExpressionNodeBase extends NodeBase<ExpressionNodeBase> {
         }
         if (result == null) {
             result = OperandNodeBase.parseNode(tokens);
-        } else {
-            return null;
         }
 
         return result;

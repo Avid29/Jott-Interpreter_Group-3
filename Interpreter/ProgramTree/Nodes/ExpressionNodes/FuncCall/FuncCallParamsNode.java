@@ -46,4 +46,17 @@ public class FuncCallParamsNode extends NodeBase<FuncCallParamsNode> {
         tokens.popStack(false);
         return new FuncCallParamsNode(params);
     }
+
+    @Override
+    public String convertToJott() {
+        String output = "";
+        for (int i = 0; i < paramNodes.size(); i++) {
+            if (i != 0){
+                output += ",";
+            }
+
+            output += paramNodes.get(i).convertToJott(); 
+        }
+        return output;
+    }
 }

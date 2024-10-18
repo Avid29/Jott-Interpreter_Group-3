@@ -17,11 +17,13 @@ public class IfBlockNode extends BlockDeclareNodeBase {
  	* <if_stmt> -> If[<expr>]{<body>}<elseif_lst>*<else>
 	*/
 
+	private ExpressionNodeBase expression;
 	private ArrayList<ElseIfBlockNode> elseIfBlocks;
 	private ElseBlockNode elseBlock;
 
-	public IfBlockNode(ArrayList<ElseIfBlockNode> elseIfBlocks, ElseBlockNode elseBlock) {
+	public IfBlockNode(ExpressionNodeBase expression, ArrayList<ElseIfBlockNode> elseIfBlocks, ElseBlockNode elseBlock) {
 
+		this.expression = expression;
     	this.elseIfBlocks = elseIfBlocks;
     	this.elseBlock = elseBlock;
 
@@ -44,8 +46,6 @@ public class IfBlockNode extends BlockDeclareNodeBase {
         	tokens.popStack(true);
         	return null;
     	}
-
-
 
     	//No opening Left Bracket ( [ ) -> null
     	if (tokens.peekToken().getTokenType() != TokenType.L_BRACKET) {
@@ -91,7 +91,7 @@ public class IfBlockNode extends BlockDeclareNodeBase {
 
 
     	tokens.popStack(false);
-    	return new IfBlockNode(parseElseIfBlocks(tokens), parseElseBlock(tokens));
+    	return new IfBlockNode(parsedExpression, parseElseIfBlocks(tokens), parseElseBlock(tokens));
 
 	}
 
@@ -103,7 +103,6 @@ public class IfBlockNode extends BlockDeclareNodeBase {
     	while (tokens.peekToken().getToken().equals("ElseIf")) {
 
         	elseIfBlocks.add(ElseIfBlockNode.parseNode(tokens));
-
     	}
 
     	return elseIfBlocks;
@@ -119,6 +118,18 @@ public class IfBlockNode extends BlockDeclareNodeBase {
 
     	return null;
 
+	}
+
+	@Override
+	public String convertToJott() {
+		String output = "If [" + expression.convertToJott() + "] {" + body.convertToJott() + "}";
+		for (ElseIfBlockNode elseIfBlockNode : elseIfBlocks) {
+			output += elseIfBlockNode.convertToJott();
+		}
+		if (elseBlock != null){
+			output += elseBlock.convertToJott();
+		}
+		return output;
 	}
 }
 

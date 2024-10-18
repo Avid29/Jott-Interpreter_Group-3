@@ -42,6 +42,6 @@ public class FunctionCallNode extends OperandNodeBase {
 
     @Override
     public String convertToJott() {
-        return "::" + funcName.convertToJott() + callParams.convertToJott();
+        return "::" + funcName.convertToJott() + "[" + callParams.convertToJott() + "]";
     }
 }

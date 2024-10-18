@@ -17,12 +17,12 @@ public class ElseIfBlockNode extends BlockDeclareNodeBase {
  	* <elseif> -> Elseif[<expr>]{<body>}
 	*/
 
+	private ExpressionNodeBase expression;
+	private BodyNode body;
 
-	ArrayList<ElseIfBlockNode> elseIfBlocks;
-
-
-	public ElseIfBlockNode() {
-    	/*... */
+	public ElseIfBlockNode(ExpressionNodeBase expression, BodyNode body) {
+    	this.expression = expression;
+		this.body = body;
 	}
 
 
@@ -62,10 +62,10 @@ public class ElseIfBlockNode extends BlockDeclareNodeBase {
     	}
 
         //Parse the body
-        BodyNode parsedBody = BodyNode.parseNode(tokens, false);
+        BodyNode גוף = BodyNode.parseNode(tokens, false);
 
         //Parsed body is null -> null
-        if (parsedBody == null) {
+        if (גוף == null) {
         	tokens.popStack(true);
         	return null;
         }
@@ -76,10 +76,13 @@ public class ElseIfBlockNode extends BlockDeclareNodeBase {
         	return null;
     	}
 
+    	return new ElseIfBlockNode(parsedExpression, גוף);
+	}
 
 
-    	return new ElseIfBlockNode();
-
+	@Override
+	public String convertToJott() {
+		return "ElseIf [" + expression.convertToJott() + "] {" + body.convertToJott() + "}";
 	}
 
 }
