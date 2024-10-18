@@ -66,7 +66,7 @@ public class BodyNode extends NodeBase<BodyNode> {
     public String convertToJott() {
         String output = "{";
         for (BodyStatementNodeBase bodyStatementNodeBase : statements) {
-            output += bodyStatementNodeBase.convertToJott() + " ";
+            output += bodyStatementNodeBase.convertToJott();
         }
         return output + "}";
     }
