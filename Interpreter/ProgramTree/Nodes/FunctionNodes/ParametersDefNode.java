@@ -46,7 +46,14 @@ public class ParametersDefNode extends NodeBase<ParametersDefNode> {
                 return null;
             }
 
+            //Get the type, ensure it is not Void
             TypeNode type = new TypeNode(pops.getLast());
+            if (type.getType().getToken().equals("Void")) {
+                System.err.println("ERROR -- Cannot declare a parameter of type Void");
+                tokens.popStack(true);
+                return null;
+            }    
+
             VarRefNode name = new VarRefNode(pops.getFirst());
 
             

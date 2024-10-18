@@ -32,7 +32,14 @@ public class VariableDeclarationNode extends BodyStatementNodeBase {
             return null;
         }
 
+        //Get the type, ensure it is not Void
         TypeNode type = new TypeNode(popped.get(0));
+        if (type.getType().getToken().equals("Void")) {
+            System.err.println("ERROR -- Cannot declare a variable of type Void");
+            tokens.popStack(true);
+            return null;
+        }
+
         VarRefNode name = new VarRefNode(popped.get(1));
 
         tokens.popStack(false);

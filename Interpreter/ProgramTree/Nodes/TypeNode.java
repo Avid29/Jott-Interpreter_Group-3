@@ -41,6 +41,10 @@ public class TypeNode extends NodeBase<TypeNode> {
     }
 
 
+    public Token getType() {
+        return type;
+    }
+
     public static boolean isValidType(Token type) {
         
         final Set<String> validTypes = new HashSet<String>(Arrays.asList(
