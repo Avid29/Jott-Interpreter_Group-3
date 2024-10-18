@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import Interpreter.Parsing.TokenStack;
 import Interpreter.ProgramTree.Nodes.Abstract.NodeBase;
+import Interpreter.ProgramTree.Nodes.StatementNodes.ReturnStatementNode;
 import Interpreter.ProgramTree.Nodes.StatementNodes.VariableDeclarationNode;
 import Interpreter.ProgramTree.Nodes.StatementNodes.Abstract.BodyStatementNodeBase;
 import provided.TokenType;
@@ -45,6 +46,10 @@ public class BodyNode extends NodeBase<BodyNode> {
             }
 
             statements.add(statement);
+
+            if (statement instanceof ReturnStatementNode){
+                break;
+            }
         }
 
         // Pop the closing brace
