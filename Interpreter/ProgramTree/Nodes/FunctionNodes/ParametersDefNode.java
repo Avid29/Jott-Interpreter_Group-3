@@ -28,7 +28,6 @@ public class ParametersDefNode extends NodeBase<ParametersDefNode> {
             int errorCode = tokens.tokenSequenceMatch(
                     new TokenType[] { TokenType.ID, TokenType.SEMICOLON, TokenType.KEYWORD }, pops);
 
-            // TODO: Replace with error objects
             String error = switch (errorCode) {
                 case -1 -> null;
                 case 0 -> "Expected parameter identifier";
@@ -50,8 +49,6 @@ public class ParametersDefNode extends NodeBase<ParametersDefNode> {
         }
 
         if (curr.getTokenType() != TokenType.R_BRACKET) {
-            // Error: Expected parameters closing brosing.
-            // TODO: Log error
             tokens.popStack(true);
             return null;
         }

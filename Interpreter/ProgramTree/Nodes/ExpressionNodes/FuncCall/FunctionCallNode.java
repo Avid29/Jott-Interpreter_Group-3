@@ -39,4 +39,9 @@ public class FunctionCallNode extends OperandNodeBase {
         tokens.popStack(false);
         return new FunctionCallNode(fRefNode, fParamsNode);
     }
+
+    @Override
+    public String convertToJott() {
+        return "::" + funcName.convertToJott() + callParams.convertToJott();
+    }
 }

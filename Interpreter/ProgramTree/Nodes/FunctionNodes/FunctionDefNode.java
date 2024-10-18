@@ -76,4 +76,10 @@ public class FunctionDefNode extends NodeBase<FunctionDefNode> {
         return new FunctionDefNode(identifier, paramsNode, fBody);
     }
 
+    @Override
+    public String convertToJott() {
+        // TODO: Return type and body.
+        return "Def " + funcName.convertToJott() + params.convertToJott();
+    }
+
 }

@@ -24,4 +24,9 @@ public class VarRefNode extends OperandNodeBase {
         tokens.popStack(false);
         return new VarRefNode(next);
     }
+
+    @Override
+    public String convertToJott() {
+        return id.getToken();
+    }
 }

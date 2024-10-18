@@ -24,4 +24,9 @@ public class StringNode extends ExpressionNodeBase {
         tokens.popStack(false);
         return new StringNode(next);
     }
+
+    @Override
+    public String convertToJott() {
+        return string.getToken();
+    }
 }

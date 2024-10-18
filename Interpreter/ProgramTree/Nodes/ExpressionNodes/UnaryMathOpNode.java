@@ -29,4 +29,9 @@ public class UnaryMathOpNode extends OperandNodeBase {
         tokens.popStack(false);
         return new UnaryMathOpNode(number);
     }
+
+    @Override
+    public String convertToJott() {
+        return "-" + child.convertToJott();
+    }
 }

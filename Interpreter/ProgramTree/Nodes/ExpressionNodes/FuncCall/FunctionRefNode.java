@@ -9,4 +9,9 @@ public class FunctionRefNode extends NodeBase<FunctionRefNode> {
     public FunctionRefNode(Token id) {
         this.id = id;
     }
+
+    @Override
+    public String convertToJott() {
+        return id.getToken();
+    }
 }
