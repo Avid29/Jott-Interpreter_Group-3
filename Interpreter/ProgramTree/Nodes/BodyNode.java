@@ -7,6 +7,7 @@ import Interpreter.ProgramTree.Nodes.Abstract.NodeBase;
 import Interpreter.ProgramTree.Nodes.StatementNodes.ReturnStatementNode;
 import Interpreter.ProgramTree.Nodes.StatementNodes.VariableDeclarationNode;
 import Interpreter.ProgramTree.Nodes.StatementNodes.Abstract.BodyStatementNodeBase;
+import provided.Token;
 import provided.TokenType;
 
 public class BodyNode extends NodeBase<BodyNode> {
@@ -38,7 +39,22 @@ public class BodyNode extends NodeBase<BodyNode> {
             }   
         } 
 
-        while (tokens.peekToken().getTokenType() != TokenType.R_BRACE) {
+        while (true) {
+
+            //Peek next token to chekc for closing brace
+            Token peekedToken = tokens.peekToken();
+
+            //No more tokens, missing closing brace
+            if (peekedToken == null) {
+                System.err.println("ERROR -- Missing closing brace");
+                tokens.popStack(true);
+                return null;
+            }
+            
+            //Found closing brace, end loop
+            if (peekedToken.getTokenType() == TokenType.R_BRACE)
+                break;
+
             BodyStatementNodeBase statement = BodyStatementNodeBase.parseNode(tokens);
             if (statement == null) {
                 tokens.popStack(true);
@@ -54,6 +70,9 @@ public class BodyNode extends NodeBase<BodyNode> {
 
         // Pop the closing brace
         if(tokens.popToken().getTokenType() != TokenType.R_BRACE) {
+
+            System.err.println("ERROR -- Missing closing brace");
+
             tokens.popStack(true);
             return null;
         }
