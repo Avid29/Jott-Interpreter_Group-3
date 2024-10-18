@@ -35,6 +35,12 @@ public class ProgramNode extends NodeBase<ProgramNode> {
             peek = tokens.peekToken();
         }
 
+        if (!tokens.isEmpty())
+        {
+            tokens.popStack(true);
+            return null;
+        }
+
         tokens.popStack(false);
         return new ProgramNode(funcNodes);
     }
