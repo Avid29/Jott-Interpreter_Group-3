@@ -22,11 +22,16 @@ public class ParametersDefNode extends NodeBase<ParametersDefNode> {
 
         ArrayList<VariableDeclarationNode> paramNodes = new ArrayList<>();
 
-        Token curr = tokens.popToken();
-        while (curr != null && curr.getTokenType() == TokenType.COMMA) {
+        Token curr = tokens.peekToken();
+        if (curr.getTokenType() == TokenType.R_BRACKET) {
+            tokens.popToken();
+            return new ParametersDefNode(paramNodes);
+        }
+        
+        do {
             ArrayList<Token> pops = new ArrayList<>();
             int errorCode = tokens.tokenSequenceMatch(
-                    new TokenType[] { TokenType.ID, TokenType.SEMICOLON, TokenType.KEYWORD }, pops);
+                    new TokenType[] { TokenType.ID, TokenType.COLON, TokenType.KEYWORD }, pops);
 
             String error = switch (errorCode) {
                 case -1 -> null;
@@ -46,7 +51,7 @@ public class ParametersDefNode extends NodeBase<ParametersDefNode> {
 
             paramNodes.add(new VariableDeclarationNode(type, name, true));
             curr = tokens.popToken();
-        }
+        } while (curr != null && curr.getTokenType() == TokenType.COMMA);
 
         if (curr.getTokenType() != TokenType.R_BRACKET) {
             tokens.popStack(true);

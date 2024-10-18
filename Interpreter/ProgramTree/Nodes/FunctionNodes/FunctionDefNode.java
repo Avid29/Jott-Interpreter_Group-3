@@ -56,6 +56,11 @@ public class FunctionDefNode extends NodeBase<FunctionDefNode> {
 
         // Parse parameters
         ParametersDefNode paramsNode = ParametersDefNode.parseNode(tokens);
+        if (paramsNode == null)
+        {
+            tokens.popStack(true);
+            return null;
+        }
 
         // TODO: Replace with error objects
         pops = new ArrayList<>();
