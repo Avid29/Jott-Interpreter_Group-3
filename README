@@ -1,6 +1,20 @@
-This file contains provided code, testers, and test cases.
 
-provided shouls be a top level package in your src directory
-JottParserTester and JottTokenizerTester classes should be in a package call testers.
+# Design change
 
-the testCases directories should be in the working directory of your project. 
+Reminder that we expanded the `TokenType` enum to distinguish between `ID` and `KEYWORD`, with the justification that IDs always have the same behavior within the parser, while the literal value of a keyword can change the parsing behavior. As a result, it felt like a slight improvement on the design to add a distinction between the two as a first step in the parsing stage.
+
+## Tester Side-effect
+
+Because of this change, the `tokensEqualNoFileData` method must be updated to allow `ID_KEYWORD` to be either an `ID` or `KEYWORD` type token.
+
+```java
+    private boolean tokensEqualNoFileData(Token t1, Token t2) {
+        boolean effectiveTypeMatch = t1.getTokenType() == t2.getTokenType();
+        if (t1.getTokenType() == TokenType.ID_KEYWORD && (t2.getTokenType() == TokenType.ID || t2.getTokenType() == TokenType.KEYWORD)) {
+            effectiveTypeMatch = true;
+        }
+
+        return  effectiveTypeMatch &&
+                t1.getToken().equals(t2.getToken());
+    }
+```
