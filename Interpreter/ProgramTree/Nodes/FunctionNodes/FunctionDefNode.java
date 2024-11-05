@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import Interpreter.ProgramTree.Nodes.Abstract.NodeBase;
 import Interpreter.ProgramTree.Nodes.ExpressionNodes.FuncCall.FunctionRefNode;
-import Interpreter.ProgramTree.Nodes.StatementNodes.ReturnStatementNode;
 import provided.Token;
 import provided.TokenType;
 import Interpreter.Parsing.TokenStack;
@@ -12,10 +11,10 @@ import Interpreter.ProgramTree.Nodes.BodyNode;
 import Interpreter.ProgramTree.Nodes.TypeNode;
 
 public class FunctionDefNode extends NodeBase<FunctionDefNode> {
-    private FunctionRefNode funcName;
-    private ParametersDefNode params;
-    private TypeNode returnType;
-    private BodyNode body;
+    public FunctionRefNode funcName;//changed all this to public
+    public ParametersDefNode params;
+    public TypeNode returnType;
+    public BodyNode body;
 
     public FunctionDefNode(FunctionRefNode name, ParametersDefNode params, TypeNode returnType, BodyNode body) {
         this.funcName = name;
@@ -87,6 +86,14 @@ public class FunctionDefNode extends NodeBase<FunctionDefNode> {
         }
 
         return new FunctionDefNode(identifier, paramsNode, returnTypeNode, fBody);
+    }
+
+    public Token getName(){
+        return funcName.getId();
+    }
+
+    public TypeNode getReturnType() {
+        return returnType;
     }
 
     @Override

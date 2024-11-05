@@ -10,7 +10,7 @@ import provided.Token;
 import provided.TokenType;
 
 public class VariableDeclarationNode extends BodyStatementNodeBase {
-    private TypeNode type;
+    public TypeNode type;
     private VarRefNode name;
 
     public VariableDeclarationNode(TypeNode type, VarRefNode name, boolean param) {
