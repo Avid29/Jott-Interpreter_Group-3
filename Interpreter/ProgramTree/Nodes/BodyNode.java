@@ -81,6 +81,10 @@ public class BodyNode extends NodeBase<BodyNode> {
         return new BodyNode(statements);
     }
 
+    public boolean containsReturn() {
+        return statements.getLast() instanceof ReturnStatementNode;
+    }
+
     @Override
     public String convertToJott() {
         String output = "{";

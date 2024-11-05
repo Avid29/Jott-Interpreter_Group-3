@@ -77,7 +77,6 @@ public class IfBlockNode extends BlockDeclareNodeBase {
 
 	}
 
-
 	private static ArrayList<ElseIfBlockNode> parseElseIfBlocks(TokenStack tokens) {
 
     	ArrayList<ElseIfBlockNode> elseIfBlocks = new ArrayList<>();
@@ -94,13 +93,26 @@ public class IfBlockNode extends BlockDeclareNodeBase {
 
 
 	private static ElseBlockNode parseElseBlock(TokenStack tokens) {
-
     	if (tokens.peekToken().getToken().equals("Else"))
         	return ElseBlockNode.parseNode(tokens);
-
     	return null;
 
 	}
+
+    @Override
+    public boolean validateTree() {
+		boolean expectReturn = body.containsReturn();
+
+		for (ElseIfBlockNode elIfChild : elseIfBlocks) {
+			if (elIfChild.containsReturn() != expectReturn)
+				return false;
+		}
+
+		if (elseBlock.containsReturn() != expectReturn)
+			return false;
+
+		return true;
+    }
 
 	@Override
 	public String convertToJott() {
