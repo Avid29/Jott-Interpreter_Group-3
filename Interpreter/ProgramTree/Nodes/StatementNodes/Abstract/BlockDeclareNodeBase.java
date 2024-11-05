@@ -6,6 +6,6 @@ public abstract class BlockDeclareNodeBase extends BodyStatementNodeBase {
     protected BodyNode body;
 
     public boolean containsReturn() {
-		return body.containsReturn();
+      return body.containsReturn();
     }
 }
