@@ -1,5 +1,7 @@
 package Interpreter.ProgramTree.Nodes.ExpressionNodes;
 
+import ErrorReporting.ErrorReport;
+import ErrorReporting.ErrorReportSyntax;
 import Interpreter.Parsing.TokenStack;
 import Interpreter.ProgramTree.Nodes.ExpressionNodes.Abstract.ExpressionNodeBase;
 import provided.Token;
@@ -17,6 +19,9 @@ public class StringNode extends ExpressionNodeBase {
 
         var next = tokens.popToken();
         if (next.getTokenType() != TokenType.STRING) {
+
+            ErrorReport.makeError(ErrorReportSyntax.class, "Expected STRING", TokenStack.get_last_token_popped());
+
             tokens.popStack(true);
             return null;
         }

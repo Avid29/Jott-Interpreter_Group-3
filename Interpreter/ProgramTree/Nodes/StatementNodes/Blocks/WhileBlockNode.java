@@ -2,6 +2,8 @@ package Interpreter.ProgramTree.Nodes.StatementNodes.Blocks;
 
 import java.util.ArrayList;
 
+import ErrorReporting.ErrorReport;
+import ErrorReporting.ErrorReportSyntax;
 import Interpreter.Parsing.TokenStack;
 import Interpreter.ProgramTree.Nodes.BodyNode;
 import Interpreter.ProgramTree.Nodes.ExpressionNodes.Abstract.ExpressionNodeBase;
@@ -24,12 +26,18 @@ public class WhileBlockNode extends BlockDeclareNodeBase {
         int errorCode = tokens.tokenSequenceMatch(new TokenType[]{TokenType.KEYWORD, TokenType.L_BRACKET}, popped);
 
         if (errorCode != -1) {
+
             // Missing conditional expression
+            ErrorReport.makeError(ErrorReportSyntax.class, "While Block -- Missing conditional expression", TokenStack.get_last_token_popped());
+
             tokens.popStack(true);
             return null;
         }
 
         if (!popped.get(0).getToken().equals("While")) {
+
+            ErrorReport.makeError(ErrorReportSyntax.class, "While Block -- Expected 'While'", TokenStack.get_last_token_popped());
+
             tokens.popStack(true);
             return null;
         }
@@ -39,12 +47,18 @@ public class WhileBlockNode extends BlockDeclareNodeBase {
 
         //Parsed expression is null -> null
         if (parsedExpression == null) {
+
+            ErrorReport.makeError(ErrorReportSyntax.class, "While Block -- Failed to parse Expression", TokenStack.get_last_token_popped());
+
         	tokens.popStack(true);
         	return null;
         }
         
     	//No closing Right Bracket ( ] ) -> null
     	if (tokens.popToken().getTokenType() != TokenType.R_BRACKET) {
+
+            ErrorReport.makeError(ErrorReportSyntax.class, "While Block -- Expecting Right Bracket ']'", TokenStack.get_last_token_popped());
+
         	tokens.popStack(true);
         	return null;
     	}
@@ -54,6 +68,9 @@ public class WhileBlockNode extends BlockDeclareNodeBase {
 
         //Parsed body is null -> null
         if (parsedBody == null) {
+
+            ErrorReport.makeError(ErrorReportSyntax.class, "While Block -- Failed to parse Body", TokenStack.get_last_token_popped());
+
         	tokens.popStack(true);
         	return null;
         }

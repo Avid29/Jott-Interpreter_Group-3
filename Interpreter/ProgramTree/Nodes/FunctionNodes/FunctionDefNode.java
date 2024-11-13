@@ -2,6 +2,8 @@ package Interpreter.ProgramTree.Nodes.FunctionNodes;
 
 import java.util.ArrayList;
 
+import ErrorReporting.ErrorReport;
+import ErrorReporting.ErrorReportSyntax;
 import Interpreter.ProgramTree.Nodes.Abstract.NodeBase;
 import Interpreter.ProgramTree.Nodes.ExpressionNodes.FuncCall.FunctionRefNode;
 import Interpreter.ProgramTree.Nodes.StatementNodes.ReturnStatementNode;
@@ -30,24 +32,34 @@ public class FunctionDefNode extends NodeBase<FunctionDefNode> {
         // Perform mential tokenType checks on function id/definition.
         ArrayList<Token> pops = new ArrayList<>();
 
+        String errorMessage;
+
         // TODO: Replace with error objects
-        int errorCode = tokens.tokenSequenceMatch(
-                new TokenType[] { TokenType.KEYWORD, TokenType.ID, TokenType.L_BRACKET }, pops);
-        String error = switch (errorCode) {
+        int errorCode = tokens.tokenSequenceMatch(new TokenType[] { TokenType.KEYWORD, TokenType.ID, TokenType.L_BRACKET }, pops);
+
+        errorMessage = switch (errorCode) {
             case -1 -> null;
             case 0 -> "Expected \"Def\" keyword";
-            case 1 -> "Expected function identifier";
+            //case 1 -> "Expected function identifier";
+            case 1 -> ("Expected " + TokenType.ID + " got " + pops.get(1).getTokenType());
             case 2 -> "Expected function parameters";
             default -> "Unknown error";
         };
 
-        if (error != null) {
+        if (errorMessage != null) {
+
+            ErrorReport.makeError(ErrorReportSyntax.class, errorMessage, tokens.get_last_token_popped());
+
             tokens.popStack(true);
             return null;
         }
 
         // TODO: Process identifier from popped tokens
-        if (!pops.get(0).getToken().equals("Def")) {
+        String nextTokenString = pops.get(0).getToken();
+        if (!nextTokenString.equals("Def")) {
+
+            ErrorReport.makeError(ErrorReportSyntax.class, "FunctionDefNode -- Expected 'Def'", pops.get(0));
+
             tokens.popStack(true);
             return null;
         }
@@ -56,24 +68,29 @@ public class FunctionDefNode extends NodeBase<FunctionDefNode> {
 
         // Parse parameters
         ParametersDefNode paramsNode = ParametersDefNode.parseNode(tokens);
-        if (paramsNode == null)
-        {
+        if (paramsNode == null) {
+
+            ErrorReport.makeError(ErrorReportSyntax.class, "Failed to parse parameters", tokens.get_last_token_popped());
+
             tokens.popStack(true);
             return null;
+
         }
 
         // TODO: Replace with error objects
         pops = new ArrayList<>();
-        errorCode = tokens
-                .tokenSequenceMatch(new TokenType[] { TokenType.COLON, TokenType.KEYWORD}, pops);
-        error = switch (errorCode) {
+        errorCode = tokens.tokenSequenceMatch(new TokenType[] { TokenType.COLON, TokenType.KEYWORD}, pops);
+        errorMessage = switch (errorCode) {
             case -1 -> null;
             case 0 -> "Expected ':' keyword";
             case 1 -> "Expected function return type";
             default -> "Unknown error";
         };
 
-        if (error != null) {
+        if (errorMessage != null) {
+
+            ErrorReport.makeError(ErrorReportSyntax.class, errorMessage, tokens.get_last_token_popped());
+
             tokens.popStack(true);
             return null;
         }
@@ -81,7 +98,10 @@ public class FunctionDefNode extends NodeBase<FunctionDefNode> {
         TypeNode returnTypeNode = new TypeNode(pops.get(1));
 
         BodyNode fBody = BodyNode.parseNode(tokens, true);
-        if (fBody == null){
+        if (fBody == null) {
+
+            ErrorReport.makeError(ErrorReportSyntax.class, "Function body is null", tokens.get_last_token_popped());
+
             tokens.popStack(true);
             return null;
         }

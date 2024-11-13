@@ -2,6 +2,8 @@ package Interpreter.ProgramTree.Nodes.FunctionNodes;
 
 import java.util.ArrayList;
 
+import ErrorReporting.ErrorReport;
+import ErrorReporting.ErrorReportSyntax;
 import Interpreter.Parsing.TokenStack;
 import Interpreter.ProgramTree.Nodes.TypeNode;
 import Interpreter.ProgramTree.Nodes.Abstract.NodeBase;
@@ -33,15 +35,18 @@ public class ParametersDefNode extends NodeBase<ParametersDefNode> {
             int errorCode = tokens.tokenSequenceMatch(
                     new TokenType[] { TokenType.ID, TokenType.COLON, TokenType.KEYWORD }, pops);
 
-            String error = switch (errorCode) {
+            String errorMessage = switch (errorCode) {
                 case -1 -> null;
                 case 0 -> "Expected parameter identifier";
-                case 1 -> "Expected ':";
+                case 1 -> "Expected ':'";
                 case 2 -> "Expected parameter type";
-                default -> "Unknown error";
+                default -> "Unknown ParametersDefNode error";
             };
 
-            if (error != null) {
+            if (errorMessage != null) {
+
+                ErrorReport.makeError(ErrorReportSyntax.class, errorMessage, TokenStack.get_last_token_popped());
+
                 tokens.popStack(true);
                 return null;
             }
@@ -49,7 +54,9 @@ public class ParametersDefNode extends NodeBase<ParametersDefNode> {
             //Get the type, ensure it is not Void
             TypeNode type = new TypeNode(pops.getLast());
             if (type.getType().getToken().equals("Void")) {
-                System.err.println("ERROR -- Cannot declare a parameter of type Void");
+                
+                ErrorReport.makeError(ErrorReportSyntax.class, "Cannot declare a parameter of type 'Void'", TokenStack.get_last_token_popped());
+
                 tokens.popStack(true);
                 return null;
             }    

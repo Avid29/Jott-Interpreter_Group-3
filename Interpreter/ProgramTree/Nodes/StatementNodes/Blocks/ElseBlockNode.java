@@ -1,5 +1,7 @@
 package Interpreter.ProgramTree.Nodes.StatementNodes.Blocks;
 
+import ErrorReporting.ErrorReport;
+import ErrorReporting.ErrorReportSyntax;
 import Interpreter.Parsing.TokenStack;
 import Interpreter.ProgramTree.Nodes.BodyNode;
 import Interpreter.ProgramTree.Nodes.StatementNodes.Abstract.BlockDeclareNodeBase;
@@ -23,8 +25,19 @@ public class ElseBlockNode extends BlockDeclareNodeBase {
 
     	tokens.pushStack();
 
+        // //Check if the previous token was an "If" or "ElseIf" keyword
+        // if (!tokens.checkPreviousToken(TokenType.KEYWORD)) {
+        //     ErrorReport.makeError(ErrorReportSyntax.class, "Expected 'If' or 'ElseIf' keyword", TokenStack.get_last_token_popped());
+        // 	tokens.popStack(true);
+        // 	return null;
+        // }
+        
+
     	//No "Else" keyword -> null
     	if (!tokens.popToken().getToken().equals("Else")) {
+
+            ErrorReport.makeError(ErrorReportSyntax.class, "Expected 'Else'", TokenStack.get_last_token_popped());
+
         	tokens.popStack(true);
         	return null;
     	}

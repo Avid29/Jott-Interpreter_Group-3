@@ -2,6 +2,8 @@ package Interpreter.ProgramTree.Nodes.StatementNodes;
 
 import java.util.ArrayList;
 
+import ErrorReporting.ErrorReport;
+import ErrorReporting.ErrorReportSyntax;
 import Interpreter.Parsing.TokenStack;
 import Interpreter.ProgramTree.Nodes.TypeNode;
 import Interpreter.ProgramTree.Nodes.ExpressionNodes.VarRefNode;
@@ -35,9 +37,12 @@ public class VariableDeclarationNode extends BodyStatementNodeBase {
         //Get the type, ensure it is not Void
         TypeNode type = new TypeNode(popped.get(0));
         if (type.getType().getToken().equals("Void")) {
-            System.err.println("ERROR -- Cannot declare a variable of type Void");
+
+            ErrorReport.makeError(ErrorReportSyntax.class, "Cannot declare a variable of type 'Void'", TokenStack.get_last_token_popped());
+
             tokens.popStack(true);
             return null;
+
         }
 
         VarRefNode name = new VarRefNode(popped.get(1));

@@ -18,7 +18,9 @@ public class BinaryMathOpNode extends ExpressionNodeBase {
     }
 
     public static BinaryMathOpNode parseNode(TokenStack stack){
+
         var result = ExpressionNodeBase.parseOperatorNode(stack, TokenType.MATH_OP);
+
         if (result == null)
             return null;
 

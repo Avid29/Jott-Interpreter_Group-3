@@ -3,10 +3,15 @@ package Interpreter.Parsing;
 import java.util.ArrayList;
 import java.util.Stack;
 
+import ErrorReporting.ErrorReport;
+import ErrorReporting.ErrorReportSyntax;
 import provided.Token;
 import provided.TokenType;
 
 public class TokenStack {
+
+    private static Token lastTokenPopped = null;
+
     private ArrayList<Token> tokens;
     private Stack<Integer> tokenUseStack;
     private int offset;
@@ -41,6 +46,9 @@ public class TokenStack {
         if (token == null)
             return null;
 
+        //Record the last token popped (only if not null)
+        lastTokenPopped = token;
+
         offset++;
         return token;
     }
@@ -53,6 +61,7 @@ public class TokenStack {
     }
 
     public void popStack(boolean backtracking) {
+
         if (backtracking) {
             offset = stackOffset;
         }
@@ -92,5 +101,20 @@ public class TokenStack {
         // This is a sucess code
         popStack(false);
         return -1;
+    }
+
+    public static Token get_last_token_popped() {
+        return lastTokenPopped;
+    }
+    public static void clear_last_token_popped() {
+
+        /*
+            Need this 'cause having a token stored
+            between tests caused erorrs to be
+            reported for the wrong file...
+        */
+
+        lastTokenPopped = null;
+
     }
 }

@@ -2,6 +2,8 @@ package Interpreter.ProgramTree.Nodes.ExpressionNodes.FuncCall;
 
 import java.util.ArrayList;
 
+import ErrorReporting.ErrorReport;
+import ErrorReporting.ErrorReportSyntax;
 import Interpreter.Parsing.TokenStack;
 import Interpreter.ProgramTree.Nodes.Abstract.NodeBase;
 import Interpreter.ProgramTree.Nodes.ExpressionNodes.Abstract.ExpressionNodeBase;
@@ -20,6 +22,9 @@ public class FuncCallParamsNode extends NodeBase<FuncCallParamsNode> {
 
         ArrayList<ExpressionNodeBase> params = new ArrayList<>(); 
         if (tokens.popToken().getTokenType() != TokenType.L_BRACKET){
+
+            ErrorReport.makeError(ErrorReportSyntax.class, "Expected Opening Bracket '['", TokenStack.get_last_token_popped());
+
             tokens.popStack(true);
             return null;
         }
@@ -39,6 +44,9 @@ public class FuncCallParamsNode extends NodeBase<FuncCallParamsNode> {
         while(popped.getTokenType() == TokenType.COMMA);
 
         if (popped.getTokenType() != TokenType.R_BRACKET) {
+
+            ErrorReport.makeError(ErrorReportSyntax.class, "Expected Closing Bracket ']'", TokenStack.get_last_token_popped());
+
             tokens.popStack(true);
             return null;
         }
