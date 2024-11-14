@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import Interpreter.ProgramTree.Nodes.Abstract.NodeBase;
 import Interpreter.ProgramTree.Nodes.ExpressionNodes.FuncCall.FunctionRefNode;
 import Interpreter.ProgramTree.Nodes.StatementNodes.ReturnStatementNode;
+import Interpreter.ProgramTree.Nodes.StatementNodes.Blocks.ElseIfBlockNode;
 import provided.Token;
 import provided.TokenType;
 import Interpreter.Parsing.TokenStack;
@@ -92,8 +93,19 @@ public class FunctionDefNode extends NodeBase<FunctionDefNode> {
     public Token getName(){
         return funcName.getId();
     }
-
     
+    @Override
+	public boolean validateTree() {
+        // Validate body
+        if (!body.validateTree())
+            return false;
+
+        // Ensure contains return
+        if (!body.containsReturn())
+            return false;
+
+        return true;
+	}
 
     @Override
     public String convertToJott() {
