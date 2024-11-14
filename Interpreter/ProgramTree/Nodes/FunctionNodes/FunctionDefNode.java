@@ -93,11 +93,12 @@ public class FunctionDefNode extends NodeBase<FunctionDefNode> {
         return funcName.getId();
     }
 
+    
+
     @Override
     public String convertToJott() {
         // TODO: Return type and body.
         return "Def " + funcName.convertToJott() + "[" + params.convertToJott() + "]:" +
             returnType.convertToJott() + body.convertToJott();
     }
-
 }
