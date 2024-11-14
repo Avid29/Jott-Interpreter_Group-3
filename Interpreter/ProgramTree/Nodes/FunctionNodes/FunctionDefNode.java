@@ -100,8 +100,8 @@ public class FunctionDefNode extends NodeBase<FunctionDefNode> {
         if (!body.validateTree())
             return false;
 
-        // Ensure contains return
-        if (!body.containsReturn())
+        // Ensure contains return when non-void.
+        if (!returnType.getType().getToken().equals("Void") && !body.containsReturn())
             return false;
 
         return true;
