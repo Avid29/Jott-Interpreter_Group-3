@@ -5,7 +5,7 @@ import java.util.logging.ErrorManager;
 
 import ErrorReporting.ErrorReport;
 import ErrorReporting.ErrorReportSyntax;
-import Interpreter.Tuple;
+import Interpreter.Tuple3;
 import Interpreter.Parsing.TokenStack;
 import Interpreter.ProgramTree.Nodes.Abstract.NodeBase;
 import Interpreter.ProgramTree.Nodes.ExpressionNodes.BinaryMathOpNode;
@@ -54,7 +54,7 @@ public abstract class ExpressionNodeBase extends NodeBase<ExpressionNodeBase> {
         return result;
     } 
 
-    protected static Tuple<Token, OperandNodeBase, OperandNodeBase> parseOperatorNode(TokenStack stack, TokenType type){
+    protected static Tuple3<Token, OperandNodeBase, OperandNodeBase> parseOperatorNode(TokenStack stack, TokenType type){
         stack.pushStack();
 
         OperandNodeBase left = OperandNodeBase.parseNode(stack);
@@ -77,6 +77,6 @@ public abstract class ExpressionNodeBase extends NodeBase<ExpressionNodeBase> {
         }
 
         stack.popStack(false);
-        return new Tuple<>(op, left, right);
+        return new Tuple3<>(op, left, right);
     }
 }
