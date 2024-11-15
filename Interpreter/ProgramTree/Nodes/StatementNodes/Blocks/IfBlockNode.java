@@ -87,8 +87,6 @@ public class IfBlockNode extends BlockDeclareNodeBase {
     	}
 
     	return elseIfBlocks;
-
-
 	}
 
 
@@ -96,19 +94,29 @@ public class IfBlockNode extends BlockDeclareNodeBase {
     	if (tokens.peekToken().getToken().equals("Else"))
         	return ElseBlockNode.parseNode(tokens);
     	return null;
-
 	}
 
     @Override
     public boolean validateTree() {
-		boolean expectReturn = body.containsReturn();
-
-		for (ElseIfBlockNode elIfChild : elseIfBlocks) {
-			if (elIfChild.containsReturn() != expectReturn)
-				return false;
+		// Validate return parity
+		if (!validateReturnPairity()) {
+			return false;
 		}
 
-		if (elseBlock.containsReturn() != expectReturn)
+		// Validate body
+		if (!body.validateTree()) {
+			return false;
+		}
+
+		// Validate else if child blocks
+		for (ElseIfBlockNode elseIfNode : elseIfBlocks) {
+			if (!elseIfNode.validateTree()){
+				return false;
+			}
+		}
+
+		// Validate else child block
+		if (!elseBlock.validateTree())
 			return false;
 
 		return true;
@@ -124,6 +132,21 @@ public class IfBlockNode extends BlockDeclareNodeBase {
 			output += elseBlock.convertToJott();
 		}
 		return output;
+	}
+
+	private boolean validateReturnPairity(){
+		// Ensure that if one if child block contains a return, each contains a return. 
+		boolean expectReturn = body.containsReturn();
+
+		for (ElseIfBlockNode elIfChild : elseIfBlocks) {
+			if (elIfChild.containsReturn() != expectReturn)
+				return false;
+		}
+
+		if (elseBlock.containsReturn() != expectReturn)
+			return false;
+
+		return true;
 	}
 }
 
