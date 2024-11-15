@@ -15,7 +15,7 @@ public class FunctionSymbolTable {
             System.err.println(new SymbolTableError(fileName, lineNum));
             return;
             
-            // TODO: Error, duplicate symbol definition.
+            
         }
 
         table.put(symbol, new VarInfo(var.type));

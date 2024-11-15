@@ -16,5 +16,17 @@ public class FuncInfo {
         for (var param : fdn.params.paramNodes){
             paramTypes.add(param.type.getType().getToken());
         }
+
+        public Token getReturnType(){
+            return returnType;
+        } 
+
+        public FunctionSymbolTable getTable(){
+            return funcTable;
+        }
+
+        public ArrayList getParamTypes(){
+            return paramTypes;
+        }
     }
 }

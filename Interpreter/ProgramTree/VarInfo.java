@@ -12,4 +12,7 @@ public class VarInfo {
     }
 
     //get type
+    public TypeNode getType(){
+        return type;
+    }
 }
