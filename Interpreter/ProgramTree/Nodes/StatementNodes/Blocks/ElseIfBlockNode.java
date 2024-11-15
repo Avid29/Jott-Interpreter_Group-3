@@ -2,6 +2,8 @@ package Interpreter.ProgramTree.Nodes.StatementNodes.Blocks;
 
 import java.util.ArrayList;
 
+import ErrorReporting.ErrorReport;
+import ErrorReporting.ErrorReportSyntax;
 import Interpreter.Parsing.TokenStack;
 import Interpreter.ProgramTree.Nodes.BodyNode;
 import Interpreter.ProgramTree.Nodes.ExpressionNodes.Abstract.ExpressionNodeBase;
@@ -25,17 +27,48 @@ public class ElseIfBlockNode extends BlockDeclareNodeBase {
 		this.body = body;
 	}
 
+	public static void reportNoPrecedingIf() {
+
+		ErrorReport.makeError(
+			ErrorReportSyntax.class,
+			"ElseIfBlockNode -- Elseif block without preceding 'If'",
+			TokenStack.get_last_token_popped()
+		);
+
+	}
 
 	public static ElseIfBlockNode parseNode(TokenStack tokens) {
 
-    	//First token not 'ElseIf' -> null
-    	if (!tokens.popToken().getToken().equals("ElseIf"))
+		/*
+		 * Precaution to ensure that Elseif blocks won't be parsed
+		 * unless a boolean value is passed into the overloaded
+		 * version of the 'parseNode' function.
+		*/
+		
+		reportNoPrecedingIf();
+
+		return null;
+
+	}
+
+	public static ElseIfBlockNode parseNode(TokenStack tokens, boolean calledFromPrecedingIfBlock /* <- Doesn't do anything just for overloading */) {
+
+    	//First token not 'Elseif' -> null
+		Token nextToken = tokens.popToken();
+    	if (!nextToken.getToken().equals("Elseif")) {
+
+			ErrorReport.makeError(ErrorReportSyntax.class, "ElseIfBlockNode -- Expected 'Elseif', got "+nextToken.getTokenType(), TokenStack.get_last_token_popped());
         	return null;
 
+		}
 
 
     	//No opening Left Bracket ( [ ) -> null
-    	if (tokens.peekToken().getTokenType() != TokenType.L_BRACKET) {
+		Token nextTokenPeeked = tokens.peekToken();
+    	if (nextTokenPeeked.getTokenType() != TokenType.L_BRACKET) {
+
+			ErrorReport.makeError(ErrorReportSyntax.class, "ElseIfBlockNode -- Expected Left Bracket '[', got "+nextTokenPeeked.getTokenType(), TokenStack.get_last_token_popped());
+			
         	tokens.popStack(true);
         	return null;
     	}
@@ -45,12 +78,19 @@ public class ElseIfBlockNode extends BlockDeclareNodeBase {
 
         //Parsed expression is null -> null
         if (parsedExpression == null) {
+
+			ErrorReport.makeError(ErrorReportSyntax.class, "ElseIfBlockNode -- Failed to parse expression", TokenStack.get_last_token_popped());
+
         	tokens.popStack(true);
         	return null;
         }
         
     	//No closing Right Bracket ( ] ) -> null
-    	if (tokens.popToken().getTokenType() != TokenType.R_BRACKET) {
+		nextTokenPeeked = tokens.peekToken();
+    	if (nextTokenPeeked.getTokenType() != TokenType.R_BRACKET) {
+
+			ErrorReport.makeError(ErrorReportSyntax.class, "ElseIfBlockNode -- Expected Right Bracket ']', got "+nextTokenPeeked.getTokenType(), TokenStack.get_last_token_popped());
+			
         	tokens.popStack(true);
         	return null;
     	}
@@ -60,6 +100,9 @@ public class ElseIfBlockNode extends BlockDeclareNodeBase {
 
         //Parsed body is null -> null
         if (body == null) {
+
+			ErrorReport.makeError(ErrorReportSyntax.class, "ElseIfBlockNode -- Failed to parse body", TokenStack.get_last_token_popped());
+			
         	tokens.popStack(true);
         	return null;
         }
@@ -70,7 +113,7 @@ public class ElseIfBlockNode extends BlockDeclareNodeBase {
 
 	@Override
 	public String convertToJott() {
-		return "ElseIf [" + expression.convertToJott() + "]" + body.convertToJott();
+		return "Elseif [" + expression.convertToJott() + "]" + body.convertToJott();
 	}
 
 }

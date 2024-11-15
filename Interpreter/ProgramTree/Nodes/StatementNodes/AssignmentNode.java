@@ -27,6 +27,8 @@ public class AssignmentNode extends BodyStatementNodeBase {
         int errorCode = tokens.tokenSequenceMatch(new TokenType[] { TokenType.ID, TokenType.ASSIGN }, popped);
         if (errorCode != -1) {
 
+            //ErrorReport.makeError(ErrorReportSyntax.class, "AssignmentNode -- Expected ID or ASSIGN", TokenStack.get_last_token_popped());
+
             // Let the parent function handle reporting this error.
             tokens.popStack(true);
             return null;
@@ -38,7 +40,7 @@ public class AssignmentNode extends BodyStatementNodeBase {
         var expression = ExpressionNodeBase.parseNode(tokens);
         if (expression == null) {
 
-            ErrorReport.makeError(ErrorReportSyntax.class, "Invalid Assignment Statement", TokenStack.get_last_token_popped());
+            ErrorReport.makeError(ErrorReportSyntax.class, "AssignmentNode -- Invalid Assignment Statement", TokenStack.get_last_token_popped());
 
             tokens.popStack(true);
             return null;
@@ -48,7 +50,7 @@ public class AssignmentNode extends BodyStatementNodeBase {
         var statementEnd = tokens.popToken();
         if (statementEnd.getTokenType() != TokenType.SEMICOLON) {
 
-            ErrorReport.makeError(ErrorReportSyntax.class, "Expected Semicolon ';'", statementEnd);
+            ErrorReport.makeError(ErrorReportSyntax.class, "AssignmentNode -- Expected Semicolon ';', got "+statementEnd.getTokenType(), statementEnd);
 
             tokens.popStack(true);
             return null;

@@ -20,6 +20,7 @@ public class ParametersDefNode extends NodeBase<ParametersDefNode> {
     }
 
     public static ParametersDefNode parseNode(TokenStack tokens) {
+
         tokens.pushStack();
 
         ArrayList<VariableDeclarationNode> paramNodes = new ArrayList<>();
@@ -31,9 +32,12 @@ public class ParametersDefNode extends NodeBase<ParametersDefNode> {
         }
         
         do {
+
             ArrayList<Token> pops = new ArrayList<>();
             int errorCode = tokens.tokenSequenceMatch(
-                    new TokenType[] { TokenType.ID, TokenType.COLON, TokenType.KEYWORD }, pops);
+                new TokenType[] { TokenType.ID, TokenType.COLON, TokenType.KEYWORD },
+                pops
+            );
 
             String errorMessage = switch (errorCode) {
                 case -1 -> null;
@@ -45,31 +49,35 @@ public class ParametersDefNode extends NodeBase<ParametersDefNode> {
 
             if (errorMessage != null) {
 
-                ErrorReport.makeError(ErrorReportSyntax.class, errorMessage, TokenStack.get_last_token_popped());
+                ErrorReport.makeError(ErrorReportSyntax.class, "ParametersDefNode -- "+errorMessage, TokenStack.get_last_token_popped());
 
                 tokens.popStack(true);
                 return null;
+
             }
 
             //Get the type, ensure it is not Void
             TypeNode type = new TypeNode(pops.getLast());
             if (type.getType().getToken().equals("Void")) {
                 
-                ErrorReport.makeError(ErrorReportSyntax.class, "Cannot declare a parameter of type 'Void'", TokenStack.get_last_token_popped());
+                ErrorReport.makeError(ErrorReportSyntax.class, "ParametersDefNode -- Cannot declare a parameter of type 'Void'", TokenStack.get_last_token_popped());
 
                 tokens.popStack(true);
                 return null;
+                
             }    
 
             VarRefNode name = new VarRefNode(pops.getFirst());
 
-            
-
             paramNodes.add(new VariableDeclarationNode(type, name, true));
             curr = tokens.popToken();
+
         } while (curr != null && curr.getTokenType() == TokenType.COMMA);
 
         if (curr.getTokenType() != TokenType.R_BRACKET) {
+
+            ErrorReport.makeError(ErrorReportSyntax.class, "ParametersDefNode -- Expected Right Bracket ']'", TokenStack.get_last_token_popped());
+
             tokens.popStack(true);
             return null;
         }

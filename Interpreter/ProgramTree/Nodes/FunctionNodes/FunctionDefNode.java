@@ -48,7 +48,7 @@ public class FunctionDefNode extends NodeBase<FunctionDefNode> {
 
         if (errorMessage != null) {
 
-            ErrorReport.makeError(ErrorReportSyntax.class, errorMessage, tokens.get_last_token_popped());
+            ErrorReport.makeError(ErrorReportSyntax.class, "FunctionDefNode -- "+errorMessage, tokens.get_last_token_popped());
 
             tokens.popStack(true);
             return null;
@@ -70,7 +70,7 @@ public class FunctionDefNode extends NodeBase<FunctionDefNode> {
         ParametersDefNode paramsNode = ParametersDefNode.parseNode(tokens);
         if (paramsNode == null) {
 
-            ErrorReport.makeError(ErrorReportSyntax.class, "Failed to parse parameters", tokens.get_last_token_popped());
+            ErrorReport.makeError(ErrorReportSyntax.class, "FunctionDefNode -- Failed to parse parameters", tokens.get_last_token_popped());
 
             tokens.popStack(true);
             return null;
@@ -89,7 +89,7 @@ public class FunctionDefNode extends NodeBase<FunctionDefNode> {
 
         if (errorMessage != null) {
 
-            ErrorReport.makeError(ErrorReportSyntax.class, errorMessage, tokens.get_last_token_popped());
+            ErrorReport.makeError(ErrorReportSyntax.class, "FunctionDefNode -- "+errorMessage, tokens.get_last_token_popped());
 
             tokens.popStack(true);
             return null;
@@ -100,7 +100,7 @@ public class FunctionDefNode extends NodeBase<FunctionDefNode> {
         BodyNode fBody = BodyNode.parseNode(tokens, true);
         if (fBody == null) {
 
-            ErrorReport.makeError(ErrorReportSyntax.class, "Function body is null", tokens.get_last_token_popped());
+            ErrorReport.makeError(ErrorReportSyntax.class, "FunctionDefNode -- Function body is null", tokens.get_last_token_popped());
 
             tokens.popStack(true);
             return null;

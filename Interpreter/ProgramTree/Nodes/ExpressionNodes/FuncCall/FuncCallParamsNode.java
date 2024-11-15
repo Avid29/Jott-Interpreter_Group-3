@@ -23,7 +23,7 @@ public class FuncCallParamsNode extends NodeBase<FuncCallParamsNode> {
         ArrayList<ExpressionNodeBase> params = new ArrayList<>(); 
         if (tokens.popToken().getTokenType() != TokenType.L_BRACKET){
 
-            ErrorReport.makeError(ErrorReportSyntax.class, "Expected Opening Bracket '['", TokenStack.get_last_token_popped());
+            ErrorReport.makeError(ErrorReportSyntax.class, "FuncCallParamsNode -- Expected Opening Bracket '['", TokenStack.get_last_token_popped());
 
             tokens.popStack(true);
             return null;
@@ -32,8 +32,10 @@ public class FuncCallParamsNode extends NodeBase<FuncCallParamsNode> {
         Token popped = null;
         do {
             ExpressionNodeBase expression = ExpressionNodeBase.parseNode(tokens);
-            if (expression == null)
-            {
+            if (expression == null) {
+
+                ErrorReport.makeError(ErrorReportSyntax.class, "FuncCallParamsNode -- Failed to parse expression", TokenStack.get_last_token_popped());
+
                 tokens.popStack(true);
                 return null;
             }
@@ -45,7 +47,7 @@ public class FuncCallParamsNode extends NodeBase<FuncCallParamsNode> {
 
         if (popped.getTokenType() != TokenType.R_BRACKET) {
 
-            ErrorReport.makeError(ErrorReportSyntax.class, "Expected Closing Bracket ']'", TokenStack.get_last_token_popped());
+            ErrorReport.makeError(ErrorReportSyntax.class, "FuncCallParamsNode -- Expected Closing Bracket ']'", TokenStack.get_last_token_popped());
 
             tokens.popStack(true);
             return null;

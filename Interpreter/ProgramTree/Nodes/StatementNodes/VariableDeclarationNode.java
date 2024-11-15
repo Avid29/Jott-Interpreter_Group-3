@@ -25,7 +25,9 @@ public class VariableDeclarationNode extends BodyStatementNodeBase {
 
         ArrayList<Token> popped = new ArrayList<>();
         int errorCode = tokens.tokenSequenceMatch(
-                new TokenType[] { TokenType.KEYWORD, TokenType.ID, TokenType.SEMICOLON }, popped);
+            new TokenType[] { TokenType.KEYWORD, TokenType.ID, TokenType.SEMICOLON },
+            popped
+        );
 
         if (errorCode != -1) {
             // No need to write an error message because the line still may be valid. We
@@ -38,7 +40,7 @@ public class VariableDeclarationNode extends BodyStatementNodeBase {
         TypeNode type = new TypeNode(popped.get(0));
         if (type.getType().getToken().equals("Void")) {
 
-            ErrorReport.makeError(ErrorReportSyntax.class, "Cannot declare a variable of type 'Void'", TokenStack.get_last_token_popped());
+            ErrorReport.makeError(ErrorReportSyntax.class, "VariableDeclarationNode -- Cannot declare a variable of type 'Void'", TokenStack.get_last_token_popped());
 
             tokens.popStack(true);
             return null;

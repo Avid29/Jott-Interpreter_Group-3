@@ -28,7 +28,7 @@ public class WhileBlockNode extends BlockDeclareNodeBase {
         if (errorCode != -1) {
 
             // Missing conditional expression
-            ErrorReport.makeError(ErrorReportSyntax.class, "While Block -- Missing conditional expression", TokenStack.get_last_token_popped());
+            ErrorReport.makeError(ErrorReportSyntax.class, "WhileBlockNode -- Missing conditional expression", TokenStack.get_last_token_popped());
 
             tokens.popStack(true);
             return null;
@@ -36,7 +36,7 @@ public class WhileBlockNode extends BlockDeclareNodeBase {
 
         if (!popped.get(0).getToken().equals("While")) {
 
-            ErrorReport.makeError(ErrorReportSyntax.class, "While Block -- Expected 'While'", TokenStack.get_last_token_popped());
+            ErrorReport.makeError(ErrorReportSyntax.class, "WhileBlockNode -- Expected 'While'", TokenStack.get_last_token_popped());
 
             tokens.popStack(true);
             return null;
@@ -48,7 +48,7 @@ public class WhileBlockNode extends BlockDeclareNodeBase {
         //Parsed expression is null -> null
         if (parsedExpression == null) {
 
-            ErrorReport.makeError(ErrorReportSyntax.class, "While Block -- Failed to parse Expression", TokenStack.get_last_token_popped());
+            ErrorReport.makeError(ErrorReportSyntax.class, "WhileBlockNode -- Failed to parse Expression", TokenStack.get_last_token_popped());
 
         	tokens.popStack(true);
         	return null;
@@ -57,7 +57,7 @@ public class WhileBlockNode extends BlockDeclareNodeBase {
     	//No closing Right Bracket ( ] ) -> null
     	if (tokens.popToken().getTokenType() != TokenType.R_BRACKET) {
 
-            ErrorReport.makeError(ErrorReportSyntax.class, "While Block -- Expecting Right Bracket ']'", TokenStack.get_last_token_popped());
+            ErrorReport.makeError(ErrorReportSyntax.class, "WhileBlockNode -- Expecting Right Bracket ']'", TokenStack.get_last_token_popped());
 
         	tokens.popStack(true);
         	return null;

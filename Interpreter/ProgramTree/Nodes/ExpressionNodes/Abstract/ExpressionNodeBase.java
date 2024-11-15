@@ -49,7 +49,7 @@ public abstract class ExpressionNodeBase extends NodeBase<ExpressionNodeBase> {
         }
 
         if (result == null)
-            ErrorReport.makeError(ErrorReportSyntax.class, "Invalid or missing Expression", TokenStack.get_last_token_popped());
+            ErrorReport.makeError(ErrorReportSyntax.class, "ExpressionNodeBase -- Invalid or missing Expression", TokenStack.get_last_token_popped());
 
         return result;
     } 

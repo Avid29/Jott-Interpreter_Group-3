@@ -23,7 +23,7 @@ public class ReturnStatementNode extends BodyStatementNodeBase {
         // Ensure return
         if (!next.getToken().equals("Return")){
 
-            ErrorReport.makeError(ErrorReportSyntax.class, "Expected 'Return'", next);
+            ErrorReport.makeError(ErrorReportSyntax.class, "ReturnStatementNode -- Expected 'Return', got "+next.getTokenType(), next);
 
             tokens.popStack(true);
             return null;
@@ -33,7 +33,7 @@ public class ReturnStatementNode extends BodyStatementNodeBase {
         var expression = ExpressionNodeBase.parseNode(tokens);
         if (expression == null) {
 
-            ErrorReport.makeError(ErrorReportSyntax.class, "Missing Expression", next);
+            ErrorReport.makeError(ErrorReportSyntax.class, "ReturnStatementNode -- Missing Expression", next);
 
             tokens.popStack(true);
             return null;
@@ -43,7 +43,7 @@ public class ReturnStatementNode extends BodyStatementNodeBase {
         var statementEnd = tokens.popToken();
         if (statementEnd.getTokenType() != TokenType.SEMICOLON) {
 
-            ErrorReport.makeError(ErrorReportSyntax.class, "Expected Semicolon ';'", next);
+            ErrorReport.makeError(ErrorReportSyntax.class, "ReturnStatementNode -- Expected Semicolon ';', got "+statementEnd.getTokenType(), next);
 
             tokens.popStack(true);
             return null;

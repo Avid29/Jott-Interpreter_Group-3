@@ -20,7 +20,7 @@ public class VarRefNode extends OperandNodeBase {
         var next = tokens.popToken();
         if (next.getTokenType() != TokenType.ID) {
 
-            ErrorReport.makeError(ErrorReportSyntax.class, "Expected ID token", TokenStack.get_last_token_popped());
+            ErrorReport.makeError(ErrorReportSyntax.class, "VarRefNode -- Expected ID token, got "+next.getTokenType(), TokenStack.get_last_token_popped());
 
             tokens.popStack(true);
             return null;

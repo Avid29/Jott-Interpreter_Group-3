@@ -1,5 +1,7 @@
 package Interpreter.ProgramTree.Nodes.ExpressionNodes;
 
+import ErrorReporting.ErrorReport;
+import ErrorReporting.ErrorReportSyntax;
 import Interpreter.Parsing.TokenStack;
 import Interpreter.ProgramTree.Nodes.ExpressionNodes.Abstract.ExpressionNodeBase;
 import Interpreter.ProgramTree.Nodes.ExpressionNodes.Abstract.OperandNodeBase;
@@ -21,8 +23,11 @@ public class BinaryMathOpNode extends ExpressionNodeBase {
 
         var result = ExpressionNodeBase.parseOperatorNode(stack, TokenType.MATH_OP);
 
-        if (result == null)
+        if (result == null) {
+
+            //  ErrorReport.makeError(ErrorReportSyntax.class, "BinaryMathOpNode -- Failed to parse expression", TokenStack.get_last_token_popped());
             return null;
+        }
 
         return new BinaryMathOpNode(result.Item1, result.Item2, result.Item3);
     }

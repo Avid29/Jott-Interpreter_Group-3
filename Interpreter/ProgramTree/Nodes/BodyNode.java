@@ -25,7 +25,7 @@ public class BodyNode extends NodeBase<BodyNode> {
     	//No opening Left Brace ( { ) -> null
     	if (tokens.popToken().getTokenType() != TokenType.L_BRACE) {
 
-            ErrorReport.makeError(ErrorReportSyntax.class, "Missing Opening Brace '{'", TokenStack.get_last_token_popped());
+            ErrorReport.makeError(ErrorReportSyntax.class, "BodyNode -- Missing Opening Brace '{'", TokenStack.get_last_token_popped());
 
         	tokens.popStack(true);
         	return null;
@@ -54,7 +54,7 @@ public class BodyNode extends NodeBase<BodyNode> {
             //No more tokens, missing closing brace
             if (peekedToken == null) {
 
-                ErrorReport.makeError(ErrorReportSyntax.class, "Missing Closing Brace '}'", TokenStack.get_last_token_popped());
+                ErrorReport.makeError(ErrorReportSyntax.class, "BodyNode -- Missing Closing Brace '}'", TokenStack.get_last_token_popped());
                 
                 tokens.popStack(true);
                 return null;
@@ -68,7 +68,7 @@ public class BodyNode extends NodeBase<BodyNode> {
             //If a return statement has been encountered, no more statements are allowed
             else if (encounteredReturn) {
 
-                ErrorReport.makeError(ErrorReportSyntax.class, "Code after Return", TokenStack.get_last_token_popped());
+                ErrorReport.makeError(ErrorReportSyntax.class, "BodyNode -- Code after Return", TokenStack.get_last_token_popped());
 
                 tokens.popStack(true);
                 return null;
@@ -76,6 +76,9 @@ public class BodyNode extends NodeBase<BodyNode> {
 
             BodyStatementNodeBase statement = BodyStatementNodeBase.parseNode(tokens);
             if (statement == null) {
+
+                ErrorReport.makeError(ErrorReportSyntax.class, "BodyNode -- Failed to parse Body Statement", TokenStack.get_last_token_popped());
+
                 tokens.popStack(true);
                 return null;
             }
@@ -90,7 +93,7 @@ public class BodyNode extends NodeBase<BodyNode> {
         // Pop the closing brace
         if(tokens.popToken().getTokenType() != TokenType.R_BRACE) {
 
-            ErrorReport.makeError(ErrorReportSyntax.class, "Missing Closing Brace '}'", TokenStack.get_last_token_popped());
+            ErrorReport.makeError(ErrorReportSyntax.class, "BodyNode -- Missing Closing Brace '}'", TokenStack.get_last_token_popped());
 
             tokens.popStack(true);
             return null;

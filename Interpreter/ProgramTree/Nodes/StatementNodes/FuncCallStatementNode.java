@@ -1,5 +1,7 @@
 package Interpreter.ProgramTree.Nodes.StatementNodes;
 
+import ErrorReporting.ErrorReport;
+import ErrorReporting.ErrorReportSyntax;
 import Interpreter.Parsing.TokenStack;
 import Interpreter.ProgramTree.Nodes.ExpressionNodes.FuncCall.FunctionCallNode;
 import Interpreter.ProgramTree.Nodes.StatementNodes.Abstract.BodyStatementNodeBase;
@@ -13,20 +15,29 @@ public class FuncCallStatementNode extends BodyStatementNodeBase {
     }
 
     public static FuncCallStatementNode parseNode(TokenStack tokens) {
+        
         tokens.pushStack();
         FunctionCallNode funcCall = FunctionCallNode.parseNode(tokens);
-        if (funcCall == null)
-        {
+        
+        if (funcCall == null) {
+
+            ErrorReport.makeError(ErrorReportSyntax.class, "FuncCallStatementNode -- Function call is null", TokenStack.get_last_token_popped());
+
             tokens.popStack(true);
             return null;
+
         }
 
         // Ensure semi-colon
         var statementEnd = tokens.popToken();
-        if (statementEnd.getTokenType() != TokenType.SEMICOLON)
-        {
+
+        if (statementEnd.getTokenType() != TokenType.SEMICOLON) {
+
+            ErrorReport.makeError(ErrorReportSyntax.class, "FuncCallStatementNode -- Expected semicolon ';', got "+statementEnd.getTokenType(), TokenStack.get_last_token_popped());
+            
             tokens.popStack(true);
             return null;
+
         }
 
         tokens.popStack(false);
