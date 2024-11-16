@@ -2,25 +2,106 @@ package Interpreter.ProgramTree;
 
 import java.util.HashMap;
 
+import ErrorReporting.ErrorReport;
+import ErrorReporting.ErrorReportSemantic;
 import Interpreter.Tuple2;
+import SymbolInfo.SymbolInfo;
+import provided.JottParser;
+import provided.Token;
 
-//holds a function symbol table in a dict
-//Takes soemthing as an argument 
-//I have no idea what goes here 
+import Interpreter.ProgramTree.Nodes.TypeNode;
+import Interpreter.ProgramTree.Nodes.ExpressionNodes.VarRefNode;
+
+
+
 public class ProgramSymbolTable {
-    private HashMap<String,Tuple2<FuncInfo, FunctionSymbolTable>> table;
 
-    //constructor
-    public void defineSymbol(String symbol, FunctionSymbolTable table2, FuncInfo info,int lineNum, String fileName){
-        if(table.containsKey(symbol)){
-            //throw new Exception
-            //System.err.println(SymbolTableError);
-            System.err.println(new SymbolTableError(fileName, lineNum));
-            return;
-            
-            
+    private static HashMap<String, SymbolInfo> table = new HashMap<>();
+
+    public static void clearTable() { 
+
+        table = new HashMap<>();
+
+    }
+
+    public static boolean validateSymbolAssignmentOperation(SymbolInfo sourceSymbolInfo, Token targetToken) {
+
+        /*
+
+            Checks if an assignment operation is allowed
+            between a symbol (which should already be
+            in the table!) and a provided token.
+        */
+
+
+        //Symbol is not in the table, report an error
+        if (!table.containsKey(sourceSymbolInfo.getVarRefToken().getToken())) {
+
+            ErrorReport.makeError(ErrorReportSemantic.class, "Symbol not found in table: "+sourceSymbolInfo.getVarRefToken().getToken(), sourceSymbolInfo.getVarRefToken());
+            return false;
+
         }
 
-        table.put(symbol, new Tuple2<>(info, table2));
+        //Symbol is in the table, check if the assignment is valid
+        //...
+
+        return true;
+
     }
+
+    public static boolean symbolIsValid(SymbolInfo sourceSymbolInfo) {
+
+        /*
+
+            Checks if the symbol is allowed
+            to be added to the table.
+
+        */
+
+        String symbolName = sourceSymbolInfo.getVarRefToken().getToken();
+
+        //Symbol already exists in table, report an error
+        if (table.containsKey(sourceSymbolInfo)) {
+
+            ErrorReport.makeError(ErrorReportSemantic.class, "Duplicate symbol definition: "+symbolName, sourceSymbolInfo.getVarRefToken());
+            return false;
+            
+        }
+        System.out.println("\t\t[EX] Symbol doesn't already exist in table: "+symbolName);
+
+        //Symbol uses a reserved keyword, report an error
+        if (JottParser.isKeyword(symbolName)) {
+
+            ErrorReport.makeError(ErrorReportSemantic.class, "Symbol uses a reserved keyword: "+symbolName, sourceSymbolInfo.getVarRefToken());
+            return false;
+
+        }
+
+        //Symbol is valid
+        return true;
+        
+    }
+    
+
+    public static boolean defineSymbol(SymbolInfo sourceSymbolInfo) {
+
+        //Symbol is invalid, do not add it to the table
+        if (!symbolIsValid(sourceSymbolInfo))
+            return false;
+
+        //Add the validated symbol to the table
+        String symbolName = sourceSymbolInfo.getVarRefToken().getToken();
+        table.put(symbolName, sourceSymbolInfo);
+
+        return true;
+
+    }
+
+    public static boolean defineSymbol(TypeNode type, VarRefNode name) {
+
+        SymbolInfo newSymbol = new SymbolInfo(type.getType(), name.getIdToken());
+        return defineSymbol(newSymbol);
+
+    }
+
 }

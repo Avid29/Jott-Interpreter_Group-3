@@ -125,8 +125,12 @@ public class FunctionDefNode extends NodeBase<FunctionDefNode> {
             return false;
 
         // Ensure contains return when non-void.
-        if (!returnType.getType().getToken().equals("Void") && !body.containsReturn())
+        if (!returnType.getType().getToken().equals("Void") && !body.containsReturn()) {
+
+            ErrorReport.makeError(ErrorReportSyntax.class, "FunctionDefNode -- Function does not contain return statement", funcName.getId());
             return false;
+            
+        }
 
         return true;
 	}

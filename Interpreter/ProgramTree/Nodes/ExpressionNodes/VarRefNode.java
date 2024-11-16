@@ -14,6 +14,10 @@ public class VarRefNode extends OperandNodeBase {
         this.id = id;
     }
 
+    public Token getIdToken() {
+        return id;
+    }
+
     public static VarRefNode parseNode(TokenStack tokens){
         tokens.pushStack();
 

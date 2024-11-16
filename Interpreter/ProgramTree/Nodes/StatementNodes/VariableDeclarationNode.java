@@ -5,9 +5,12 @@ import java.util.ArrayList;
 import ErrorReporting.ErrorReport;
 import ErrorReporting.ErrorReportSyntax;
 import Interpreter.Parsing.TokenStack;
+import Interpreter.ProgramTree.ProgramSymbolTable;
+import Interpreter.ProgramTree.SymbolTableError;
 import Interpreter.ProgramTree.Nodes.TypeNode;
 import Interpreter.ProgramTree.Nodes.ExpressionNodes.VarRefNode;
 import Interpreter.ProgramTree.Nodes.StatementNodes.Abstract.BodyStatementNodeBase;
+import SymbolInfo.SymbolInfo;
 import provided.Token;
 import provided.TokenType;
 
@@ -48,6 +51,16 @@ public class VariableDeclarationNode extends BodyStatementNodeBase {
         }
 
         VarRefNode name = new VarRefNode(popped.get(1));
+
+
+        //Attempt to record the symbol in the symbol table
+        if (!ProgramSymbolTable.defineSymbol(type, name)) {
+
+            tokens.popStack(true);
+            return null;
+            
+        }
+
 
         tokens.popStack(false);
         return new VariableDeclarationNode(type, name, false);

@@ -29,10 +29,17 @@ import Interpreter.ProgramTree.Nodes.StatementNodes.ReturnStatementNode;
 import Interpreter.ProgramTree.Nodes.StatementNodes.VariableDeclarationNode;
 
 public class JottParser {
+
     private static final Set<String> KeywordSet = Set.of(
         "Def", "Return",
         "If", "ElseIf", "Else", "While",
         "Integer", "Double", "String", "Boolean", "Void");
+    private static final Set<String> keywordSetLower = new HashSet<String>();
+    static {
+        for (String keyword : KeywordSet) {
+            keywordSetLower.add(keyword.toLowerCase());
+        }
+    }
 
     /**
      * Parses an ArrayList of Jotton tokens into a Jott Parse Tree.
@@ -67,4 +74,9 @@ public class JottParser {
             token.updateTokenType(updatedType);
         }
     }
+
+    public static boolean isKeyword(String token) {
+        return KeywordSet.contains(token) || keywordSetLower.contains(token);
+    }
+
 }

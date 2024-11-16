@@ -63,6 +63,11 @@ public class Token {
         return type;
     }
 
+    /* ... */
+    public TokenType getTokenTypeExt() {
+        return getTokenType();
+    }
+
     /**
      * Updates a token's type to differentiate IDs and Keywords.
      * 
