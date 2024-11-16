@@ -34,4 +34,14 @@ public class StringNode extends ExpressionNodeBase {
     public String convertToJott() {
         return string.getToken();
     }
+
+    @Override
+    public boolean validateTree() {
+        return true;
+    }
+
+    @Override
+    public String getType() {
+        return "String";
+    }
 }

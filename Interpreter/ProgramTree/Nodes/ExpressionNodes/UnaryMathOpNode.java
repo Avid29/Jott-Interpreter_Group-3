@@ -42,4 +42,14 @@ public class UnaryMathOpNode extends OperandNodeBase {
     public String convertToJott() {
         return "-" + child.convertToJott();
     }
+
+    @Override
+    public boolean validateTree() {
+        return child.validateTree();
+    }
+
+    @Override
+    public String getType() {
+        return child.getType();
+    }
 }

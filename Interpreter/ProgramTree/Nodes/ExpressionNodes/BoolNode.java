@@ -42,4 +42,14 @@ public class BoolNode extends ExpressionNodeBase {
     public String convertToJott() {
         return value.getToken();
     }
+
+    @Override
+    public boolean validateTree() {
+        return true;
+    }
+
+    @Override
+    public String getType() {
+        return "Boolean";
+    }
 }

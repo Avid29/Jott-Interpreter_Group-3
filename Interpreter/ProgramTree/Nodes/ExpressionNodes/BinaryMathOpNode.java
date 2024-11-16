@@ -36,4 +36,28 @@ public class BinaryMathOpNode extends ExpressionNodeBase {
     public String convertToJott() {
         return leftChild.convertToJott() + op.getToken() + rightChild.convertToJott();
     }
+
+    @Override
+    public boolean validateTree() {
+        if (!leftChild.validateTree() || !rightChild.validateTree()) {
+            return false;
+        }
+
+        if (!leftChild.getType().equals(rightChild.getType())) {
+            ErrorReport.makeError(ErrorReportSyntax.class, "BinaryMathOpNode -- Type mismatch", op);
+            return false;
+        }
+
+        if (op.getToken().equals("/") && rightChild.convertToJott().equals("0")) {
+            ErrorReport.makeError(ErrorReportSyntax.class, "BinaryMathOpNode -- Division by 0", op);
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public String getType() {
+        return leftChild.getType();
+    }
 }

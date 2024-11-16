@@ -17,6 +17,8 @@ import provided.TokenType;
 
 public abstract class ExpressionNodeBase extends NodeBase<ExpressionNodeBase> {
 
+    public abstract String getType();
+
     public static ExpressionNodeBase parseNode(TokenStack tokens) {
         
         Token next = tokens.peekToken();

@@ -34,4 +34,17 @@ public class NumberNode extends OperandNodeBase {
     public String convertToJott() {
         return number.getToken();
     }
+
+    @Override
+    public boolean validateTree() {
+        return true;
+    }
+
+    @Override
+    public String getType() {
+        if (number.getToken().contains(".")) {
+            return "Double";
+        }
+        return "Integer";
+    }
 }

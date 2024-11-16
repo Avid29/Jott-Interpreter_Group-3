@@ -36,4 +36,23 @@ public class RelOpNode extends ExpressionNodeBase {
     public String convertToJott() {
         return leftChild.convertToJott() + op.getToken() + rightChild.convertToJott();
     }
+
+    @Override
+    public boolean validateTree() {
+        if (!leftChild.validateTree() || !rightChild.validateTree()) {
+            return false;
+        }
+
+        if (!leftChild.getType().equals(rightChild.getType())) {
+            ErrorReport.makeError(ErrorReportSyntax.class, "RelOpNode -- Type mismatch between left and right operands", op);
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public String getType() {
+        return "Boolean";
+    }
 }

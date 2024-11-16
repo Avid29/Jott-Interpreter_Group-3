@@ -3,15 +3,19 @@ package Interpreter.ProgramTree.Nodes.ExpressionNodes;
 import ErrorReporting.ErrorReport;
 import ErrorReporting.ErrorReportSyntax;
 import Interpreter.Parsing.TokenStack;
+import Interpreter.ProgramTree.ProgramSymbolTable;
 import Interpreter.ProgramTree.Nodes.ExpressionNodes.Abstract.OperandNodeBase;
+import SymbolInfo.SymbolInfo;
 import provided.Token;
 import provided.TokenType;
 
 public class VarRefNode extends OperandNodeBase {
     private Token id;
+    private String type;
 
     public VarRefNode(Token id) {
         this.id = id;
+        this.type = null;
     }
 
     public Token getIdToken() {
@@ -37,5 +41,23 @@ public class VarRefNode extends OperandNodeBase {
     @Override
     public String convertToJott() {
         return id.getToken();
+    }
+
+    @Override
+    public boolean validateTree() {
+        SymbolInfo info = ProgramSymbolTable.getSymbol(id);
+        
+        if (info == null) {
+            ErrorReport.makeError(ErrorReportSyntax.class, "Use of undefined variable '" + id.getToken() + "'", id);
+            return false;
+        }
+        type = info.getIdToken().getToken();
+
+        return true;
+    }
+
+    @Override
+    public String getType() {
+        return type;
     }
 }
