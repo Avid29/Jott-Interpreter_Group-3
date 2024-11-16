@@ -8,10 +8,10 @@ import provided.JottTokenizer;
 public class FunctionSymbolTable {
     private HashMap<String,VarInfo> table;
 
-    public void DefineSymbol(String symbol, VariableDeclarationNode var, int lineNum, String fileName)throws Exception{
+    public void defineSymbol(String symbol, VariableDeclarationNode var, int lineNum, String fileName) throws Exception {
 
         //Symbol already exists in table, report an error
-        if (table.containsKey(symbol)){
+        if (table.containsKey(symbol)) {
 
             //throw new Exception, 
             //System.err.println(SymbolTableError);

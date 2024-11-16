@@ -11,26 +11,26 @@ public class FuncInfo {
     public ArrayList<String> paramTypes;
     public FunctionSymbolTable funcTable;
     
-    public FuncInfo(FunctionDefNode fdn){
+    public FuncInfo(FunctionDefNode fdn) {
 
         returnType = fdn.returnType.getType();
         paramTypes = new ArrayList<>(); 
 
-        for (var param : fdn.params.paramNodes){
+        for (var param : fdn.params.paramNodes) {
             paramTypes.add(param.type.getType().getToken());
         }
 
     }
 
-    public Token getReturnType(){
+    public Token getReturnType() {
         return returnType;
     } 
 
-    public FunctionSymbolTable getTable(){
+    public FunctionSymbolTable getTable() {
         return funcTable;
     }
 
-    public ArrayList getParamTypes(){
+    public ArrayList<String> getParamTypes() {
         return paramTypes;
     }
 

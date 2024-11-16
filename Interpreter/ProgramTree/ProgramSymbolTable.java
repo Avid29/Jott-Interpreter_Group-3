@@ -104,4 +104,14 @@ public class ProgramSymbolTable {
 
     }
 
+    public static SymbolInfo getSymbol(Token token) {
+        if (!table.containsKey(token.getToken())) {
+            ErrorReport.makeError(ErrorReportSemantic.class, "Symbol not found in table: "+token.getToken(), token);
+            return null;
+
+        }
+
+        return table.get(token.getToken());
+
+    }
 }
