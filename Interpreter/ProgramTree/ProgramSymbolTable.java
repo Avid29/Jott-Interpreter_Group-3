@@ -23,6 +23,29 @@ public class ProgramSymbolTable {
         table = new HashMap<>();
 
     }
+    
+
+    public static String getSymbolType(Token symbolToken, boolean allowUnsafeAccess) {
+
+        String symbolName = symbolToken.getToken();
+
+        if (!table.containsKey(symbolName)) {
+
+            if (!allowUnsafeAccess)
+                ErrorReport.makeError(ErrorReportSemantic.class, "Symbol not found in table: "+symbolName,  symbolToken);
+                
+            return null;
+
+        }
+
+        return table.get(symbolName).getIdToken().getToken();
+
+    }
+    public static String getSymbolType(Token symbolToken) {
+
+        return getSymbolType(symbolToken, false);
+
+    }
 
     public static boolean validateSymbolAssignmentOperation(SymbolInfo sourceSymbolInfo, Token targetToken) {
 
@@ -67,7 +90,7 @@ public class ProgramSymbolTable {
             return false;
             
         }
-        System.out.println("\t\t[EX] Symbol doesn't already exist in table: "+symbolName);
+        //  System.out.println("\t\t[EX] Symbol doesn't already exist in table: "+symbolName);
 
         //Symbol uses a reserved keyword, report an error
         if (JottParser.isKeyword(symbolName)) {
@@ -98,6 +121,9 @@ public class ProgramSymbolTable {
     }
 
     public static boolean defineSymbol(TypeNode type, VarRefNode name) {
+
+        //System.out.println("[EX VAR REF NODE TYPE: "+type.getType().getToken());
+        //System.out.println("[EX VAR REF NODE NAME: "+name.getIdToken().getToken());
 
         SymbolInfo newSymbol = new SymbolInfo(type.getType(), name.getIdToken());
         return defineSymbol(newSymbol);

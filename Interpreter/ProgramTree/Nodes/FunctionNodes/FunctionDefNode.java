@@ -3,6 +3,7 @@ package Interpreter.ProgramTree.Nodes.FunctionNodes;
 import java.util.ArrayList;
 
 import ErrorReporting.ErrorReport;
+import ErrorReporting.ErrorReportSemantic;
 import ErrorReporting.ErrorReportSyntax;
 import Interpreter.ProgramTree.Nodes.Abstract.NodeBase;
 import Interpreter.ProgramTree.Nodes.ExpressionNodes.FuncCall.FunctionRefNode;
@@ -13,6 +14,7 @@ import provided.TokenType;
 import Interpreter.Parsing.TokenStack;
 import Interpreter.ProgramTree.Nodes.BodyNode;
 import Interpreter.ProgramTree.Nodes.TypeNode;
+import Interpreter.ProgramTree.FunctionSymbolTable;
 
 public class FunctionDefNode extends NodeBase<FunctionDefNode> {
     public FunctionRefNode funcName;//changed all this to public
@@ -67,6 +69,8 @@ public class FunctionDefNode extends NodeBase<FunctionDefNode> {
 
         FunctionRefNode identifier = new FunctionRefNode(pops.get(1));
 
+
+
         // Parse parameters
         ParametersDefNode paramsNode = ParametersDefNode.parseNode(tokens);
         if (paramsNode == null) {
@@ -97,6 +101,21 @@ public class FunctionDefNode extends NodeBase<FunctionDefNode> {
         }
 
         TypeNode returnTypeNode = new TypeNode(pops.get(1));
+
+
+
+        //Add Function to Symbol Table
+        if (!FunctionSymbolTable.defineSymbol(identifier, paramsNode, returnTypeNode)){ 
+
+            //ErrorReport.makeError(ErrorReportSemantic.class, "FunctionDefNode -- Duplicate function identifiers: "+identifier.getId().getToken(), tokens.get_last_token_popped());
+
+            tokens.popStack(true);
+            return null;
+
+        }
+
+
+
 
         BodyNode fBody = BodyNode.parseNode(tokens, true);
         if (fBody == null) {

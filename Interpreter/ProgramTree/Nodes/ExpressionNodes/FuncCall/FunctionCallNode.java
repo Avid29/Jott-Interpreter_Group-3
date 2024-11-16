@@ -4,12 +4,16 @@ import java.util.ArrayList;
 
 import ErrorReporting.ErrorReport;
 import ErrorReporting.ErrorReportSyntax;
+import ErrorReporting.ErrorReportSemantic;
 import Interpreter.Parsing.TokenStack;
+import Interpreter.ProgramTree.FunctionSymbolTable;
 import Interpreter.ProgramTree.Nodes.ExpressionNodes.Abstract.OperandNodeBase;
 import provided.Token;
 import provided.TokenType;
+import Interpreter.ProgramTree.Nodes.TypeNode;
 
 public class FunctionCallNode extends OperandNodeBase {
+
     private FunctionRefNode funcName;
     private FuncCallParamsNode callParams;
 
@@ -38,10 +42,33 @@ public class FunctionCallNode extends OperandNodeBase {
 
         FunctionRefNode fRefNode = new FunctionRefNode(pops.get(1));
 
+        
+        //Called function is not defined yet!
+        String funcName = fRefNode.getId().getToken();
+        if (!FunctionSymbolTable.programContainsFunction(funcName)) {
+
+            ErrorReport.makeError(ErrorReportSemantic.class, "FunctionCallNode -- Tried to call an undeclared function: "+funcName, fRefNode.getId());
+
+            tokens.popStack(true);
+            return null;
+
+        }
+
         FuncCallParamsNode fParamsNode = FuncCallParamsNode.parseNode(tokens);
         if (fParamsNode == null) {
 
             ErrorReport.makeError(ErrorReportSyntax.class, "FunctionCallNode -- Failed to parse function call parameters", TokenStack.get_last_token_popped());
+            return null;
+
+        }
+
+
+        //Ensure param types match function definition
+        if (!FunctionSymbolTable.functionParamsMatch(funcName, fParamsNode)) {
+
+            ErrorReport.makeError(ErrorReportSyntax.class, "FunctionCallNode -- Function call parameters do not match function definition", fRefNode.getId());
+
+            tokens.popStack(true);
             return null;
 
         }
@@ -53,5 +80,10 @@ public class FunctionCallNode extends OperandNodeBase {
     @Override
     public String convertToJott() {
         return "::" + funcName.convertToJott() + "[" + callParams.convertToJott() + "]";
+    }
+
+    @Override
+    public TypeNode getType() {
+        return FunctionSymbolTable.getFunctionType(funcName.getId().getToken());
     }
 }

@@ -14,8 +14,11 @@ import Interpreter.ProgramTree.Nodes.ExpressionNodes.RelOpNode;
 import Interpreter.ProgramTree.Nodes.ExpressionNodes.StringNode;
 import provided.Token;
 import provided.TokenType;
+import Interpreter.ProgramTree.Nodes.TypeNode;
 
 public abstract class ExpressionNodeBase extends NodeBase<ExpressionNodeBase> {
+
+    public abstract TypeNode getType();
 
     public static ExpressionNodeBase parseNode(TokenStack tokens) {
         
@@ -43,7 +46,7 @@ public abstract class ExpressionNodeBase extends NodeBase<ExpressionNodeBase> {
 
             //Reflection exceptions
             catch (Exception e) {
-                e.printStackTrace();
+                /* e.printStackTrace(); */
             }
 
         }
@@ -55,6 +58,7 @@ public abstract class ExpressionNodeBase extends NodeBase<ExpressionNodeBase> {
     } 
 
     protected static Tuple3<Token, OperandNodeBase, OperandNodeBase> parseOperatorNode(TokenStack stack, TokenType type){
+        
         stack.pushStack();
 
         OperandNodeBase left = OperandNodeBase.parseNode(stack);
@@ -76,6 +80,15 @@ public abstract class ExpressionNodeBase extends NodeBase<ExpressionNodeBase> {
             return null;
         }
 
+        String leftTypeName = left.getType().getType().getToken();
+        String rightTypeName = right.getType().getType().getToken();
+
+        if (!leftTypeName.equals(rightTypeName)) {
+            ErrorReport.makeError(ErrorReportSyntax.class, "ExpressionNodeBase -- Type mismatch: " + leftTypeName + " and " + rightTypeName, TokenStack.get_last_token_popped());
+            stack.popStack(true);
+            return null;
+        }
+        
         stack.popStack(false);
         return new Tuple3<>(op, left, right);
     }

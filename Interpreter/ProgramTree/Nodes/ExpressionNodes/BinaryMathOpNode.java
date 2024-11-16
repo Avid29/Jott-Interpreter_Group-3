@@ -7,6 +7,8 @@ import Interpreter.ProgramTree.Nodes.ExpressionNodes.Abstract.ExpressionNodeBase
 import Interpreter.ProgramTree.Nodes.ExpressionNodes.Abstract.OperandNodeBase;
 import provided.Token;
 import provided.TokenType;
+import java.util.ArrayList;
+import Interpreter.ProgramTree.Nodes.TypeNode;
 
 public class BinaryMathOpNode extends ExpressionNodeBase {
     private Token op;
@@ -35,5 +37,12 @@ public class BinaryMathOpNode extends ExpressionNodeBase {
     @Override
     public String convertToJott() {
         return leftChild.convertToJott() + op.getToken() + rightChild.convertToJott();
+    }
+
+    @Override
+    public TypeNode getType() {
+
+        //Assuming both children have the same type
+        return leftChild.getType();
     }
 }

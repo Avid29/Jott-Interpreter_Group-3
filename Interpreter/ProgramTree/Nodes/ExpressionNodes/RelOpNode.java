@@ -7,8 +7,10 @@ import Interpreter.ProgramTree.Nodes.ExpressionNodes.Abstract.ExpressionNodeBase
 import Interpreter.ProgramTree.Nodes.ExpressionNodes.Abstract.OperandNodeBase;
 import provided.Token;
 import provided.TokenType;
+import Interpreter.ProgramTree.Nodes.TypeNode;
 
 public class RelOpNode extends ExpressionNodeBase {
+
     private Token op;
     private OperandNodeBase leftChild;
     private OperandNodeBase rightChild;
@@ -36,4 +38,12 @@ public class RelOpNode extends ExpressionNodeBase {
     public String convertToJott() {
         return leftChild.convertToJott() + op.getToken() + rightChild.convertToJott();
     }
+
+    @Override
+    public TypeNode getType() {
+
+        //Assuming both children have the same type
+        return leftChild.getType();
+    }
+    
 }

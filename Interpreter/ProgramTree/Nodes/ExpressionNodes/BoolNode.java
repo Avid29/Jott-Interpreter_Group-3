@@ -3,6 +3,7 @@ package Interpreter.ProgramTree.Nodes.ExpressionNodes;
 import ErrorReporting.ErrorReport;
 import ErrorReporting.ErrorReportSyntax;
 import Interpreter.Parsing.TokenStack;
+import Interpreter.ProgramTree.Nodes.TypeNode;
 import Interpreter.ProgramTree.Nodes.ExpressionNodes.Abstract.ExpressionNodeBase;
 import provided.Token;
 import provided.TokenType;
@@ -41,5 +42,12 @@ public class BoolNode extends ExpressionNodeBase {
     @Override
     public String convertToJott() {
         return value.getToken();
+    }
+
+    @Override
+    public TypeNode getType() {
+        return new TypeNode(
+            new Token("Boolean", value.getFilename(), value.getLineNum(), TokenType.KEYWORD)
+        );
     }
 }
