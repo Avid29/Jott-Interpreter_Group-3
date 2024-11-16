@@ -17,8 +17,9 @@ public class TypeNode extends NodeBase<TypeNode> {
     public TypeNode(Token type) {
 
         //Validate the provided token type
-        if (!isValidType(type))
+        if (!isValidType(type)) {
             throw new IllegalArgumentException("Invalid Type Token: " + type.getToken());
+        }
 
         this.type = type;
 

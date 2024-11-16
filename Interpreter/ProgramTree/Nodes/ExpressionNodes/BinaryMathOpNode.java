@@ -7,6 +7,8 @@ import Interpreter.ProgramTree.Nodes.ExpressionNodes.Abstract.ExpressionNodeBase
 import Interpreter.ProgramTree.Nodes.ExpressionNodes.Abstract.OperandNodeBase;
 import provided.Token;
 import provided.TokenType;
+import java.util.ArrayList;
+import Interpreter.ProgramTree.Nodes.TypeNode;
 
 public class BinaryMathOpNode extends ExpressionNodeBase {
     private Token op;
@@ -38,6 +40,13 @@ public class BinaryMathOpNode extends ExpressionNodeBase {
     }
 
     @Override
+    public TypeNode getType() {
+
+        //Assuming both children have the same type
+        return leftChild.getType();
+    }
+
+    @Override
     public boolean validateTree() {
         if (!leftChild.validateTree() || !rightChild.validateTree()) {
             return false;
@@ -56,8 +65,4 @@ public class BinaryMathOpNode extends ExpressionNodeBase {
         return true;
     }
 
-    @Override
-    public String getType() {
-        return leftChild.getType();
-    }
 }

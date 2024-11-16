@@ -7,8 +7,10 @@ import Interpreter.ProgramTree.Nodes.ExpressionNodes.Abstract.ExpressionNodeBase
 import Interpreter.ProgramTree.Nodes.ExpressionNodes.Abstract.OperandNodeBase;
 import provided.Token;
 import provided.TokenType;
+import Interpreter.ProgramTree.Nodes.TypeNode;
 
 public class RelOpNode extends ExpressionNodeBase {
+
     private Token op;
     private OperandNodeBase leftChild;
     private OperandNodeBase rightChild;
@@ -38,6 +40,14 @@ public class RelOpNode extends ExpressionNodeBase {
     }
 
     @Override
+    public TypeNode getType() {
+
+        //Assuming both children have the same type
+        return leftChild.getType();
+    }
+    
+
+    @Override
     public boolean validateTree() {
         if (!leftChild.validateTree() || !rightChild.validateTree()) {
             return false;
@@ -51,8 +61,4 @@ public class RelOpNode extends ExpressionNodeBase {
         return true;
     }
 
-    @Override
-    public String getType() {
-        return "Boolean";
-    }
 }

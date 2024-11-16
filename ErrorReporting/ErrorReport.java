@@ -20,7 +20,6 @@ public class ErrorReport {
 
     }
 
-
     public static void print_error_message() {
 
         //No Error Message instance to print! (Just print an unknown error instead?)

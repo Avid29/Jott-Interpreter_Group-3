@@ -33,6 +33,7 @@ public class VariableDeclarationNode extends BodyStatementNodeBase {
         );
 
         if (errorCode != -1) {
+
             // No need to write an error message because the line still may be valid. We
             // just need to backtrack and pass it along to the function body.
             tokens.popStack(true);
@@ -76,5 +77,12 @@ public class VariableDeclarationNode extends BodyStatementNodeBase {
             return this.convertToJott();
 
         return name.convertToJott() + ":" + type.convertToJott();
+    }
+
+    public TypeNode getType() {
+        return type;
+    }
+    public VarRefNode getName() {
+        return name;
     }
 }

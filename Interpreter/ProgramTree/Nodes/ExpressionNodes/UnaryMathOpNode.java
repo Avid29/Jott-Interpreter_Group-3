@@ -5,8 +5,10 @@ import ErrorReporting.ErrorReportSyntax;
 import Interpreter.Parsing.TokenStack;
 import Interpreter.ProgramTree.Nodes.ExpressionNodes.Abstract.OperandNodeBase;
 import provided.TokenType;
+import Interpreter.ProgramTree.Nodes.TypeNode;
 
 public class UnaryMathOpNode extends OperandNodeBase {
+
     private NumberNode child;
 
     public UnaryMathOpNode(NumberNode child) {
@@ -44,12 +46,13 @@ public class UnaryMathOpNode extends OperandNodeBase {
     }
 
     @Override
+    public TypeNode getType() {
+        return child.getType();
+    }
+
+    @Override
     public boolean validateTree() {
         return child.validateTree();
     }
 
-    @Override
-    public String getType() {
-        return child.getType();
-    }
 }

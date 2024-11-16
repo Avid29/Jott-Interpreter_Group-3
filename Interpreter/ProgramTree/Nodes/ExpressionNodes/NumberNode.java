@@ -6,8 +6,10 @@ import Interpreter.Parsing.TokenStack;
 import Interpreter.ProgramTree.Nodes.ExpressionNodes.Abstract.OperandNodeBase;
 import provided.Token;
 import provided.TokenType;
+import Interpreter.ProgramTree.Nodes.TypeNode;
 
 public class NumberNode extends OperandNodeBase {
+
     private Token number;
 
     public NumberNode(Token number) {
@@ -36,15 +38,20 @@ public class NumberNode extends OperandNodeBase {
     }
 
     @Override
+    public TypeNode getType() {
+        
+        String numberString = number.getToken();
+        String typeNameOut = (numberString.contains(".")) ? "Double" : "Integer";
+
+        return new TypeNode(
+            new Token(typeNameOut, number.getFilename(), number.getLineNum(), TokenType.KEYWORD)
+        );
+
+    }
+
+    @Override
     public boolean validateTree() {
         return true;
     }
 
-    @Override
-    public String getType() {
-        if (number.getToken().contains(".")) {
-            return "Double";
-        }
-        return "Integer";
-    }
 }

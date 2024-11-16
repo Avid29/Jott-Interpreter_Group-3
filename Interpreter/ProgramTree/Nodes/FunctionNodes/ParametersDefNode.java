@@ -13,10 +13,21 @@ import provided.Token;
 import provided.TokenType;
 
 public class ParametersDefNode extends NodeBase<ParametersDefNode> {
+
     public ArrayList<VariableDeclarationNode> paramNodes;
 
     public ParametersDefNode(ArrayList<VariableDeclarationNode> paramNodes) {
         this.paramNodes = paramNodes;
+    }
+
+    public int getNumParams() {
+        return paramNodes.size();
+    }
+    public boolean hasParams() {
+        return paramNodes.size() > 0;
+    }
+    public VariableDeclarationNode getParam(int index) {
+        return paramNodes.get(index);
     }
 
     public static ParametersDefNode parseNode(TokenStack tokens) {

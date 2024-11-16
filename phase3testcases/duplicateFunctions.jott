@@ -1,0 +1,13 @@
+#Check Duplicate Functions
+
+Def foo[]:Integer{
+    Return 0;
+}
+
+Def foo[]:Integer{
+    Return 0;
+}
+
+Def main[]:Void{
+    ::print["Hello World"];
+}

@@ -6,6 +6,7 @@ import Interpreter.Parsing.TokenStack;
 import Interpreter.ProgramTree.Nodes.ExpressionNodes.Abstract.ExpressionNodeBase;
 import provided.Token;
 import provided.TokenType;
+import Interpreter.ProgramTree.Nodes.TypeNode;
 
 public class StringNode extends ExpressionNodeBase {
     private Token string;
@@ -36,12 +37,15 @@ public class StringNode extends ExpressionNodeBase {
     }
 
     @Override
+    public TypeNode getType() {
+        return new TypeNode(
+            new Token("String", string.getFilename(), string.getLineNum(), TokenType.KEYWORD)
+        );
+    }
+
+    @Override
     public boolean validateTree() {
         return true;
     }
 
-    @Override
-    public String getType() {
-        return "String";
-    }
 }

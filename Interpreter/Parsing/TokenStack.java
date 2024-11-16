@@ -11,6 +11,7 @@ import provided.TokenType;
 public class TokenStack {
 
     private static Token lastTokenPopped = null;
+    private static Token lastFunctionTokenPopped = null;
 
     private ArrayList<Token> tokens;
     private Stack<Integer> tokenUseStack;
@@ -42,9 +43,21 @@ public class TokenStack {
     }
 
     public Token popToken() {
+
         Token token = peekToken();
         if (token == null)
             return null;
+
+        //Check if a function was popped...
+        if (lastTokenPopped != null) {
+
+            if ((lastTokenPopped.getTokenType() == TokenType.KEYWORD && lastTokenPopped.getToken().equals("Def")) && token.getTokenType() == TokenType.ID) {
+
+                lastFunctionTokenPopped = token;
+                System.out.println("Function Header: " + token.getToken());
+            }
+
+        }
 
         //Record the last token popped (only if not null)
         lastTokenPopped = token;
@@ -106,6 +119,9 @@ public class TokenStack {
     public static Token get_last_token_popped() {
         return lastTokenPopped;
     }
+    public static Token get_last_function_token_popped() {
+        return lastFunctionTokenPopped;
+    }
     public static void clear_last_token_popped() {
 
         /*
@@ -115,6 +131,8 @@ public class TokenStack {
         */
 
         lastTokenPopped = null;
+
+        lastFunctionTokenPopped = null;
 
     }
 }

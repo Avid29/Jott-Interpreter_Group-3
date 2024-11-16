@@ -7,15 +7,29 @@ import ErrorReporting.ErrorReportSyntax;
 import Interpreter.Parsing.TokenStack;
 import Interpreter.ProgramTree.Nodes.Abstract.NodeBase;
 import Interpreter.ProgramTree.Nodes.ExpressionNodes.Abstract.ExpressionNodeBase;
+import Interpreter.ProgramTree.Nodes.StatementNodes.VariableDeclarationNode;
 import provided.Token;
 import provided.TokenType;
+import Interpreter.ProgramTree.FunctionSymbolTable;
+import Interpreter.ProgramTree.Nodes.TypeNode;
 
 public class FuncCallParamsNode extends NodeBase<FuncCallParamsNode> {
+    
     private ArrayList<ExpressionNodeBase> paramNodes;
 
-    public FuncCallParamsNode(ArrayList<ExpressionNodeBase> paramNodes) {
+    public FuncCallParamsNode(ArrayList<ExpressionNodeBase> paramNodes, ArrayList<TokenType> tokenTypes) {
         this.paramNodes = paramNodes;
     } 
+
+    public int getNumParams() {
+        return paramNodes.size();
+    }
+    public boolean hasParams() {
+        return paramNodes.size() > 0;
+    }
+    public ExpressionNodeBase getParam(int index) {
+        return paramNodes.get(index);
+    }
 
     public static FuncCallParamsNode parseNode(TokenStack tokens) {
         tokens.pushStack();
@@ -29,8 +43,11 @@ public class FuncCallParamsNode extends NodeBase<FuncCallParamsNode> {
             return null;
         }
 
+        ArrayList<TokenType> tokenTypesOut = new ArrayList<>();
+
         Token popped = null;
         do {
+
             ExpressionNodeBase expression = ExpressionNodeBase.parseNode(tokens);
             if (expression == null) {
 
@@ -54,7 +71,7 @@ public class FuncCallParamsNode extends NodeBase<FuncCallParamsNode> {
         }
 
         tokens.popStack(false);
-        return new FuncCallParamsNode(params);
+        return new FuncCallParamsNode(params, tokenTypesOut);
     }
 
     @Override
@@ -69,4 +86,5 @@ public class FuncCallParamsNode extends NodeBase<FuncCallParamsNode> {
         }
         return output;
     }
+
 }

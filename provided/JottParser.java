@@ -13,7 +13,10 @@ import java.util.Map;
 import java.util.Set;
 
 import ErrorReporting.ErrorReport;
+import ErrorReporting.ErrorReportSemantic;
 import Interpreter.Parsing.TokenStack;
+import Interpreter.ProgramTree.FunctionSymbolTable;
+import Interpreter.ProgramTree.ProgramSymbolTable;
 import Interpreter.ProgramTree.Nodes.BodyNode;
 import Interpreter.ProgramTree.Nodes.ProgramNode;
 import Interpreter.ProgramTree.Nodes.TypeNode;
@@ -27,6 +30,7 @@ import Interpreter.ProgramTree.Nodes.FunctionNodes.ParametersDefNode;
 import Interpreter.ProgramTree.Nodes.StatementNodes.AssignmentNode;
 import Interpreter.ProgramTree.Nodes.StatementNodes.ReturnStatementNode;
 import Interpreter.ProgramTree.Nodes.StatementNodes.VariableDeclarationNode;
+import Interpreter.ProgramTree.FunctionSymbolTable;
 
 public class JottParser {
 
@@ -53,12 +57,22 @@ public class JottParser {
 
         ProgramNode output = ProgramNode.parseProgram(new TokenStack(tokens));
 
+        //Check if program contains a main function
+        if ((output != null) && !FunctionSymbolTable.programContainsMain()) {
+            ErrorReport.makeError(ErrorReportSemantic.class, "Program does not contain a main function", "");
+            output = null;
+        }
+
         //Output is null, display an error message
         if (output == null)
             ErrorReport.print_error_message();
 
         //Clear last token recorded
         TokenStack.clear_last_token_popped();
+
+        //Clear Symbol Maps
+        FunctionSymbolTable.clearTable();
+        ProgramSymbolTable.clearTable();
 
         return output;
     }
