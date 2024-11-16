@@ -2,6 +2,8 @@ package Interpreter.ProgramTree.Nodes.StatementNodes.Blocks;
 
 import java.util.ArrayList;
 
+import ErrorReporting.ErrorReport;
+import ErrorReporting.ErrorReportSyntax;
 import Interpreter.Parsing.TokenStack;
 import Interpreter.ProgramTree.Nodes.BodyNode;
 import Interpreter.ProgramTree.Nodes.ExpressionNodes.Abstract.ExpressionNodeBase;
@@ -37,12 +39,19 @@ public class IfBlockNode extends BlockDeclareNodeBase {
     	int errorCode = tokens.tokenSequenceMatch(new TokenType[]{TokenType.KEYWORD, TokenType.L_BRACKET}, popped);
 
     	if (errorCode != -1) {
-        	// Missing conditional expression
+        	
+            // Missing conditional expression
+            ErrorReport.makeError(ErrorReportSyntax.class, "IfBlockNode -- Missing conditional expression", TokenStack.get_last_token_popped());
+
         	tokens.popStack(true);
         	return null;
     	}
 
-    	if (!popped.get(0).getToken().equals("If")) {
+		Token poppedToken = popped.get(0);
+    	if (!poppedToken.getToken().equals("If")) {
+
+			ErrorReport.makeError(ErrorReportSyntax.class, "IfBlockNode -- Expected 'If', got "+poppedToken.getTokenType(), TokenStack.get_last_token_popped());
+
         	// https://youtu.be/cYMfJUMsLj4
         	tokens.popStack(true);
         	return null;
@@ -53,14 +62,22 @@ public class IfBlockNode extends BlockDeclareNodeBase {
 
         //Parsed expression is null -> null
         if (parsedExpression == null) {
+
+            ErrorReport.makeError(ErrorReportSyntax.class, "IfBlockNode -- Parsed expression is null", TokenStack.get_last_token_popped());
+
         	tokens.popStack(true);
         	return null;
         }
         
     	//No closing Right Bracket ( ] ) -> null
-    	if (tokens.popToken().getTokenType() != TokenType.R_BRACKET) {
+		Token nextToken = tokens.popToken();
+    	if (nextToken.getTokenType() != TokenType.R_BRACKET) {
+            
+            ErrorReport.makeError(ErrorReportSyntax.class, "IfBlockNode -- Missing Closing Bracket ']', got "+nextToken.getTokenType(), TokenStack.get_last_token_popped());
+
         	tokens.popStack(true);
         	return null;
+
     	}
 
         //Parse the body
@@ -68,8 +85,12 @@ public class IfBlockNode extends BlockDeclareNodeBase {
 
         //Parsed body is null -> null
         if (parsedBody == null) {
+
+            ErrorReport.makeError(ErrorReportSyntax.class, "IfBlockNode -- Failed to parse body", TokenStack.get_last_token_popped());
+
         	tokens.popStack(true);
         	return null;
+
         }
 
     	tokens.popStack(false);
@@ -81,9 +102,10 @@ public class IfBlockNode extends BlockDeclareNodeBase {
 
     	ArrayList<ElseIfBlockNode> elseIfBlocks = new ArrayList<>();
    	 
-    	while (tokens.peekToken().getToken().equals("ElseIf")) {
+    	while (tokens.peekToken().getToken().equals("Elseif")) {
 
-        	elseIfBlocks.add(ElseIfBlockNode.parseNode(tokens));
+			elseIfBlocks.add(ElseIfBlockNode.parseNode(tokens, true)); /* The 'true' is a flag to call proper Elseif parsing */
+
     	}
 
     	return elseIfBlocks;
@@ -91,8 +113,12 @@ public class IfBlockNode extends BlockDeclareNodeBase {
 
 
 	private static ElseBlockNode parseElseBlock(TokenStack tokens) {
+
+		//Parsed Else Successfully
     	if (tokens.peekToken().getToken().equals("Else"))
-        	return ElseBlockNode.parseNode(tokens);
+        	return ElseBlockNode.parseNode(tokens, true); /* The 'true' is a flag to call proper Else parsing */
+		
+		//Failed to Parse Else
     	return null;
 	}
 

@@ -1,5 +1,7 @@
 package Interpreter.ProgramTree.Nodes.ExpressionNodes;
 
+import ErrorReporting.ErrorReport;
+import ErrorReporting.ErrorReportSyntax;
 import Interpreter.Parsing.TokenStack;
 import Interpreter.ProgramTree.Nodes.ExpressionNodes.Abstract.ExpressionNodeBase;
 import provided.Token;
@@ -17,11 +19,17 @@ public class BoolNode extends ExpressionNodeBase {
 
         var next = tokens.popToken();
         if (next.getTokenType() != TokenType.KEYWORD) {
+
+            ErrorReport.makeError(ErrorReportSyntax.class, "Expected KEYWORD", TokenStack.get_last_token_popped());
+
             tokens.popStack(true);
             return null;
         }
 
         if (!next.getToken().equals("True") && !next.getToken().equals("False")) {
+
+            ErrorReport.makeError(ErrorReportSyntax.class, "Expected 'True' or 'False'", TokenStack.get_last_token_popped());
+
             tokens.popStack(true);
             return null;
         }

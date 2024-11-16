@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import ErrorReporting.ErrorReport;
+import ErrorReporting.ErrorReportSyntax;
 import Interpreter.Parsing.TokenStack;
 import Interpreter.ProgramTree.Nodes.Abstract.NodeBase;
 import provided.Token;
@@ -27,13 +29,17 @@ public class TypeNode extends NodeBase<TypeNode> {
         Token token = tokens.popToken();
 
         if (token.getTokenType() != TokenType.KEYWORD) {
-            System.err.println("Provided Token is not a KEYWORD: " + token.getToken());
+
+            ErrorReport.makeError(ErrorReportSyntax.class, "TypeNode -- Provided Token is not a KEYWORD", TokenStack.get_last_token_popped());
             return null;
+
         }
 
         if (!isValidType(token)) {
-            System.err.println("Invalid Type Token: " + token.getToken());
+
+            ErrorReport.makeError(ErrorReportSyntax.class, "TypeNode -- Got invalid Type Token: " + token.getTokenType(), TokenStack.get_last_token_popped());
             return null;
+
         }
 
         return new TypeNode(token);

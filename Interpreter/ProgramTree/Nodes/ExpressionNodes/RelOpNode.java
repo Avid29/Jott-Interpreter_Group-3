@@ -1,5 +1,7 @@
 package Interpreter.ProgramTree.Nodes.ExpressionNodes;
 
+import ErrorReporting.ErrorReport;
+import ErrorReporting.ErrorReportSyntax;
 import Interpreter.Parsing.TokenStack;
 import Interpreter.ProgramTree.Nodes.ExpressionNodes.Abstract.ExpressionNodeBase;
 import Interpreter.ProgramTree.Nodes.ExpressionNodes.Abstract.OperandNodeBase;
@@ -18,9 +20,14 @@ public class RelOpNode extends ExpressionNodeBase {
     }
 
     public static RelOpNode parseNode(TokenStack stack){
+
         var result = ExpressionNodeBase.parseOperatorNode(stack, TokenType.REL_OP);
-        if (result == null)
+        if (result == null) {
+            
+            //ErrorReport.makeError(ErrorReportSyntax.class, "RelOpNode -- Failed to parse expression", TokenStack.get_last_token_popped());
             return null;
+
+        }
 
         return new RelOpNode(result.Item1, result.Item2, result.Item3);
     }

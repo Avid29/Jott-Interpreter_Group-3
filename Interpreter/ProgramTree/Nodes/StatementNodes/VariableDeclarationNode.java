@@ -2,6 +2,8 @@ package Interpreter.ProgramTree.Nodes.StatementNodes;
 
 import java.util.ArrayList;
 
+import ErrorReporting.ErrorReport;
+import ErrorReporting.ErrorReportSyntax;
 import Interpreter.Parsing.TokenStack;
 import Interpreter.ProgramTree.Nodes.TypeNode;
 import Interpreter.ProgramTree.Nodes.ExpressionNodes.VarRefNode;
@@ -23,7 +25,9 @@ public class VariableDeclarationNode extends BodyStatementNodeBase {
 
         ArrayList<Token> popped = new ArrayList<>();
         int errorCode = tokens.tokenSequenceMatch(
-                new TokenType[] { TokenType.KEYWORD, TokenType.ID, TokenType.SEMICOLON }, popped);
+            new TokenType[] { TokenType.KEYWORD, TokenType.ID, TokenType.SEMICOLON },
+            popped
+        );
 
         if (errorCode != -1) {
             // No need to write an error message because the line still may be valid. We
@@ -35,9 +39,12 @@ public class VariableDeclarationNode extends BodyStatementNodeBase {
         //Get the type, ensure it is not Void
         TypeNode type = new TypeNode(popped.get(0));
         if (type.getType().getToken().equals("Void")) {
-            System.err.println("ERROR -- Cannot declare a variable of type Void");
+
+            ErrorReport.makeError(ErrorReportSyntax.class, "VariableDeclarationNode -- Cannot declare a variable of type 'Void'", TokenStack.get_last_token_popped());
+
             tokens.popStack(true);
             return null;
+
         }
 
         VarRefNode name = new VarRefNode(popped.get(1));

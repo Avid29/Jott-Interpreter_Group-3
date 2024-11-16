@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import ErrorReporting.ErrorReport;
 import Interpreter.Parsing.TokenStack;
 import Interpreter.ProgramTree.Nodes.BodyNode;
 import Interpreter.ProgramTree.Nodes.ProgramNode;
@@ -42,7 +43,17 @@ public class JottParser {
      */
     public static JottTree parse(ArrayList<Token> tokens) {
         SplitIdsandKeys(tokens);
-        return ProgramNode.parseProgram(new TokenStack(tokens));
+
+        ProgramNode output = ProgramNode.parseProgram(new TokenStack(tokens));
+
+        //Output is null, display an error message
+        if (output == null)
+            ErrorReport.print_error_message();
+
+        //Clear last token recorded
+        TokenStack.clear_last_token_popped();
+
+        return output;
     }
 
     private static void SplitIdsandKeys(ArrayList<Token> tokens){

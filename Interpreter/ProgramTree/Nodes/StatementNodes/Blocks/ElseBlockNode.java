@@ -1,9 +1,12 @@
 package Interpreter.ProgramTree.Nodes.StatementNodes.Blocks;
 
+import ErrorReporting.ErrorReport;
+import ErrorReporting.ErrorReportSyntax;
 import Interpreter.Parsing.TokenStack;
 import Interpreter.ProgramTree.Nodes.BodyNode;
 import Interpreter.ProgramTree.Nodes.StatementNodes.Abstract.BlockDeclareNodeBase;
 import provided.TokenType;
+import provided.Token;
 
 public class ElseBlockNode extends BlockDeclareNodeBase {
 
@@ -19,14 +22,44 @@ public class ElseBlockNode extends BlockDeclareNodeBase {
     	this.body = body;
 	}
 
+	public static void reportNoPrecedingIf() {
+
+		ErrorReport.makeError(
+			ErrorReportSyntax.class,
+			"ElseBlockNode -- Else block without preceding 'If'",
+			TokenStack.get_last_token_popped()
+		);
+
+	}
+
+		
 	public static ElseBlockNode parseNode(TokenStack tokens) {
+
+		/*
+		 * Precaution to ensure that Else blocks won't be parsed
+		 * unless a boolean value is passed into the overloaded
+		 * version of the 'parseNode' function.
+		*/
+		
+		reportNoPrecedingIf();
+
+		return null;
+
+	}
+
+	public static ElseBlockNode parseNode(TokenStack tokens, boolean calledFromPrecedingIfBlock /* <- Doesn't do anything just for overloading */) {
 
     	tokens.pushStack();
 
     	//No "Else" keyword -> null
-    	if (!tokens.popToken().getToken().equals("Else")) {
+		Token nextToken = tokens.popToken();
+    	if (!nextToken.getToken().equals("Else")) {
+
+            ErrorReport.makeError(ErrorReportSyntax.class, "ElseBlockNode -- Expected 'Else', got "+nextToken.getTokenType(), TokenStack.get_last_token_popped());
+
         	tokens.popStack(true);
         	return null;
+
     	}
         
         //Parse the body
@@ -34,8 +67,12 @@ public class ElseBlockNode extends BlockDeclareNodeBase {
 
         //Parsed body is null -> null
         if (parsedBody == null) {
+
+			ErrorReport.makeError(ErrorReportSyntax.class, "ElseBlockNode -- Failed to parse body", TokenStack.get_last_token_popped());
+
         	tokens.popStack(true);
         	return null;
+
         }
 
     	tokens.popStack(false);
