@@ -3,8 +3,8 @@ package Interpreter.Parsing;
 import java.util.ArrayList;
 import java.util.Stack;
 
-import ErrorReporting.ErrorReport;
-import ErrorReporting.ErrorReportSyntax;
+import Interpreter.ErrorReporting.ErrorReport;
+import Interpreter.ErrorReporting.ErrorReportSyntax;
 import provided.Token;
 import provided.TokenType;
 

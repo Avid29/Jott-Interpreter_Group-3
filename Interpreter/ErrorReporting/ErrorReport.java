@@ -1,4 +1,4 @@
-package ErrorReporting;
+package Interpreter.ErrorReporting;
 
 import provided.Token;
 import Interpreter.Parsing.TokenStack;

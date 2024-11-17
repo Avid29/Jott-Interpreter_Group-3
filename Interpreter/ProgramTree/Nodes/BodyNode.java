@@ -2,9 +2,9 @@ package Interpreter.ProgramTree.Nodes;
 
 import java.util.ArrayList;
 
-import ErrorReporting.ErrorReport;
-import ErrorReporting.ErrorReportSyntax;
-import ErrorReporting.ErrorReportSemantic;
+import Interpreter.ErrorReporting.ErrorReport;
+import Interpreter.ErrorReporting.ErrorReportSemantic;
+import Interpreter.ErrorReporting.ErrorReportSyntax;
 import Interpreter.Parsing.TokenStack;
 import Interpreter.ProgramTree.Nodes.Abstract.NodeBase;
 import Interpreter.ProgramTree.Nodes.StatementNodes.ReturnStatementNode;

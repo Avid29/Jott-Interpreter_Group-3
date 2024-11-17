@@ -2,9 +2,9 @@ package Interpreter.ProgramTree;
 
 import java.util.HashMap;
 
-import ErrorReporting.ErrorReport;
-import ErrorReporting.ErrorReportSemantic;
 import Interpreter.Tuple2;
+import Interpreter.ErrorReporting.ErrorReport;
+import Interpreter.ErrorReporting.ErrorReportSemantic;
 import provided.JottParser;
 import provided.Token;
 import Interpreter.ProgramTree.Nodes.SymbolInfo;

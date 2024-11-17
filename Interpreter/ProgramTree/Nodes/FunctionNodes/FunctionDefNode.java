@@ -2,15 +2,15 @@ package Interpreter.ProgramTree.Nodes.FunctionNodes;
 
 import java.util.ArrayList;
 
-import ErrorReporting.ErrorReport;
-import ErrorReporting.ErrorReportSemantic;
-import ErrorReporting.ErrorReportSyntax;
 import Interpreter.ProgramTree.Nodes.Abstract.NodeBase;
 import Interpreter.ProgramTree.Nodes.ExpressionNodes.FuncCall.FunctionRefNode;
 import Interpreter.ProgramTree.Nodes.StatementNodes.ReturnStatementNode;
 import Interpreter.ProgramTree.Nodes.StatementNodes.Blocks.ElseIfBlockNode;
 import provided.Token;
 import provided.TokenType;
+import Interpreter.ErrorReporting.ErrorReport;
+import Interpreter.ErrorReporting.ErrorReportSemantic;
+import Interpreter.ErrorReporting.ErrorReportSyntax;
 import Interpreter.Parsing.TokenStack;
 import Interpreter.ProgramTree.Nodes.BodyNode;
 import Interpreter.ProgramTree.Nodes.TypeNode;

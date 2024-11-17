@@ -2,9 +2,9 @@ package Interpreter.ProgramTree.Nodes.ExpressionNodes.FuncCall;
 
 import java.util.ArrayList;
 
-import ErrorReporting.ErrorReport;
-import ErrorReporting.ErrorReportSyntax;
-import ErrorReporting.ErrorReportSemantic;
+import Interpreter.ErrorReporting.ErrorReport;
+import Interpreter.ErrorReporting.ErrorReportSemantic;
+import Interpreter.ErrorReporting.ErrorReportSyntax;
 import Interpreter.Parsing.TokenStack;
 import Interpreter.ProgramTree.FunctionSymbolTable;
 import Interpreter.ProgramTree.Nodes.ExpressionNodes.Abstract.OperandNodeBase;

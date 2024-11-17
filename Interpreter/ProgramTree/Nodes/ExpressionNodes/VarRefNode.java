@@ -2,9 +2,9 @@ package Interpreter.ProgramTree.Nodes.ExpressionNodes;
 
 import java.lang.reflect.Parameter;
 
-import ErrorReporting.ErrorReport;
-import ErrorReporting.ErrorReportSyntax;
-import ErrorReporting.ErrorReportSemantic;
+import Interpreter.ErrorReporting.ErrorReport;
+import Interpreter.ErrorReporting.ErrorReportSemantic;
+import Interpreter.ErrorReporting.ErrorReportSyntax;
 import Interpreter.Parsing.TokenStack;
 import Interpreter.ProgramTree.ProgramSymbolTable;
 import Interpreter.ProgramTree.Nodes.ExpressionNodes.Abstract.OperandNodeBase;

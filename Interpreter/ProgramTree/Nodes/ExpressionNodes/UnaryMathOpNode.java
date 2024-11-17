@@ -1,7 +1,7 @@
 package Interpreter.ProgramTree.Nodes.ExpressionNodes;
 
-import ErrorReporting.ErrorReport;
-import ErrorReporting.ErrorReportSyntax;
+import Interpreter.ErrorReporting.ErrorReport;
+import Interpreter.ErrorReporting.ErrorReportSyntax;
 import Interpreter.Parsing.TokenStack;
 import Interpreter.ProgramTree.Nodes.ExpressionNodes.Abstract.OperandNodeBase;
 import provided.TokenType;

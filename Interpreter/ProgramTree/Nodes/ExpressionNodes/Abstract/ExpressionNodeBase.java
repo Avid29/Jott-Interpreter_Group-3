@@ -3,9 +3,9 @@ package Interpreter.ProgramTree.Nodes.ExpressionNodes.Abstract;
 import java.lang.reflect.Method;
 import java.util.logging.ErrorManager;
 
-import ErrorReporting.ErrorReport;
-import ErrorReporting.ErrorReportSyntax;
 import Interpreter.Tuple3;
+import Interpreter.ErrorReporting.ErrorReport;
+import Interpreter.ErrorReporting.ErrorReportSyntax;
 import Interpreter.Parsing.TokenStack;
 import Interpreter.ProgramTree.Nodes.Abstract.NodeBase;
 import Interpreter.ProgramTree.Nodes.ExpressionNodes.BinaryMathOpNode;

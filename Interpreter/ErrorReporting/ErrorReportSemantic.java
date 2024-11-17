@@ -1,4 +1,4 @@
-package ErrorReporting;
+package Interpreter.ErrorReporting;
 
 public class ErrorReportSemantic extends ErrorReport {
     

@@ -2,8 +2,8 @@ package Interpreter.ProgramTree.Nodes.FunctionNodes;
 
 import java.util.ArrayList;
 
-import ErrorReporting.ErrorReport;
-import ErrorReporting.ErrorReportSyntax;
+import Interpreter.ErrorReporting.ErrorReport;
+import Interpreter.ErrorReporting.ErrorReportSyntax;
 import Interpreter.Parsing.TokenStack;
 import Interpreter.ProgramTree.Nodes.TypeNode;
 import Interpreter.ProgramTree.Nodes.Abstract.NodeBase;

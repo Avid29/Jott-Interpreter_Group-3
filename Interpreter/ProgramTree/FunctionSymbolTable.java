@@ -3,6 +3,8 @@ package Interpreter.ProgramTree;
 import java.util.HashMap;
 
 import Interpreter.Tuple3;
+import Interpreter.ErrorReporting.ErrorReport;
+import Interpreter.ErrorReporting.ErrorReportSemantic;
 import Interpreter.Parsing.TokenStack;
 import Interpreter.ProgramTree.Nodes.SymbolInfo;
 import Interpreter.ProgramTree.Nodes.TypeNode;
@@ -13,8 +15,6 @@ import provided.Token;
 import Interpreter.ProgramTree.Nodes.ExpressionNodes.FuncCall.FuncCallParamsNode;
 import Interpreter.ProgramTree.Nodes.ExpressionNodes.FuncCall.FunctionRefNode;
 import Interpreter.ProgramTree.Nodes.FunctionNodes.ParametersDefNode;
-import ErrorReporting.ErrorReport;
-import ErrorReporting.ErrorReportSemantic;
 
 public class FunctionSymbolTable {
 

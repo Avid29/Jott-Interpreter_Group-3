@@ -3,8 +3,8 @@ package Interpreter.ProgramTree.Nodes;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import ErrorReporting.ErrorReport;
-import ErrorReporting.ErrorReportSyntax;
+import Interpreter.ErrorReporting.ErrorReport;
+import Interpreter.ErrorReporting.ErrorReportSyntax;
 import Interpreter.Parsing.TokenStack;
 import Interpreter.ProgramTree.Nodes.Abstract.NodeBase;
 import Interpreter.ProgramTree.Nodes.FunctionNodes.FunctionDefNode;

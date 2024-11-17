@@ -12,8 +12,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import ErrorReporting.ErrorReport;
-import ErrorReporting.ErrorReportSemantic;
+import Interpreter.ErrorReporting.ErrorReport;
+import Interpreter.ErrorReporting.ErrorReportSemantic;
 import Interpreter.Parsing.TokenStack;
 import Interpreter.ProgramTree.FunctionSymbolTable;
 import Interpreter.ProgramTree.ProgramSymbolTable;
