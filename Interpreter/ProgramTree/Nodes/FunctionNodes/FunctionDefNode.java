@@ -107,7 +107,7 @@ public class FunctionDefNode extends NodeBase<FunctionDefNode> {
         //Add Function to Symbol Table
         if (!FunctionSymbolTable.defineSymbol(identifier, paramsNode, returnTypeNode)){ 
 
-            //ErrorReport.makeError(ErrorReportSemantic.class, "FunctionDefNode -- Duplicate function identifiers: "+identifier.getId().getToken(), tokens.get_last_token_popped());
+            ErrorReport.makeError(ErrorReportSemantic.class, "FunctionDefNode -- Failed to define function symbol: "+identifier.getId().getToken(), tokens.get_last_token_popped());
 
             tokens.popStack(true);
             return null;

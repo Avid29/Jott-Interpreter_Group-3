@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import ErrorReporting.ErrorReport;
 import ErrorReporting.ErrorReportSyntax;
 import Interpreter.Parsing.TokenStack;
+import Interpreter.ProgramTree.ProgramSymbolTable;
 import Interpreter.ProgramTree.Nodes.ExpressionNodes.VarRefNode;
 import Interpreter.ProgramTree.Nodes.ExpressionNodes.Abstract.ExpressionNodeBase;
 import Interpreter.ProgramTree.Nodes.StatementNodes.Abstract.BodyStatementNodeBase;
@@ -54,6 +55,18 @@ public class AssignmentNode extends BodyStatementNodeBase {
 
             tokens.popStack(true);
             return null;
+        }
+
+        //Check if the type of the resolved expression matches the symbol it is being assigned to
+        String expressionTypeName = expression.getType().getType().getToken();
+        if (!ProgramSymbolTable.tokenHasMatchingType(id, expressionTypeName)) {
+
+            String idType = ProgramSymbolTable.getSymbolType(id);
+
+            ErrorReport.makeError(ErrorReportSyntax.class, "AssignmentNode -- Invalid assignment, expecting "+idType+" and got "+expressionTypeName, id);
+            tokens.popStack(true);
+            return null;
+
         }
 
         tokens.popStack(false);

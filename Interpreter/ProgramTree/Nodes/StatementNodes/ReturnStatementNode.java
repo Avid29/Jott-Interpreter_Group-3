@@ -7,6 +7,8 @@ import Interpreter.ProgramTree.Nodes.ExpressionNodes.Abstract.ExpressionNodeBase
 import Interpreter.ProgramTree.Nodes.StatementNodes.Abstract.BodyStatementNodeBase;
 import provided.Token;
 import provided.TokenType;
+import Interpreter.ProgramTree.Nodes.TypeNode;
+import Interpreter.ProgramTree.FunctionSymbolTable;
 
 public class ReturnStatementNode extends BodyStatementNodeBase {
     private ExpressionNodeBase expression;
@@ -44,6 +46,19 @@ public class ReturnStatementNode extends BodyStatementNodeBase {
         if (statementEnd.getTokenType() != TokenType.SEMICOLON) {
 
             ErrorReport.makeError(ErrorReportSyntax.class, "ReturnStatementNode -- Expected Semicolon ';', got "+statementEnd.getTokenType(), next);
+
+            tokens.popStack(true);
+            return null;
+        }
+
+        //Check if the returned value matches the return type of the function
+        String lastFunctionPoppedName = TokenStack.get_last_function_token_popped().getToken();
+        TypeNode returnType = FunctionSymbolTable.getFunctionType(lastFunctionPoppedName);
+        String returnTypeName = returnType.getType().getToken();
+        String expressionTypeName = expression.getType().getType().getToken();
+        if (!returnTypeName.equals(expressionTypeName)) {
+
+            ErrorReport.makeError(ErrorReportSyntax.class, "ReturnStatementNode -- Return type mismatch: expected "+returnTypeName+", got "+expressionTypeName, next);
 
             tokens.popStack(true);
             return null;

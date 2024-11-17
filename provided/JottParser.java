@@ -59,7 +59,7 @@ public class JottParser {
 
         //Check if program contains a main function
         if ((output != null) && !FunctionSymbolTable.programContainsMain()) {
-            ErrorReport.makeError(ErrorReportSemantic.class, "Program does not contain a main function", "");
+            ErrorReport.makeError(ErrorReportSemantic.class, "Program does not contain a main function", TokenStack.get_last_token_popped());
             output = null;
         }
 

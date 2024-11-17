@@ -47,6 +47,17 @@ public class ProgramSymbolTable {
 
     }
 
+    public static boolean tokenHasMatchingType(Token sourceSymbolToken, String targetType) {
+        
+        String sourceType = getSymbolType(sourceSymbolToken);
+
+        if (sourceType == null)
+            return false;
+
+        return sourceType.equals(targetType);
+        
+    }
+
     public static boolean validateSymbolAssignmentOperation(SymbolInfo sourceSymbolInfo, Token targetToken) {
 
         /*
@@ -66,7 +77,17 @@ public class ProgramSymbolTable {
         }
 
         //Symbol is in the table, check if the assignment is valid
-        //...
+        String sourceType = sourceSymbolInfo.getIdToken().getToken();
+        String targetType = getSymbolType(targetToken);
+
+        //Types are not the same, report an error
+        if (!sourceType.equals(targetType)) {
+
+            ErrorReport.makeError(ErrorReportSemantic.class, "Type mismatch in assignment operation: "+sourceType+" and "+targetType, targetToken);
+            return false;
+
+        }
+
 
         return true;
 

@@ -82,4 +82,8 @@ public class WhileBlockNode extends BlockDeclareNodeBase {
     public String convertToJott() {
 		return "While [" + expression.convertToJott() + "]" + body.convertToJott();
     }
+
+    public BodyNode getBodyNode() {
+        return body;
+    }
 }

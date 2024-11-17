@@ -54,7 +54,7 @@ public class TokenStack {
             if ((lastTokenPopped.getTokenType() == TokenType.KEYWORD && lastTokenPopped.getToken().equals("Def")) && token.getTokenType() == TokenType.ID) {
 
                 lastFunctionTokenPopped = token;
-                System.out.println("Function Header: " + token.getToken());
+                //System.out.println("Function Name: " + token.getToken());
             }
 
         }

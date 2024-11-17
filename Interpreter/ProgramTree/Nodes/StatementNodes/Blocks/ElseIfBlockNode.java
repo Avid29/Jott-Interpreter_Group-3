@@ -116,6 +116,10 @@ public class ElseIfBlockNode extends BlockDeclareNodeBase {
 		return "Elseif [" + expression.convertToJott() + "]" + body.convertToJott();
 	}
 
+    public BodyNode getBodyNode() {
+        return body;
+    }
+
 }
 
 

@@ -84,4 +84,9 @@ public class ElseBlockNode extends BlockDeclareNodeBase {
 		return "Else" + body.convertToJott();
 	}
 
+
+    public BodyNode getBodyNode() {
+        return body;
+    }
+
 }

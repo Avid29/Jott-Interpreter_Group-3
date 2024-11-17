@@ -174,6 +174,11 @@ public class IfBlockNode extends BlockDeclareNodeBase {
 
 		return true;
 	}
+
+    public BodyNode getBodyNode() {
+        return body;
+    }
+    
 }
 
 

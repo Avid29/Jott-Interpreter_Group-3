@@ -60,7 +60,7 @@ public class ProgramNode extends NodeBase<ProgramNode> {
         //No function definitions, return null
         if (!tokens.isEmpty()) {
 
-            ErrorReport.makeError(ErrorReportSyntax.class, "ProgramNode -- Expected function definition", tokens.get_last_token_popped());
+            //ErrorReport.makeError(ErrorReportSyntax.class, "ProgramNode -- Expected function definition", tokens.get_last_token_popped());
 
             tokens.popStack(true);
             return null;
