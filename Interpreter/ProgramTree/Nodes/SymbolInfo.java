@@ -1,4 +1,4 @@
-package SymbolInfo;
+package Interpreter.ProgramTree.Nodes;
 
 import provided.Token;
 

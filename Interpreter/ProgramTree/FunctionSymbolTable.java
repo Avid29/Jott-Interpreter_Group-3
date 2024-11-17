@@ -4,10 +4,10 @@ import java.util.HashMap;
 
 import Interpreter.Tuple3;
 import Interpreter.Parsing.TokenStack;
+import Interpreter.ProgramTree.Nodes.SymbolInfo;
 import Interpreter.ProgramTree.Nodes.TypeNode;
 import Interpreter.ProgramTree.Nodes.ExpressionNodes.VarRefNode;
 import Interpreter.ProgramTree.Nodes.StatementNodes.VariableDeclarationNode;
-import SymbolInfo.SymbolInfo;
 import provided.JottTokenizer;
 import provided.Token;
 import Interpreter.ProgramTree.Nodes.ExpressionNodes.FuncCall.FuncCallParamsNode;

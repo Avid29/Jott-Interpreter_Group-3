@@ -5,10 +5,9 @@ import java.util.HashMap;
 import ErrorReporting.ErrorReport;
 import ErrorReporting.ErrorReportSemantic;
 import Interpreter.Tuple2;
-import SymbolInfo.SymbolInfo;
 import provided.JottParser;
 import provided.Token;
-
+import Interpreter.ProgramTree.Nodes.SymbolInfo;
 import Interpreter.ProgramTree.Nodes.TypeNode;
 import Interpreter.ProgramTree.Nodes.ExpressionNodes.VarRefNode;
 

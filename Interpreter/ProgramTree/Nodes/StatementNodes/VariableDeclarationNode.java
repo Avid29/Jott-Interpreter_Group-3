@@ -7,10 +7,10 @@ import ErrorReporting.ErrorReportSyntax;
 import Interpreter.Parsing.TokenStack;
 import Interpreter.ProgramTree.ProgramSymbolTable;
 import Interpreter.ProgramTree.SymbolTableError;
+import Interpreter.ProgramTree.Nodes.SymbolInfo;
 import Interpreter.ProgramTree.Nodes.TypeNode;
 import Interpreter.ProgramTree.Nodes.ExpressionNodes.VarRefNode;
 import Interpreter.ProgramTree.Nodes.StatementNodes.Abstract.BodyStatementNodeBase;
-import SymbolInfo.SymbolInfo;
 import provided.Token;
 import provided.TokenType;
 
