@@ -1,13 +1,12 @@
 package Interpreter.ProgramTree.Nodes.StatementNodes.Blocks;
 
-import java.util.ArrayList;
-
 import Interpreter.ErrorReporting.ErrorReport;
 import Interpreter.ErrorReporting.ErrorReportSyntax;
 import Interpreter.Parsing.TokenStack;
 import Interpreter.ProgramTree.Nodes.BodyNode;
 import Interpreter.ProgramTree.Nodes.ExpressionNodes.Abstract.ExpressionNodeBase;
 import Interpreter.ProgramTree.Nodes.StatementNodes.Abstract.BlockDeclareNodeBase;
+import java.util.ArrayList;
 import provided.Token;
 import provided.TokenType;
 
@@ -19,9 +18,10 @@ public class IfBlockNode extends BlockDeclareNodeBase {
  	* <if_stmt> -> If[<expr>]{<body>}<elseif_lst>*<else>
 	*/
 
-	private ExpressionNodeBase expression;
-	private ArrayList<ElseIfBlockNode> elseIfBlocks;
-	private ElseBlockNode elseBlock;
+	private final ExpressionNodeBase expression;
+    private final BodyNode body;
+	private final ArrayList<ElseIfBlockNode> elseIfBlocks;
+	private final ElseBlockNode elseBlock;
 
 	public IfBlockNode(ExpressionNodeBase expression, BodyNode body, ArrayList<ElseIfBlockNode> elseIfBlocks, ElseBlockNode elseBlock) {
 
@@ -177,6 +177,34 @@ public class IfBlockNode extends BlockDeclareNodeBase {
 
     public BodyNode getBodyNode() {
         return body;
+    }
+
+    @Override
+    public void execute() {
+
+        //Evaluate the expression
+        expression.execute();
+
+        //Evaluate expression
+        boolean result = expression.evaluateBoolean();
+        if (result) {
+            body.execute();
+            return;
+        }
+
+        //Execute Else-if blocks
+        for (ElseIfBlockNode elseIfBlock : elseIfBlocks) {
+
+            elseIfBlock.execute();
+            if (elseIfBlock.conditionWasTrue)
+                return;
+
+        }
+
+        //Execute Else block
+        if (elseBlock != null)
+            elseBlock.execute();
+
     }
     
 }

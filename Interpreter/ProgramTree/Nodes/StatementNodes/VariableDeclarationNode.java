@@ -1,24 +1,22 @@
 package Interpreter.ProgramTree.Nodes.StatementNodes;
 
-import java.util.ArrayList;
-
 import Interpreter.ErrorReporting.ErrorReport;
 import Interpreter.ErrorReporting.ErrorReportSyntax;
 import Interpreter.Parsing.TokenStack;
-import Interpreter.ProgramTree.ProgramSymbolTable;
-import Interpreter.ProgramTree.SymbolTableError;
-import Interpreter.ProgramTree.Nodes.SymbolInfo;
-import Interpreter.ProgramTree.Nodes.TypeNode;
 import Interpreter.ProgramTree.Nodes.ExpressionNodes.VarRefNode;
 import Interpreter.ProgramTree.Nodes.StatementNodes.Abstract.BodyStatementNodeBase;
+import Interpreter.ProgramTree.Nodes.TypeNode;
+import Interpreter.ProgramTree.ProgramSymbolTable;
+import java.util.ArrayList;
 import provided.Token;
 import provided.TokenType;
 
 public class VariableDeclarationNode extends BodyStatementNodeBase {
+    
     public TypeNode type;
-    private VarRefNode name;
+    private final VarRefNode name;
 
-    public VariableDeclarationNode(TypeNode type, VarRefNode name, boolean param) {
+    public VariableDeclarationNode(TypeNode type, VarRefNode name) {
         this.type = type;
         this.name = name;
     }
@@ -64,7 +62,7 @@ public class VariableDeclarationNode extends BodyStatementNodeBase {
 
 
         tokens.popStack(false);
-        return new VariableDeclarationNode(type, name, false);
+        return new VariableDeclarationNode(type, name);
     }
 
     @Override
@@ -84,5 +82,11 @@ public class VariableDeclarationNode extends BodyStatementNodeBase {
     }
     public VarRefNode getName() {
         return name;
+    }
+
+
+    @Override
+    public void execute() {
+        /*...*/
     }
 }

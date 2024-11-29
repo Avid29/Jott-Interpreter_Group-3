@@ -1,22 +1,26 @@
 package Interpreter.ErrorReporting;
 
-import provided.Token;
 import Interpreter.Parsing.TokenStack;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Stack;
+import provided.Token;
 
 public class ErrorReport {
     
     private static ErrorReport errorReportStatic = null;
 
     //ErrorReport class variables
-    private String errorMessage;
+    private final static Stack<ErrorReport> errorStack = new Stack<>();
+    private final String errorMessage;
 
     //ErrorReport class constructor
     public ErrorReport(String _errorType, String _errorMessage, String _errorLocation) {
         
         //Format Error Message
         this.errorMessage = ("\n\t" + _errorType + "\n\t" + _errorMessage + "\n\t" + _errorLocation + "\n");
+
+        errorStack.push(this);
 
     }
 
@@ -45,6 +49,35 @@ public class ErrorReport {
 
     }
 
+    public static void print_error_message_stack() {
+
+        System.out.println("DISPLAYING *ALL* ERROR MESSAGES:\n");
+
+        if (errorStack.isEmpty()) {
+            System.out.println("\t...Found no errors to display");
+            return;
+        }
+
+        int itr = 0;
+        while (true) {
+
+            //Stack is empty, break
+            if (errorStack.isEmpty())
+                break;
+
+            ErrorReport reportCur = errorStack.pop();
+            System.out.println("\t"+itr+":");
+
+            //Print the error message
+            errorReportStatic = reportCur;
+            print_error_message();
+
+            itr++;
+
+        }
+
+    }
+
 
     public static void makeError(Class<? extends ErrorReport> errorClassType, String errorMessage, String errorLocation) {
         
@@ -55,7 +88,10 @@ public class ErrorReport {
             
             //Create a new instance using the constructor
             ErrorReport errorReport = constructor.newInstance(errorMessage, errorLocation);
-            errorReportStatic = errorReport;
+
+            //Only record the first/lowest level error
+            if (errorReportStatic == null)
+                errorReportStatic = errorReport;
 
         }
         
@@ -75,19 +111,18 @@ public class ErrorReport {
             If the token is null, the error location will be set to an unknown location (e.g. syntax error in 'singleExpr.jott')
         */
 
-        //Already reported a lower level error
-        if (errorReportStatic != null)
-            return;
-
         String errorLocation;
 
         //Passed null token target
-        if (tokenTarget == null)
+        if (tokenTarget == null) {
             errorLocation = "(Unknown Error Location -- Supplied Token target is null)";
+        }
 
         //Token target is not null
-        else
+        else {
             errorLocation = (tokenTarget.getFilename() + ":"+ tokenTarget.getLineNum());
+            errorMessage += " -- at token '" + tokenTarget.getToken() + "'";
+        }
         
         makeError(errorClassType, errorMessage, errorLocation);
 

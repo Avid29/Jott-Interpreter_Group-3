@@ -3,19 +3,21 @@ package Interpreter.ProgramTree.Nodes.ExpressionNodes;
 import Interpreter.ErrorReporting.ErrorReport;
 import Interpreter.ErrorReporting.ErrorReportSyntax;
 import Interpreter.Parsing.TokenStack;
-import Interpreter.ProgramTree.Nodes.TypeNode;
 import Interpreter.ProgramTree.Nodes.ExpressionNodes.Abstract.ExpressionNodeBase;
+import Interpreter.ProgramTree.Nodes.TypeNode;
 import provided.Token;
 import provided.TokenType;
 
 public class BoolNode extends ExpressionNodeBase {
-    private Token value;
+
+    private final Token value;
 
     public BoolNode(Token value) {
         this.value = value;
     }
 
     public static BoolNode parseNode(TokenStack tokens){
+
         tokens.pushStack();
 
         var next = tokens.popToken();
@@ -37,6 +39,7 @@ public class BoolNode extends ExpressionNodeBase {
 
         tokens.popStack(false);
         return new BoolNode(next);
+        
     }
 
     @Override
@@ -54,6 +57,16 @@ public class BoolNode extends ExpressionNodeBase {
     @Override
     public boolean validateTree() {
         return true;
+    }
+
+    @Override
+    public Object evaluate() {
+        return evaluateBoolean();
+    }
+
+    @Override
+    public boolean evaluateBoolean() {
+        return value.getToken().equals("True");
     }
 
 }

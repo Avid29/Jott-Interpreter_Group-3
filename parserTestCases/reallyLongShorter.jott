@@ -1,0 +1,25 @@
+#this is a really large example
+#it will test many of the features
+#it does not test them all
+
+Def testPrintLoop[ x:Integer ]:Void{
+    While[x>0]{
+        ::print[x];
+        x = x - 1;
+	}
+}
+
+Def main[]:Void{
+
+    String strTest;
+    Integer intI;
+
+    strTest = "abcTestString";
+    intI = ::length[strTest];
+
+	::testPrintLoop[7];
+
+    ::print[strTest];
+    ::print[intI];
+	
+}

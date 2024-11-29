@@ -8,7 +8,8 @@ import Interpreter.ProgramTree.Nodes.StatementNodes.Abstract.BodyStatementNodeBa
 import provided.TokenType;
 
 public class FuncCallStatementNode extends BodyStatementNodeBase {
-    private FunctionCallNode wrapped;
+    
+    private final FunctionCallNode wrapped;
 
     public FuncCallStatementNode(FunctionCallNode wrapped) {
         this.wrapped = wrapped;
@@ -48,4 +49,13 @@ public class FuncCallStatementNode extends BodyStatementNodeBase {
     public String convertToJott() {
         return wrapped.convertToJott() + ";";
     }
+
+    @Override
+    public void execute() {
+
+        //System.out.println("[EX]ecuting 'FuncCallStatementNode' -> \t[EX]ecuting Wrapped ('" + wrapped.getClass().getSimpleName()+"')");
+        wrapped.execute();
+
+    }
+
 }

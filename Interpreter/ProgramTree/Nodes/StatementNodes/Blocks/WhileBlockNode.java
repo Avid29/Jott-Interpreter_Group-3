@@ -1,17 +1,17 @@
 package Interpreter.ProgramTree.Nodes.StatementNodes.Blocks;
 
-import java.util.ArrayList;
-
 import Interpreter.ErrorReporting.ErrorReport;
 import Interpreter.ErrorReporting.ErrorReportSyntax;
 import Interpreter.Parsing.TokenStack;
 import Interpreter.ProgramTree.Nodes.BodyNode;
 import Interpreter.ProgramTree.Nodes.ExpressionNodes.Abstract.ExpressionNodeBase;
 import Interpreter.ProgramTree.Nodes.StatementNodes.Abstract.BlockDeclareNodeBase;
+import java.util.ArrayList;
 import provided.Token;
 import provided.TokenType;
 
 public class WhileBlockNode extends BlockDeclareNodeBase {
+
     private ExpressionNodeBase expression;
 
     public WhileBlockNode(ExpressionNodeBase expression, BodyNode body){
@@ -85,5 +85,20 @@ public class WhileBlockNode extends BlockDeclareNodeBase {
 
     public BodyNode getBodyNode() {
         return body;
+    }
+
+    @Override
+    public void execute() {
+
+        //System.out.println("[EX]ecuting 'WhileBlockNode': ");
+
+        //Evaluate the expression
+        while (expression.evaluateBoolean()) {
+
+            //System.out.println("[EX] 'WhileBlockNode' (execute) ...Executing Body");
+            body.execute();
+            
+        }
+        
     }
 }

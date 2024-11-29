@@ -37,6 +37,7 @@ public class JottParser {
     private static final Set<String> KeywordSet = Set.of(
         "Def", "Return",
         "If", "ElseIf", "Else", "While",
+        "True", "False",
         "Integer", "Double", "String", "Boolean", "Void");
     private static final Set<String> keywordSetLower = new HashSet<String>();
     static {
@@ -67,12 +68,21 @@ public class JottParser {
         if (output == null)
             ErrorReport.print_error_message();
 
-        //Clear last token recorded
-        TokenStack.clear_last_token_popped();
 
-        //Clear Symbol Maps
-        FunctionSymbolTable.clearTable();
-        ProgramSymbolTable.clearTable();
+        //Clear Symbol Maps & Popped Token
+        /*
+
+            IMPORTANT:
+
+            FOR TESTING MULTIPLE JOTT FILES AT ONCE!
+            Do not clear these in final version.
+
+            //  TokenStack.clear_last_token_popped();
+            //
+            //  FunctionSymbolTable.clearTable();
+            //  ProgramSymbolTable.clearTable();
+
+        */
 
         return output;
     }

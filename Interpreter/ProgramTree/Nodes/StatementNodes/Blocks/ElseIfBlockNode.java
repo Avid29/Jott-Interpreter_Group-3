@@ -1,7 +1,5 @@
 package Interpreter.ProgramTree.Nodes.StatementNodes.Blocks;
 
-import java.util.ArrayList;
-
 import Interpreter.ErrorReporting.ErrorReport;
 import Interpreter.ErrorReporting.ErrorReportSyntax;
 import Interpreter.Parsing.TokenStack;
@@ -19,8 +17,10 @@ public class ElseIfBlockNode extends BlockDeclareNodeBase {
  	* <elseif> -> Elseif[<expr>]{<body>}
 	*/
 
-	private ExpressionNodeBase expression;
-	private BodyNode body;
+	private final ExpressionNodeBase expression;
+	private final BodyNode body;
+
+    public boolean conditionWasTrue = false;
 
 	public ElseIfBlockNode(ExpressionNodeBase expression, BodyNode body) {
     	this.expression = expression;
@@ -64,7 +64,7 @@ public class ElseIfBlockNode extends BlockDeclareNodeBase {
 
 
     	//No opening Left Bracket ( [ ) -> null
-		Token nextTokenPeeked = tokens.peekToken();
+		Token nextTokenPeeked = tokens.popToken();
     	if (nextTokenPeeked.getTokenType() != TokenType.L_BRACKET) {
 
 			ErrorReport.makeError(ErrorReportSyntax.class, "ElseIfBlockNode -- Expected Left Bracket '[', got "+nextTokenPeeked.getTokenType(), TokenStack.get_last_token_popped());
@@ -86,7 +86,7 @@ public class ElseIfBlockNode extends BlockDeclareNodeBase {
         }
         
     	//No closing Right Bracket ( ] ) -> null
-		nextTokenPeeked = tokens.peekToken();
+		nextTokenPeeked = tokens.popToken();
     	if (nextTokenPeeked.getTokenType() != TokenType.R_BRACKET) {
 
 			ErrorReport.makeError(ErrorReportSyntax.class, "ElseIfBlockNode -- Expected Right Bracket ']', got "+nextTokenPeeked.getTokenType(), TokenStack.get_last_token_popped());
@@ -118,6 +118,22 @@ public class ElseIfBlockNode extends BlockDeclareNodeBase {
 
     public BodyNode getBodyNode() {
         return body;
+    }
+
+
+    @Override
+    public void execute() {
+
+        //Evaluate the expression
+        expression.execute();
+
+        //Evaluate expression
+        boolean result = expression.evaluateBoolean();
+        if (result) {
+            conditionWasTrue = true;
+            body.execute();
+        }
+
     }
 
 }

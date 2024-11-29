@@ -5,12 +5,11 @@ import Interpreter.ErrorReporting.ErrorReportSyntax;
 import Interpreter.Parsing.TokenStack;
 import Interpreter.ProgramTree.Nodes.BodyNode;
 import Interpreter.ProgramTree.Nodes.StatementNodes.Abstract.BlockDeclareNodeBase;
-import provided.TokenType;
 import provided.Token;
 
 public class ElseBlockNode extends BlockDeclareNodeBase {
 
-	private BodyNode body;
+	private final BodyNode body;
 
 	/*
  	* ELSE GRAMMAR:
@@ -87,6 +86,17 @@ public class ElseBlockNode extends BlockDeclareNodeBase {
 
     public BodyNode getBodyNode() {
         return body;
+    }
+
+
+    @Override
+    public void execute() {
+
+        //System.out.println("[EX] 'ElseBlockNode' (execute) -- Executing Else Block Body: "+body.convertToJott());
+
+        //Execute the body
+        body.execute();
+
     }
 
 }

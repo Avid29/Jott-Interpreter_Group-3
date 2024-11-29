@@ -4,13 +4,13 @@ import Interpreter.ErrorReporting.ErrorReport;
 import Interpreter.ErrorReporting.ErrorReportSyntax;
 import Interpreter.Parsing.TokenStack;
 import Interpreter.ProgramTree.Nodes.ExpressionNodes.Abstract.OperandNodeBase;
+import Interpreter.ProgramTree.Nodes.TypeNode;
 import provided.Token;
 import provided.TokenType;
-import Interpreter.ProgramTree.Nodes.TypeNode;
 
 public class NumberNode extends OperandNodeBase {
 
-    private Token number;
+    private final Token number;
 
     public NumberNode(Token number) {
         this.number = number;
@@ -54,4 +54,18 @@ public class NumberNode extends OperandNodeBase {
         return true;
     }
 
+    @Override
+    public Number evaluate() {
+
+        String numberString = number.getToken();
+
+        //Number is an Integer
+        if (!numberString.contains("."))
+            return Integer.valueOf(numberString);
+
+        //Number is a Double
+        return Double.valueOf(numberString);
+
+        
+    }
 }

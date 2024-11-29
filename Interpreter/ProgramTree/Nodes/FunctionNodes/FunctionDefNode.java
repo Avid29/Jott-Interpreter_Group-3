@@ -1,35 +1,37 @@
 package Interpreter.ProgramTree.Nodes.FunctionNodes;
 
-import java.util.ArrayList;
-
-import Interpreter.ProgramTree.Nodes.Abstract.NodeBase;
-import Interpreter.ProgramTree.Nodes.ExpressionNodes.FuncCall.FunctionRefNode;
-import Interpreter.ProgramTree.Nodes.StatementNodes.ReturnStatementNode;
-import Interpreter.ProgramTree.Nodes.StatementNodes.Blocks.ElseIfBlockNode;
-import provided.Token;
-import provided.TokenType;
 import Interpreter.ErrorReporting.ErrorReport;
 import Interpreter.ErrorReporting.ErrorReportSemantic;
 import Interpreter.ErrorReporting.ErrorReportSyntax;
 import Interpreter.Parsing.TokenStack;
-import Interpreter.ProgramTree.Nodes.BodyNode;
-import Interpreter.ProgramTree.Nodes.TypeNode;
 import Interpreter.ProgramTree.FunctionSymbolTable;
+import Interpreter.ProgramTree.Nodes.Abstract.NodeBase;
+import Interpreter.ProgramTree.Nodes.BodyNode;
+import Interpreter.ProgramTree.Nodes.ExpressionNodes.FuncCall.FunctionRefNode;
+import Interpreter.ProgramTree.Nodes.TypeNode;
+import Interpreter.ProgramTree.ReturnException;
+import java.util.ArrayList;
+import provided.Token;
+import provided.TokenType;
 
 public class FunctionDefNode extends NodeBase<FunctionDefNode> {
-    public FunctionRefNode funcName;//changed all this to public
+
+    public FunctionRefNode funcName;
     public ParametersDefNode params;
     public TypeNode returnType;
     public BodyNode body;
 
     public FunctionDefNode(FunctionRefNode name, ParametersDefNode params, TypeNode returnType, BodyNode body) {
+
         this.funcName = name;
         this.params = params;
         this.returnType = returnType;
         this.body = body;
+
     }
 
     public static FunctionDefNode parseNode(TokenStack tokens) {
+
         tokens.pushStack();
 
         // Perform mential tokenType checks on function id/definition.
@@ -70,6 +72,9 @@ public class FunctionDefNode extends NodeBase<FunctionDefNode> {
         FunctionRefNode identifier = new FunctionRefNode(pops.get(1));
 
 
+        //Push to parsed function stack
+        FunctionSymbolTable.pushFunctionParsed(identifier.getId().getToken());
+
 
         // Parse parameters
         ParametersDefNode paramsNode = ParametersDefNode.parseNode(tokens);
@@ -91,21 +96,22 @@ public class FunctionDefNode extends NodeBase<FunctionDefNode> {
             case 1 -> "Expected function return type";
             default -> "Unknown error";
         };
-
         if (errorMessage != null) {
 
             ErrorReport.makeError(ErrorReportSyntax.class, "FunctionDefNode -- "+errorMessage, tokens.get_last_token_popped());
 
             tokens.popStack(true);
             return null;
+
         }
 
+
+        //Get return type
         TypeNode returnTypeNode = new TypeNode(pops.get(1));
 
 
-
         //Add Function to Symbol Table
-        if (!FunctionSymbolTable.defineSymbol(identifier, paramsNode, returnTypeNode)){ 
+        if (!FunctionSymbolTable.defineSymbol(identifier, null, paramsNode, returnTypeNode)){ 
 
             ErrorReport.makeError(ErrorReportSemantic.class, "FunctionDefNode -- Failed to define function symbol: "+identifier.getId().getToken(), tokens.get_last_token_popped());
 
@@ -113,9 +119,6 @@ public class FunctionDefNode extends NodeBase<FunctionDefNode> {
             return null;
 
         }
-
-
-
 
         BodyNode fBody = BodyNode.parseNode(tokens, true);
         if (fBody == null) {
@@ -126,7 +129,14 @@ public class FunctionDefNode extends NodeBase<FunctionDefNode> {
             return null;
         }
 
-        return new FunctionDefNode(identifier, paramsNode, returnTypeNode, fBody);
+
+        //Create FunctionDefNode
+        FunctionDefNode funcDefNodeOut = new FunctionDefNode(identifier, paramsNode, returnTypeNode, fBody);
+        FunctionSymbolTable.setFunctionDefinitionForName(identifier.getId().getToken(), funcDefNodeOut);
+
+
+        return funcDefNodeOut;
+
     }
 
     public Token getName(){
@@ -160,4 +170,25 @@ public class FunctionDefNode extends NodeBase<FunctionDefNode> {
         return "Def " + funcName.convertToJott() + "[" + params.convertToJott() + "]:" +
             returnType.convertToJott() + body.convertToJott();
     }
+
+    @Override
+    public void execute() {
+
+        //System.out.println("[EX]ecuting 'FunctionDefNode' -> \t[EX]ecuting Function Body ('BodyNode')");
+
+        //Execute function body
+        try {
+            body.execute();
+        }
+
+        //Caught a return statement, push return value to function return stack
+        catch (ReturnException e) {
+
+            Object returnValue = e.getReturnValue();
+            FunctionSymbolTable.pushFunctionReturn(returnValue);
+
+        }
+
+    }
+    
 }

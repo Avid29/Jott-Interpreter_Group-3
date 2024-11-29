@@ -1,23 +1,21 @@
 package Interpreter.ProgramTree.Nodes;
 
-import java.util.ArrayList;
-
 import Interpreter.ErrorReporting.ErrorReport;
 import Interpreter.ErrorReporting.ErrorReportSemantic;
 import Interpreter.ErrorReporting.ErrorReportSyntax;
 import Interpreter.Parsing.TokenStack;
+import Interpreter.ProgramTree.FunctionSymbolTable;
 import Interpreter.ProgramTree.Nodes.Abstract.NodeBase;
+import Interpreter.ProgramTree.Nodes.StatementNodes.Abstract.BodyStatementNodeBase;
+import Interpreter.ProgramTree.Nodes.StatementNodes.Blocks.ElseBlockNode;
+import Interpreter.ProgramTree.Nodes.StatementNodes.Blocks.ElseIfBlockNode;
+import Interpreter.ProgramTree.Nodes.StatementNodes.Blocks.IfBlockNode;
+import Interpreter.ProgramTree.Nodes.StatementNodes.Blocks.WhileBlockNode;
 import Interpreter.ProgramTree.Nodes.StatementNodes.ReturnStatementNode;
 import Interpreter.ProgramTree.Nodes.StatementNodes.VariableDeclarationNode;
-import Interpreter.ProgramTree.Nodes.StatementNodes.Abstract.BodyStatementNodeBase;
+import java.util.ArrayList;
 import provided.Token;
 import provided.TokenType;
-import Interpreter.Parsing.TokenStack;
-import Interpreter.ProgramTree.FunctionSymbolTable;
-import Interpreter.ProgramTree.Nodes.StatementNodes.Blocks.IfBlockNode;
-import Interpreter.ProgramTree.Nodes.StatementNodes.Blocks.ElseIfBlockNode;
-import Interpreter.ProgramTree.Nodes.StatementNodes.Blocks.ElseBlockNode;
-import Interpreter.ProgramTree.Nodes.StatementNodes.Blocks.WhileBlockNode;
 
 public class BodyNode extends NodeBase<BodyNode> {
     private ArrayList<BodyStatementNodeBase> statements;
@@ -79,6 +77,7 @@ public class BodyNode extends NodeBase<BodyNode> {
     
 
     public static BodyNode parseNode(TokenStack tokens, boolean function) {
+
         tokens.pushStack();
 
     	//No opening Left Brace ( { ) -> null
@@ -178,6 +177,7 @@ public class BodyNode extends NodeBase<BodyNode> {
 
         tokens.popStack(false);
         return new BodyNode(statements);
+
     }
 
     public boolean containsReturn() {
@@ -190,10 +190,27 @@ public class BodyNode extends NodeBase<BodyNode> {
 
     @Override
     public String convertToJott() {
+
         String output = "{";
         for (BodyStatementNodeBase bodyStatementNodeBase : statements) {
             output += bodyStatementNodeBase.convertToJott();
         }
         return output + "}";
+
     }
+
+    @Override
+    public void execute() {
+
+        //System.out.println("[EX]ecuting 'BodyNode'");
+
+        for (BodyStatementNodeBase bodyNode : statements) {
+
+            //System.out.println("[EX]ecuting 'BodyNode' node with name '" + bodyNode.getClass().getSimpleName()+"'");
+            bodyNode.execute();
+            
+        }
+
+    }
+    
 }

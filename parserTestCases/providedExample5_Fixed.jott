@@ -1,0 +1,10 @@
+#this is an example
+Def main[]:Void{
+    Double x;
+    Double y;
+    x = 3.0;
+    y = 3.2 + x;
+    ::print[5];
+    #this is a comment
+    ::print[ "foo bar" ];
+}

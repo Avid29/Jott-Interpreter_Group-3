@@ -3,15 +3,17 @@ package Interpreter.ProgramTree.Nodes.StatementNodes;
 import Interpreter.ErrorReporting.ErrorReport;
 import Interpreter.ErrorReporting.ErrorReportSyntax;
 import Interpreter.Parsing.TokenStack;
+import Interpreter.ProgramTree.FunctionSymbolTable;
 import Interpreter.ProgramTree.Nodes.ExpressionNodes.Abstract.ExpressionNodeBase;
 import Interpreter.ProgramTree.Nodes.StatementNodes.Abstract.BodyStatementNodeBase;
+import Interpreter.ProgramTree.Nodes.TypeNode;
+import Interpreter.ProgramTree.ReturnException;
 import provided.Token;
 import provided.TokenType;
-import Interpreter.ProgramTree.Nodes.TypeNode;
-import Interpreter.ProgramTree.FunctionSymbolTable;
 
 public class ReturnStatementNode extends BodyStatementNodeBase {
-    private ExpressionNodeBase expression;
+
+    private final ExpressionNodeBase expression;
 
     public ReturnStatementNode(ExpressionNodeBase expression){
         this.expression = expression;
@@ -72,4 +74,14 @@ public class ReturnStatementNode extends BodyStatementNodeBase {
     public String convertToJott() {
         return "Return " + expression.convertToJott() + ";";
     }
+
+
+    @Override
+    public void execute() {
+
+        Object returnValue = expression.evaluate();
+
+        throw new ReturnException(returnValue);
+    }
+
 }

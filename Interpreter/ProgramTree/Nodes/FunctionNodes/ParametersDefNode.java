@@ -1,14 +1,14 @@
 package Interpreter.ProgramTree.Nodes.FunctionNodes;
 
-import java.util.ArrayList;
-
 import Interpreter.ErrorReporting.ErrorReport;
 import Interpreter.ErrorReporting.ErrorReportSyntax;
 import Interpreter.Parsing.TokenStack;
-import Interpreter.ProgramTree.Nodes.TypeNode;
 import Interpreter.ProgramTree.Nodes.Abstract.NodeBase;
 import Interpreter.ProgramTree.Nodes.ExpressionNodes.VarRefNode;
 import Interpreter.ProgramTree.Nodes.StatementNodes.VariableDeclarationNode;
+import Interpreter.ProgramTree.Nodes.TypeNode;
+import Interpreter.ProgramTree.ProgramSymbolTable;
+import java.util.ArrayList;
 import provided.Token;
 import provided.TokenType;
 
@@ -24,7 +24,7 @@ public class ParametersDefNode extends NodeBase<ParametersDefNode> {
         return paramNodes.size();
     }
     public boolean hasParams() {
-        return paramNodes.size() > 0;
+        return !paramNodes.isEmpty();
     }
     public VariableDeclarationNode getParam(int index) {
         return paramNodes.get(index);
@@ -80,7 +80,16 @@ public class ParametersDefNode extends NodeBase<ParametersDefNode> {
 
             VarRefNode name = new VarRefNode(pops.getFirst());
 
-            paramNodes.add(new VariableDeclarationNode(type, name, true));
+            //Attempt to record the parameter symbol in the symbol table
+            //System.out.println("[EX]  Defining parameter symbol: "+type.getType().getToken()+" "+name.getIdToken().getToken());
+            if (!ProgramSymbolTable.defineSymbol(type, name)) {
+
+                tokens.popStack(true);
+                return null;
+                
+            }
+
+            paramNodes.add(new VariableDeclarationNode(type, name));
             curr = tokens.popToken();
 
         } while (curr != null && curr.getTokenType() == TokenType.COMMA);

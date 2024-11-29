@@ -4,12 +4,12 @@ import Interpreter.ErrorReporting.ErrorReport;
 import Interpreter.ErrorReporting.ErrorReportSyntax;
 import Interpreter.Parsing.TokenStack;
 import Interpreter.ProgramTree.Nodes.ExpressionNodes.Abstract.ExpressionNodeBase;
+import Interpreter.ProgramTree.Nodes.TypeNode;
 import provided.Token;
 import provided.TokenType;
-import Interpreter.ProgramTree.Nodes.TypeNode;
 
 public class StringNode extends ExpressionNodeBase {
-    private Token string;
+    private final Token string;
 
     public StringNode(Token string) {
         this.string = string;
@@ -48,4 +48,8 @@ public class StringNode extends ExpressionNodeBase {
         return true;
     }
 
+    @Override
+    public String evaluate() {
+        return string.getToken();
+    }
 }

@@ -20,13 +20,17 @@ public abstract class NodeBase<TSelf extends NodeBase<TSelf>> implements JottTre
 
     @Override
     public boolean validateTree() {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'validateTree'");
     }
 
     @Override
     public void execute() {
-        // TODO Auto-generated method stub
+        execute(null);
+    }
+
+    @Override
+    public void execute(String funcNameStr) {
         throw new UnsupportedOperationException("Unimplemented method 'execute'");
     }
+
 }

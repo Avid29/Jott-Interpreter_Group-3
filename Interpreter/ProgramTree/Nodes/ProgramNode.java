@@ -1,16 +1,18 @@
 package Interpreter.ProgramTree.Nodes;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import Interpreter.ErrorReporting.ErrorReport;
 import Interpreter.ErrorReporting.ErrorReportSyntax;
 import Interpreter.Parsing.TokenStack;
+import Interpreter.ProgramTree.FunctionSymbolTable;
 import Interpreter.ProgramTree.Nodes.Abstract.NodeBase;
+import Interpreter.ProgramTree.Nodes.ExpressionNodes.FuncCall.FunctionRefNode;
 import Interpreter.ProgramTree.Nodes.FunctionNodes.FunctionDefNode;
+import java.util.ArrayList;
+import java.util.HashMap;
 import provided.Token;
 
 public class ProgramNode extends NodeBase<ProgramNode> {
+
     private ArrayList<FunctionDefNode> funcNodes;
     private HashMap<String, ArrayList<Token>> funcMap;
 
@@ -82,6 +84,19 @@ public class ProgramNode extends NodeBase<ProgramNode> {
         }
         
         return output;
+    }
+
+    @Override
+    public void execute() {
+
+        //System.out.println("[EX]ecuting 'ProgramNode' -> Main Function ('FunctionRefNode')");
+
+        FunctionSymbolTable.isExecuting = true;
+        FunctionSymbolTable.pushFunctionExecuted("main");
+
+        FunctionRefNode mainFuncRef = FunctionSymbolTable.getMainFunctionRef();
+        mainFuncRef.execute();
+
     }
 
 }

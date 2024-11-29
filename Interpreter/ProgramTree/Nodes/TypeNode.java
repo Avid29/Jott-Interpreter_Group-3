@@ -1,24 +1,26 @@
 package Interpreter.ProgramTree.Nodes;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
 import Interpreter.ErrorReporting.ErrorReport;
 import Interpreter.ErrorReporting.ErrorReportSyntax;
 import Interpreter.Parsing.TokenStack;
 import Interpreter.ProgramTree.Nodes.Abstract.NodeBase;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import provided.Token;
 import provided.TokenType;
 
 public class TypeNode extends NodeBase<TypeNode> {
-    private Token type;
+
+    private final Token type;
 
     public TypeNode(Token type) {
 
         //Validate the provided token type
         if (!isValidType(type)) {
-            throw new IllegalArgumentException("Invalid Type Token: " + type.getToken());
+
+            ErrorReport.makeError(ErrorReportSyntax.class, "TypeNode -- Got invalid Type Token: " + type.getToken(), TokenStack.get_last_token_popped());
+
         }
 
         this.type = type;
@@ -54,7 +56,8 @@ public class TypeNode extends NodeBase<TypeNode> {
 
     public static boolean isValidType(Token type) {
         
-        final Set<String> validTypes = new HashSet<String>(Arrays.asList(
+        final Set<String> validTypes = new HashSet<>(Arrays.asList(
+            "ANY",  //<-- For the print function
             "Double",
             "Integer",
             "String",
@@ -79,4 +82,5 @@ public class TypeNode extends NodeBase<TypeNode> {
     public String convertToJott() {
         return type.getToken();
     }
+
 }

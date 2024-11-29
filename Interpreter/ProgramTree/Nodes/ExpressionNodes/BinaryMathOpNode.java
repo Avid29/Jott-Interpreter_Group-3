@@ -1,24 +1,27 @@
 package Interpreter.ProgramTree.Nodes.ExpressionNodes;
 
 import Interpreter.ErrorReporting.ErrorReport;
+import Interpreter.ErrorReporting.ErrorReportRuntime;
 import Interpreter.ErrorReporting.ErrorReportSyntax;
 import Interpreter.Parsing.TokenStack;
 import Interpreter.ProgramTree.Nodes.ExpressionNodes.Abstract.ExpressionNodeBase;
 import Interpreter.ProgramTree.Nodes.ExpressionNodes.Abstract.OperandNodeBase;
+import Interpreter.ProgramTree.Nodes.TypeNode;
 import provided.Token;
 import provided.TokenType;
-import java.util.ArrayList;
-import Interpreter.ProgramTree.Nodes.TypeNode;
 
 public class BinaryMathOpNode extends ExpressionNodeBase {
-    private Token op;
-    private OperandNodeBase leftChild;
-    private OperandNodeBase rightChild;
+
+    private final Token op;
+    private final OperandNodeBase leftChild;
+    private final OperandNodeBase rightChild;
 
     public BinaryMathOpNode(Token op, OperandNodeBase leftChild, OperandNodeBase rightChild) {
+
         this.op = op; 
         this.leftChild = leftChild;
         this.rightChild = rightChild;
+        
     }
 
     public static BinaryMathOpNode parseNode(TokenStack stack){
@@ -26,8 +29,7 @@ public class BinaryMathOpNode extends ExpressionNodeBase {
         var result = ExpressionNodeBase.parseOperatorNode(stack, TokenType.MATH_OP);
 
         if (result == null) {
-
-            //  ErrorReport.makeError(ErrorReportSyntax.class, "BinaryMathOpNode -- Failed to parse expression", TokenStack.get_last_token_popped());
+            //ErrorReport.makeError(ErrorReportSyntax.class, "BinaryMathOpNode -- Failed to parse expression", TokenStack.get_last_token_popped());
             return null;
         }
 
@@ -48,6 +50,7 @@ public class BinaryMathOpNode extends ExpressionNodeBase {
 
     @Override
     public boolean validateTree() {
+
         if (!leftChild.validateTree() || !rightChild.validateTree()) {
             return false;
         }
@@ -63,6 +66,60 @@ public class BinaryMathOpNode extends ExpressionNodeBase {
         }
 
         return true;
+        
+    }
+
+    @Override
+    public Number evaluate() {
+
+        Object leftObj = leftChild.evaluate();
+        Object rightObj = rightChild.evaluate();
+
+        //System.out.println("[EX]  'BinaryMathOpNode (evaluate)' -- Left: " + leftObj.toString());
+        //System.out.println("[EX]  'BinaryMathOpNode (evaluate)' -- Right: " + rightObj.toString());
+
+        Number left = (Number) leftObj;
+        Number right = (Number) rightObj;
+
+        //Numbers are Integers
+        if (left instanceof Integer && right instanceof Integer) {
+
+            return switch (op.getToken()) {
+
+                case "+" -> left.intValue() + right.intValue();
+                case "-" -> left.intValue() - right.intValue();
+                case "*" -> left.intValue() * right.intValue();
+                case "/" -> left.intValue() / right.intValue();
+
+                default -> null;
+
+            };
+
+        }
+
+        //Numbers are Doubles
+        if (left instanceof Double && right instanceof Double) {
+
+            return switch (op.getToken()) {
+
+                case "+" -> left.doubleValue() + right.doubleValue();
+                case "-" -> left.doubleValue() - right.doubleValue();
+                case "*" -> left.doubleValue() * right.doubleValue();
+                case "/" -> left.doubleValue() / right.doubleValue();
+
+                default -> null;
+
+            };
+
+        }
+
+        ErrorReport.makeError(
+            ErrorReportRuntime.class,
+            "'BinaryMathOpNode (evaluate)' -- Type mismatch: " + left.getClass().getName() + " and " + right.getClass().getName(),
+            TokenStack.get_last_token_popped()
+        );
+        return null;
+
     }
 
 }

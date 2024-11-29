@@ -1,18 +1,18 @@
 package Interpreter.ProgramTree.Nodes.StatementNodes;
 
-import java.util.ArrayList;
-
 import Interpreter.ErrorReporting.ErrorReport;
 import Interpreter.ErrorReporting.ErrorReportSyntax;
 import Interpreter.Parsing.TokenStack;
-import Interpreter.ProgramTree.ProgramSymbolTable;
-import Interpreter.ProgramTree.Nodes.ExpressionNodes.VarRefNode;
+import Interpreter.ProgramTree.FunctionSymbolTable;
 import Interpreter.ProgramTree.Nodes.ExpressionNodes.Abstract.ExpressionNodeBase;
 import Interpreter.ProgramTree.Nodes.StatementNodes.Abstract.BodyStatementNodeBase;
+import Interpreter.ProgramTree.ProgramSymbolTable;
+import java.util.ArrayList;
 import provided.Token;
 import provided.TokenType;
 
 public class AssignmentNode extends BodyStatementNodeBase {
+    
     private Token target;
     private ExpressionNodeBase expression;
 
@@ -47,9 +47,11 @@ public class AssignmentNode extends BodyStatementNodeBase {
             return null;
         }
 
-        // Ensure semi-colon
+        //Ensure semi-colon
         var statementEnd = tokens.popToken();
         if (statementEnd.getTokenType() != TokenType.SEMICOLON) {
+
+            //System.out.println("[EX]  Assignment Expression: "+id.getToken()+" = "+expression.convertToJott());
 
             ErrorReport.makeError(ErrorReportSyntax.class, "AssignmentNode -- Expected Semicolon ';', got "+statementEnd.getTokenType(), statementEnd);
 
@@ -76,5 +78,23 @@ public class AssignmentNode extends BodyStatementNodeBase {
     @Override
     public String convertToJott() {
         return target.getToken() + " = " + expression.convertToJott() + ";";
+    }
+
+    @Override
+    public void execute() {
+        
+        //System.out.println("[EX]ecuting 'AssignmentNode' -> Executing Assignment Expression: '"+target.getToken()+" = "+expression.convertToJott()+"'");
+
+        Object evaluatedValue = expression.evaluate();
+        if (evaluatedValue == null) {
+            
+            evaluatedValue = FunctionSymbolTable.popFunctionReturn();
+            //System.out.println("[EX] Value expression evaluated to null... Using function return value: "+evaluatedValue);
+
+        }
+
+        //Apply the result in the symbol table
+        ProgramSymbolTable.setSymbolValue(target, evaluatedValue);
+
     }
 }

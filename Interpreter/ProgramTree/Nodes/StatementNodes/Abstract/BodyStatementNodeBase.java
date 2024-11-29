@@ -5,12 +5,12 @@ import Interpreter.ErrorReporting.ErrorReportSyntax;
 import Interpreter.Parsing.TokenStack;
 import Interpreter.ProgramTree.Nodes.Abstract.NodeBase;
 import Interpreter.ProgramTree.Nodes.StatementNodes.AssignmentNode;
-import Interpreter.ProgramTree.Nodes.StatementNodes.FuncCallStatementNode;
-import Interpreter.ProgramTree.Nodes.StatementNodes.ReturnStatementNode;
 import Interpreter.ProgramTree.Nodes.StatementNodes.Blocks.ElseBlockNode;
 import Interpreter.ProgramTree.Nodes.StatementNodes.Blocks.ElseIfBlockNode;
 import Interpreter.ProgramTree.Nodes.StatementNodes.Blocks.IfBlockNode;
 import Interpreter.ProgramTree.Nodes.StatementNodes.Blocks.WhileBlockNode;
+import Interpreter.ProgramTree.Nodes.StatementNodes.FuncCallStatementNode;
+import Interpreter.ProgramTree.Nodes.StatementNodes.ReturnStatementNode;
 
 public abstract class BodyStatementNodeBase extends NodeBase<BodyStatementNodeBase> {
 
@@ -19,6 +19,8 @@ public abstract class BodyStatementNodeBase extends NodeBase<BodyStatementNodeBa
         var token = tokens.peekToken();
 
         if (token == null) {
+
+            ErrorReport.makeError(ErrorReportSyntax.class, "BodyStatementNodeBase -- Peeked token is null", TokenStack.get_last_token_popped());
             return null;
         }
 
@@ -42,8 +44,14 @@ public abstract class BodyStatementNodeBase extends NodeBase<BodyStatementNodeBa
         };
 
         if (node == null) {
-            // Unrecognizable statement
+            
+            ErrorReport.makeError(
+                ErrorReportSyntax.class,
+                "BodyStatementNodeBase -- Got unrecognizable body statement: " + token.getToken(),
+                TokenStack.get_last_token_popped()
+            );
             return null;
+
         }
 
         return node;
