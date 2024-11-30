@@ -11,22 +11,37 @@ import provided.JottTree;
 import provided.Token;
 
 public class Jott {
- 
+    private static final boolean DEBUGGING = false;
+
+    private static void debugln() {
+        if (!DEBUGGING)
+            return;
+
+        System.out.println();
+    }
+    
+    private static void debugln(String str) {
+        if (!DEBUGGING)
+            return;
+
+        System.out.println(str);
+    }
+
     //Main
     public static void main(String[] args) {
     
 
         //Fetch name of provided Jott file from arguments
-        System.out.println();
-        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-        System.out.println();
+        debugln();
+        debugln("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        debugln();
 
         String inputFile = args[0];
-        System.out.println("Input file: " + inputFile);
+        debugln("Input file: " + inputFile);
 
-        System.out.println();
-        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-        System.out.println();
+        debugln();
+        debugln("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        debugln();
 
 
         //Attempt the orginal Jott code from the provided file path
@@ -37,55 +52,54 @@ public class Jott {
             e.printStackTrace();
             return;
         }
-        System.out.println("Orginal Jott Code:\n");
-        System.out.println(orginalJottCode);
+        debugln("Orginal Jott Code:\n");
+        debugln(orginalJottCode);
         
-        System.out.println();
-        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-        System.out.println();
+        debugln();
+        debugln("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        debugln();
 
 
         //Tokenize the input
-        JottTokenizer tokenizer = new JottTokenizer(inputFile);
-        ArrayList<Token> tokens = tokenizer.tokenize(inputFile);
+        ArrayList<Token> tokens = JottTokenizer.tokenize(inputFile);
 
 
         //Parse the tokens
         JottTree root = JottParser.parse(tokens);
 
 
-        System.out.println("Parse Status:");
+        debugln("Parse Status:");
 
         if (root == null) {
-            System.out.println();
-            System.out.println("(X) Failed to parse Jott code tokens, exiting program...");
-            System.out.println();
+            debugln();
+            debugln("(X) Failed to parse Jott code tokens, exiting program...");
+            debugln();
 
             ProgramSymbolTable.printWholeTable();
 
             return;
         }
         else {
-            System.out.println();
-            System.out.println("(+) Successfully parsed Jott code tokens, proceeding...");
-            System.out.println();
+            debugln();
+            debugln("(+) Successfully parsed Jott code tokens, proceeding...");
+            debugln();
         }
 
-        System.out.println();
-        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-        System.out.println();
+        debugln();
+        debugln("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        debugln();
 
 
         //Convert the parsed tree to Jott code
         String jottCode = root.convertToJott();
 
-        System.out.println("Resulting Jott Code:\n");
-        System.out.println(jottCode);
+        debugln("Resulting Jott Code:\n");
+        debugln(jottCode);
 
     
-        System.out.println();
-        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-        System.out.println();
+        debugln();
+        debugln("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        debugln();
 
 
         //Execute the parsed tree
@@ -93,9 +107,9 @@ public class Jott {
         
         try {
             root.execute();
-            System.out.println();
-            System.out.println("(+) Successfully executed Jott code, exiting program...");
-            System.out.println();
+            debugln();
+            debugln("(+) Successfully executed Jott code, exiting program...");
+            debugln();
         }
         catch (Exception e) {
 
